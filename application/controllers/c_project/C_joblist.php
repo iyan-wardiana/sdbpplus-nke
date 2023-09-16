@@ -153,8 +153,8 @@ class C_joblist extends CI_Controller
 			$LangID 	= $this->session->userdata['LangID'];
 			
 			// GET MENU DESC
-				$mnCode				= 'MN271';
-				$data["MenuApp"] 	= 'MN271';
+				$mnCode				= 'MN097';
+				$data["MenuApp"] 	= 'MN097';
 				$data['PRJCODE_HO']	= $this->data['PRJCODE_HO'];
 				$getMN				= $this->m_updash->get_menunm($mnCode)->row();
 				if($this->data['LangID'] == 'IND')
@@ -164,7 +164,7 @@ class C_joblist extends CI_Controller
 			
 			$num_rows 			= $this->m_projectlist->count_all_project($DefEmp_ID);
 			$data["countPRJ"] 	= $num_rows;
-			$data["MenuCode"] 	= 'MN271';	 
+			$data["MenuCode"] 	= 'MN097';	 
 			$data['viewPRJ'] 	= $this->m_projectlist->get_all_project($DefEmp_ID)->result();
 			$data['viewPRJ'] 	= $this->m_projectlist->get_all_project($DefEmp_ID)->result();			
 			$data["secURL"] 	= "c_project/c_joblist/get_all_joblist/?id=";
@@ -234,8 +234,8 @@ class C_joblist extends CI_Controller
 			endforeach;
 			
 			// GET MENU DESC
-				$mnCode				= 'MN271';
-				$data["MenuApp"] 	= 'MN271';
+				$mnCode				= 'MN097';
+				$data["MenuApp"] 	= 'MN097';
 				$data['PRJCODE_HO']	= $this->data['PRJCODE_HO'];
 				$getMN				= $this->m_updash->get_menunm($mnCode)->row();
 				if($this->data['LangID'] == 'IND')
@@ -266,7 +266,7 @@ class C_joblist extends CI_Controller
 				$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 				$TTR_PRJCODE	= $PRJCODE;
 				$TTR_REFDOC		= '';
-				$MenuCode 		= 'MN271';
+				$MenuCode 		= 'MN097';
 				$TTR_CATEG		= 'L';
 				
 				$this->load->model('m_updash/m_updash', '', TRUE);				
@@ -324,7 +324,7 @@ class C_joblist extends CI_Controller
 				$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 				$TTR_PRJCODE	= $PRJCODE;
 				$TTR_REFDOC		= '';
-				$MenuCode 		= 'MN271';
+				$MenuCode 		= 'MN097';
 				$TTR_CATEG		= 'A';
 				
 				$this->load->model('m_updash/m_updash', '', TRUE);				
@@ -465,7 +465,7 @@ class C_joblist extends CI_Controller
 				$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 				$TTR_PRJCODE	= $PRJCODE;
 				$TTR_REFDOC		= $this->input->post('JOBCODEID');
-				$MenuCode 		= 'MN271';
+				$MenuCode 		= 'MN097';
 				$TTR_CATEG		= 'C';
 				
 				$this->load->model('m_updash/m_updash', '', TRUE);				
@@ -546,7 +546,7 @@ class C_joblist extends CI_Controller
 				$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 				$TTR_PRJCODE	= $PRJCODE;
 				$TTR_REFDOC		= $getjoblist->JOBCODEID;
-				$MenuCode 		= 'MN271';
+				$MenuCode 		= 'MN097';
 				$TTR_CATEG		= 'U';
 				
 				$this->load->model('m_updash/m_updash', '', TRUE);				
@@ -612,7 +612,7 @@ class C_joblist extends CI_Controller
 				$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 				$TTR_PRJCODE	= $PRJCODE;
 				$TTR_REFDOC		= $this->input->post('JOBCODEID');
-				$MenuCode 		= 'MN271';
+				$MenuCode 		= 'MN097';
 				$TTR_CATEG		= 'UP';
 				
 				$this->load->model('m_updash/m_updash', '', TRUE);				
@@ -644,12 +644,77 @@ class C_joblist extends CI_Controller
 		$this->load->model('m_projectlist/m_projectlist', '', TRUE);
 		$DefEmp_ID 	= $this->session->userdata['Emp_ID'];
 		$PRJCODE	= $_GET['id'];
-        
-        $s_RAPSTAT	= "SELECT RAPP_STAT FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
-        $r_RAPSTAT      = $this->db->query($s_RAPSTAT)->result();
-        foreach($r_RAPSTAT as $rw_RAPSTAT) :
-            $RAPP_STAT = $rw_RAPSTAT->RAPP_STAT;
-        endforeach;
+
+        $PRJCODE		= $PRJCODE;
+		$PRJ_IMGNAME 	= "building.jpg";
+		$RAPP_STAT 		= 0;
+		$RAPT_STAT 		= 0;
+		$PRJADD 		= "-";
+		$PRJ_ISLOCK 	= 0;
+		$RAPT_EDATE 	= date('Y-m-d');
+		$RAPP_EDATE 	= date('Y-m-d');
+		$PRJSTAT 		= 0;
+		$sql 			= "SELECT PRJNAME, PRJPERIOD, PRJ_IMGNAME, PRJCOST, PRJRAPT, RAPP_STAT, RAPT_STAT, PRJADD, PRJ_LOCK_STAT, RAPT_EDATE, RAPP_EDATE, PRJSTAT
+								FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
+		$result 		= $this->db->query($sql)->result();
+		foreach($result as $row) :
+			$PRJNAME 	= $row->PRJNAME;
+			$PRJPERIOD 	= $row->PRJPERIOD;
+			$PRJ_IMGNAME= $row->PRJ_IMGNAME;
+			$PRJCOST 	= $row->PRJCOST;
+			$PRJRAPT 	= $row->PRJRAPT;
+			$RAPP_STAT 	= $row->RAPP_STAT;
+			$RAPT_STAT 	= $row->RAPT_STAT;
+			$PRJADD 	= $row->PRJADD;
+			$PRJ_ISLOCK	= $row->PRJ_LOCK_STAT;
+			$RAPT_EDATE = $row->RAPT_EDATE;
+			$RAPP_EDATE = $row->RAPP_EDATE;
+			$PRJSTAT 	= $row->PRJSTAT;
+		endforeach;
+		if($RAPT_STAT == 0)
+			$RAPP_STAT 	= 0;
+
+		// START : LOCK PROCEDURE
+			$dtRAPT   	= date('Y-m-d', strtotime($RAPT_EDATE));
+			$dtRAPP   	= date('Y-m-d', strtotime($RAPP_EDATE));
+			$dtN 		= date('Y-m-d');
+			$dtNOW 		= new DateTime($dtN);
+			$dtRAPTE	= new DateTime($dtRAPT);
+			$dtRAPPE	= new DateTime($dtRAPP);
+			$remRAPT	= $dtNOW->diff($dtRAPTE)->days + 1;
+			$remRAPP	= $dtNOW->diff($dtRAPPE)->days + 1;
+
+			$remRAPTD 	= $remRAPT." hari";
+			$remRAPPD 	= $remRAPP." hari";
+			$LOCRAPTKD 	= "";
+			$LOCRAPPKD 	= "";
+			if($dtN > $dtRAPT && $RAPT_STAT == 0 && $PRJSTAT == 1)			// LOCK RAPT 16 DAYS AFTER BOQ
+			{
+				$remRAPTD 	= "- ".$remRAPT." hari";
+				$RAPT_STAT 	= 1;
+				$LOCRAPTKD 	= "Locked by System.";
+			}
+			elseif($dtRAPT < $dtN && $RAPT_STAT == 1 && $PRJSTAT == 1)			// LOCK RAPT 16 DAYS AFTER BOQ
+			{
+				$remRAPTD 	= "Selesai";
+				$RAPT_STAT 	= 1;
+			}
+
+			if($dtN > $dtRAPP && $RAPP_STAT == 0 && $PRJSTAT == 1)			// LOCK RAPP 60 DAYS AFTER RAPT
+			{
+				$remRAPPD 	= "- ".$remRAPP." hari";
+				$RAPP_STAT 	= 1;
+				$LOCRAPPKD 	= "Locked by System.";
+			}
+			elseif($dtRAPP < $dtN && $RAPP_STAT == 1 && $PRJSTAT == 1)			// LOCK RAPT 16 DAYS AFTER BOQ
+			{
+				$remRAPPD 	= "Selesai";
+				$RAPP_STAT 	= 1;
+			}
+			
+			if($dtRAPP > $dtN)
+			    $RAPP_STAT 	= 0;
+		// END : LOCK PROCEDURE
 
 		$LangID     = $this->session->userdata['LangID'];
         
@@ -956,8 +1021,8 @@ class C_joblist extends CI_Controller
 		$JOBPARCODE = $CollIDEXPL[1];
 			
 		// GET MENU DESC
-			$mnCode				= 'MN271';
-			$data["MenuApp"] 	= 'MN271';
+			$mnCode				= 'MN097';
+			$data["MenuApp"] 	= 'MN097';
 			$data['PRJCODE_HO']	= $this->data['PRJCODE_HO'];
 			$getMN				= $this->m_updash->get_menunm($mnCode)->row();
 			if($this->data['LangID'] == 'IND')
@@ -980,7 +1045,7 @@ class C_joblist extends CI_Controller
 				$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 				$TTR_PRJCODE	= $appName;
 				$TTR_REFDOC		= '';
-				$MenuCode 		= 'MN271';
+				$MenuCode 		= 'MN097';
 				$TTR_CATEG		= 'A-RAP';
 				
 				$this->load->model('m_updash/m_updash', '', TRUE);				
@@ -1019,7 +1084,7 @@ class C_joblist extends CI_Controller
 				$JOB_NUM 		= $this->input->post('JOB_NUM');
 				$JOB_PARCODE 	= $this->input->post('JOB_PARCODE');
 				$JOB_PARDESC 	= $this->input->post('JOB_PARDESC');
-				$JOB_UNIT 		= $this->input->post('JOB_UNIT');
+				$JOB_UNIT 		= htmlentities($this->input->post('JOB_UNIT'), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 				$JOB_BOQV 		= $this->input->post('JOB_BOQV');
 				$JOB_BOQP 		= $this->input->post('JOB_BOQP');
 				$JOB_BOQT 		= $this->input->post('JOB_BOQT');
@@ -1033,7 +1098,7 @@ class C_joblist extends CI_Controller
 										'JOB_NUM' 		=> $this->input->post('JOB_NUM'),
 										'JOB_PARCODE' 	=> $this->input->post('JOB_PARCODE'),
 										'JOB_PARDESC' 	=> $this->input->post('JOB_PARDESC'),
-										'JOB_UNIT' 		=> $this->input->post('JOB_UNIT'),
+										'JOB_UNIT' 		=> htmlentities($this->input->post('JOB_UNIT'), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5),
 										'JOB_BOQV' 		=> $this->input->post('JOB_BOQV'),
 										'JOB_BOQP' 		=> $this->input->post('JOB_BOQP'),
 										'JOB_BOQT' 		=> $this->input->post('JOB_BOQT'),
@@ -1047,6 +1112,7 @@ class C_joblist extends CI_Controller
 				foreach($_POST['data'] as $d)
 				{
 					$d['JOB_NUM'] 	= $JOB_NUM;
+					$d['ITM_UNIT'] 	= htmlentities($d['ITM_UNIT'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 					$this->db->insert('tbl_jobcreate_detail',$d);
 				}
 				
@@ -1055,7 +1121,7 @@ class C_joblist extends CI_Controller
 					$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 					$TTR_PRJCODE	= $PRJCODE;
 					$TTR_REFDOC		= $this->input->post('JOBCODEID');
-					$MenuCode 		= 'MN271';
+					$MenuCode 		= 'MN097';
 					$TTR_CATEG		= 'C-RAP';
 					
 					$this->load->model('m_updash/m_updash', '', TRUE);				
@@ -1102,9 +1168,9 @@ class C_joblist extends CI_Controller
 		$JOBPARCODE = $CollIDEXPL[1];
 			
 		// GET MENU DESC
-			$mnCode				= 'MN271';
-			$data["MenuCode"] 	= 'MN271';
-			$data["MenuApp"] 	= 'MN271';
+			$mnCode				= 'MN097';
+			$data["MenuCode"] 	= 'MN097';
+			$data["MenuApp"] 	= 'MN097';
 			$data['PRJCODE_HO']	= $this->data['PRJCODE_HO'];
 			$getMN				= $this->m_updash->get_menunm($mnCode)->row();
 			if($this->data['LangID'] == 'IND')
@@ -1146,7 +1212,7 @@ class C_joblist extends CI_Controller
 				$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 				$TTR_PRJCODE	= "$PRJCODE";
 				$TTR_REFDOC		= $getJPAR->JOB_NUM;
-				$MenuCode 		= 'MN271';
+				$MenuCode 		= 'MN097';
 				$TTR_CATEG		= 'U-RAP';
 				
 				$this->load->model('m_updash/m_updash', '', TRUE);				
@@ -1185,7 +1251,7 @@ class C_joblist extends CI_Controller
 				$JOB_NUM 		= $this->input->post('JOB_NUM');
 				$JOB_PARCODE 	= $this->input->post('JOB_PARCODE');
 				$JOB_PARDESC 	= $this->input->post('JOB_PARDESC');
-				$JOB_UNIT 		= $this->input->post('JOB_UNIT');
+				$JOB_UNIT 		= htmlentities($this->input->post('JOB_UNIT'), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 				$JOB_BOQV 		= $this->input->post('JOB_BOQV');
 				$JOB_BOQP 		= $this->input->post('JOB_BOQP');
 				$JOB_BOQT 		= $this->input->post('JOB_BOQT');
@@ -1199,7 +1265,7 @@ class C_joblist extends CI_Controller
 										'JOB_NUM' 		=> $this->input->post('JOB_NUM'),
 										'JOB_PARCODE' 	=> $this->input->post('JOB_PARCODE'),
 										'JOB_PARDESC' 	=> $this->input->post('JOB_PARDESC'),
-										'JOB_UNIT' 		=> $this->input->post('JOB_UNIT'),
+										'JOB_UNIT' 		=> htmlentities($this->input->post('JOB_UNIT'), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5),
 										'JOB_BOQV' 		=> $this->input->post('JOB_BOQV'),
 										'JOB_BOQP' 		=> $this->input->post('JOB_BOQP'),
 										'JOB_BOQT' 		=> $this->input->post('JOB_BOQT'),
@@ -1216,6 +1282,7 @@ class C_joblist extends CI_Controller
 				foreach($_POST['data'] as $d)
 				{
 					$d['JOB_NUM'] 	= $JOB_NUM;
+					$d['ITM_UNIT'] 	= htmlentities($d['ITM_UNIT'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 					$this->db->insert('tbl_jobcreate_detail',$d);
 				}
 				
@@ -1224,7 +1291,7 @@ class C_joblist extends CI_Controller
 					$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 					$TTR_PRJCODE	= $PRJCODE;
 					$TTR_REFDOC		= $this->input->post('JOBCODEID');
-					$MenuCode 		= 'MN271';
+					$MenuCode 		= 'MN097';
 					$TTR_CATEG		= 'C-RAP';
 					
 					$this->load->model('m_updash/m_updash', '', TRUE);				
@@ -1270,7 +1337,7 @@ class C_joblist extends CI_Controller
 		$ISAPPROVE 	= 0;
 		$ISDWONL 	= 0;
 		$ISDELETE 	= 0;
-		$s_MENU     = "SELECT * FROM tusermenu WHERE emp_id = '$DefEmp_ID' AND menu_code = 'MN271'";
+		$s_MENU     = "SELECT * FROM tusermenu WHERE emp_id = '$DefEmp_ID' AND menu_code = 'MN097'";
         $r_MENU   	= $this->db->query($s_MENU)->result();
         foreach($r_MENU as $rw_MENU) :
             $ISCREATE 	= $rw_MENU->ISCREATE;
@@ -1279,14 +1346,46 @@ class C_joblist extends CI_Controller
         endforeach;
 
 		setlocale(LC_ALL, 'id-ID', 'id_ID');
+        
+        $s_RAPSTAT		= "SELECT RAPT_STAT, RAPP_STAT, PRJ_LOCK_STAT, PRJDATE, RAPT_EDATE, RAPP_EDATE, PRJSTAT
+        					FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
+        $r_RAPSTAT      = $this->db->query($s_RAPSTAT)->result();
+        foreach($r_RAPSTAT as $rw_RAPSTAT) :
+            $RAPT_STAT	= $rw_RAPSTAT->RAPT_STAT;
+            $RAPP_STAT 	= $rw_RAPSTAT->RAPP_STAT;
+            $PRJ_ISLOCK	= $rw_RAPSTAT->PRJ_LOCK_STAT;
+            $PRJDATE	= $rw_RAPSTAT->PRJDATE;
+            $RAPT_EDATE	= $rw_RAPSTAT->RAPT_EDATE;
+            $RAPP_EDATE	= $rw_RAPSTAT->RAPP_EDATE;
+            $PRJSTAT	= $rw_RAPSTAT->PRJSTAT;
+        endforeach;
 
-		$sql 	= "SELECT RAPT_STAT, RAPP_STAT, PRJ_LOCK_STAT FROM tbl_project WHERE PRJCODE = '$PRJCODE' LIMIT 1";
-		$result = $this->db->query($sql)->result();
-		foreach($result as $row) :
-			$RAPT_STAT 	= $row->RAPT_STAT;
-			$RAPP_STAT 	= $row->RAPP_STAT;
-			$PRJ_ISLOCK	= $row->PRJ_LOCK_STAT;
-		endforeach;
+		// START : LOCK PROCEDURE
+			$dtRAPT   	= date('Y-m-d', strtotime($RAPT_EDATE));
+			$dtRAPP   	= date('Y-m-d', strtotime($RAPP_EDATE));
+			$dtN 		= date('Y-m-d');
+			$dtNOW 		= new DateTime($dtN);
+			$dtRAPTE	= new DateTime($dtRAPT);
+			$dtRAPPE	= new DateTime($dtRAPP);
+			$remRAPT	= $dtNOW->diff($dtRAPTE)->days + 1;
+			$remRAPP	= $dtNOW->diff($dtRAPPE)->days + 1;
+			$LOCRAPTKD 	= "";
+			$LOCRAPPKD 	= "";
+			if($dtRAPT < $dtN && $RAPT_STAT == 0 && $PRJSTAT == 1)			// LOCK RAPT 16 DAYS AFTER BOQ
+			{
+				$RAPT_STAT 	= 1;
+				$LOCRAPTKD 	= "Locked by System.";
+			}
+
+			if($dtRAPP < $dtN && $RAPP_STAT == 0 && $PRJSTAT == 1)			// LOCK RAPP 60 DAYS AFTER RAPT
+			{
+				$RAPP_STAT 	= 1;
+				$LOCRAPPKD 	= "Locked by System.";
+			}
+			
+			if($dtRAPP > $dtN)
+			    $RAPP_STAT 	= 0;
+		// END : LOCK PROCEDURE
 
         $ANLCAT 	= 0;
         $CANEDIT 	= 0;

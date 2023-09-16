@@ -2929,6 +2929,7 @@ class C_bUd93tL15t extends CI_Controller
 			$getprojname 		= $this->m_budget->get_project_name($PRJCODE, $PRJPERIOD)->row();
 			$data['PRJNAME'] 	= $getprojname->PRJNAME;
 			$data['BUDGNAME'] 	= $getprojname->BUDGNAME;
+			$data['PRJDATE'] 	= $getprojname->PRJDATE;
 			$data['PRJCODE'] 	= $PRJCODE;
 			
 			$MenuCode 			= $mnCode;
@@ -7087,15 +7088,46 @@ class C_bUd93tL15t extends CI_Controller
             $ISDELETE 	= $rw_MENU->ISDELETE;
         endforeach;
         
-        $s_RAPSTAT	= "SELECT RAPT_STAT, RAPP_STAT, PRJ_LOCK_STAT FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
+        $s_RAPSTAT	= "SELECT RAPT_STAT, RAPP_STAT, PRJ_LOCK_STAT, PRJDATE, RAPT_EDATE, RAPP_EDATE, PRJSTAT FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
         $r_RAPSTAT      = $this->db->query($s_RAPSTAT)->result();
         foreach($r_RAPSTAT as $rw_RAPSTAT) :
             $RAPT_STAT	= $rw_RAPSTAT->RAPT_STAT;
             $RAPP_STAT 	= $rw_RAPSTAT->RAPP_STAT;
             $PRJ_ISLOCK	= $rw_RAPSTAT->PRJ_LOCK_STAT;
+            $PRJDATE	= $rw_RAPSTAT->PRJDATE;
+            $RAPT_EDATE	= $rw_RAPSTAT->RAPT_EDATE;
+            $RAPP_EDATE	= $rw_RAPSTAT->RAPP_EDATE;
+            $PRJSTAT	= $rw_RAPSTAT->PRJSTAT;
         endforeach;
         /*$RAPT_STAT 	= 1;
         $RAPP_STAT 	= 0;*/
+
+		// START : LOCK PROCEDURE
+			$dtRAPT   	= date('Y-m-d', strtotime($RAPT_EDATE));
+			$dtRAPP   	= date('Y-m-d', strtotime($RAPP_EDATE));
+			$dtN 		= date('Y-m-d');
+			$dtNOW 		= new DateTime($dtN);
+			$dtRAPTE	= new DateTime($dtRAPT);
+			$dtRAPPE	= new DateTime($dtRAPP);
+			$remRAPT	= $dtNOW->diff($dtRAPTE)->days + 1;
+			$remRAPP	= $dtNOW->diff($dtRAPPE)->days + 1;
+			$LOCRAPTKD 	= "";
+			$LOCRAPPKD 	= "";
+			if($dtRAPT < $dtN && $RAPT_STAT == 0 && $PRJSTAT == 1)			// LOCK RAPT 16 DAYS AFTER BOQ
+			{
+				$RAPT_STAT 	= 1;
+				$LOCRAPTKD 	= "Locked by System.";
+			}
+
+			if($dtRAPP < $dtN && $RAPP_STAT == 0 && $PRJSTAT == 1)			// LOCK RAPP 60 DAYS AFTER RAPT
+			{
+				$RAPP_STAT 	= 1;
+				$LOCRAPPKD 	= "Locked by System.";
+			}
+			
+			if($dtRAPP >= $dtN)
+			    $RAPP_STAT 	= 0;
+		// END : LOCK PROCEDURE
 
 		$LangID     = $this->session->userdata['LangID'];
         
@@ -7291,6 +7323,7 @@ class C_bUd93tL15t extends CI_Controller
 				$noDet 			= "";
 				$reCountRAP		= "";
 				$reCountRAB		= "";
+				$reCountRAPP	= "";
 
 				$strLEN 		= strlen($JOBDESC);
 				$JOBDESCA		= wordwrap($JOBDESC, 50, "<br>", true);
@@ -7325,7 +7358,6 @@ class C_bUd93tL15t extends CI_Controller
 					$CELL_COL	= "style='font-weight:bold; white-space:nowrap'";
 
 					$secPrint	= 	"<input type='hidden' name='urlUpdate".$noU."' id='urlUpdate".$noU."' value='".$secUpd."'>
-									<input type='hidden' name='JOBID".$noU."' id='JOBID".$noU."' value='".$JOBCODEID."'>
 									<label style='white-space:nowrap'>
 									   	<a href='javascript:void(null);' class='btn btn-warning btn-xs' onClick='updJob(".$noU.")'>
 											<i class='glyphicon glyphicon-pencil'></i>
@@ -7340,10 +7372,20 @@ class C_bUd93tL15t extends CI_Controller
 											<i class='glyphicon glyphicon-refresh'></i>
 										</a>
 									</label>";
+					$reCountRAPP= 	"<label style='white-space:nowrap'>
+									   	<a href='javascript:void(null);' class='btn btn-info btn-xs' onClick='syncJobRAPP(".$noU.")'>
+											<i class='glyphicon glyphicon-refresh'></i>
+										</a>
+									</label>";
 
 					if($PRJ_ISLOCK == 1)
 					{
 						$reCountRAB	= "<label style='white-space:nowrap'>
+									   	<a href='javascript:void(null);' class='btn btn-info btn-xs' onClick='alertLOCK()'>
+											<i class='glyphicon glyphicon-refresh'></i>
+										</a>
+									</label>";
+						$reCountRAPP= "<label style='white-space:nowrap'>
 									   	<a href='javascript:void(null);' class='btn btn-info btn-xs' onClick='alertLOCK()'>
 											<i class='glyphicon glyphicon-refresh'></i>
 										</a>
@@ -7428,18 +7470,18 @@ class C_bUd93tL15t extends CI_Controller
 										<input type='hidden' name='urlSUpdRAPP".$noU."' id='urlSUpdRAPP".$noU."' value='".$updRAPPSV."'>
 										<span class='label label-".$STATCOL."' style='font-size:12px'>".number_format($RAPP_JOBCOST,2)."</span>";
 
-					if($RAPT_STAT == 0)
+					if($RAPP_STAT == 0 && $ISAPPROVE == 1)
+					{
+						$btnUpdRAPP		= "<input type='hidden' name='urlUpdRAPP".$noU."' id='urlUpdRAPP".$noU."' value='".$updRAPPID."'>
+											<input type='hidden' name='urlSUpdRAPP".$noU."' id='urlSUpdRAPP".$noU."' value='".$updRAPPSV."'>
+											<a href='javascript:void(null);' class='label label-".$STATCOL."' style='font-size:12px' onClick='updRAPP(".$noU.")'>".number_format($RAPP_JOBCOST,2)."</a>";
+					}
+					elseif($RAPP_STAT == 0)
 					{
 						$RAPP_VOLM 		= 0;
 						$RAPP_PRICE		= 0;
 						$RAPP_JOBCOST	= 0;
 						$btnUpdRAPP		= "<span class='label label-".$STATCOL."' style='font-size:12px'>".number_format($RAPP_JOBCOST,2)."</span>";
-					}
-					elseif($RAPT_STAT == 1 && $ISAPPROVE == 1)
-					{
-						$btnUpdRAPP		= "<input type='hidden' name='urlUpdRAPP".$noU."' id='urlUpdRAPP".$noU."' value='".$updRAPPID."'>
-											<input type='hidden' name='urlSUpdRAPP".$noU."' id='urlSUpdRAPP".$noU."' value='".$updRAPPSV."'>
-											<a href='javascript:void(null);' class='label label-".$STATCOL."' style='font-size:12px' onClick='updRAPP(".$noU.")'>".number_format($RAPP_JOBCOST,2)."</a>";
 					}
 				}
 
@@ -7516,7 +7558,8 @@ class C_bUd93tL15t extends CI_Controller
 				if($RAPP_STAT == 1)
 				{*/
 					$secAddHV 	= "<i class='fa fa-lock'></i>";
-					$secPrint	= "<input type='hidden' name='urlUpdate".$noU."' id='urlUpdate".$noU."' value='".$secUpd."'>
+					$secPrint	= "<input type='hidden' name='JOBID".$noU."' id='JOBID".$noU."' value='".$JOBCODEID."'>
+									<input type='hidden' name='urlUpdate".$noU."' id='urlUpdate".$noU."' value='".$secUpd."'>
 									<label style='white-space:nowrap'>
 									   	<a href='javascript:void(null);' class='btn btn-warning btn-xs' onClick='updJob(".$noU.")'>
 											<i class='glyphicon glyphicon-pencil'></i>
@@ -7548,7 +7591,7 @@ class C_bUd93tL15t extends CI_Controller
 											"<div style='text-align:right;'><span ".$CELL_COL.">".number_format($RAPP_VOLM, 2)."</span></div>",
 											//"<div style='text-align:right;'><span ".$CELL_COL.">".number_format($RAPP_PRICE, 2).$ADDPRC_VW."</span></div>",
 											"<div style='text-align:right;'><span ".$CELL_COL.">".number_format($RAPP_PRICE, 2)."</span></div>",
-											"<div style='text-align:right;'><label style='white-space:nowrap'>".$reCountRAP."&nbsp;$btnUpdRAPP$RAPP_LVW</label></div>",
+											"<div style='text-align:right;'><label style='white-space:nowrap'>".$reCountRAPP."&nbsp;$btnUpdRAPP$RAPP_LVW</label></div>",
 											"<div style='text-align:right;'><span class='label label-".$STATCOL."' style='font-size:12px'>".number_format($DEV_BOQRAPP,2)."</span></div>",
 											"<div style='text-align:right;' style='white-space:nowrap'><span class='label label-".$STATCOL."' style='font-size:12px'>".number_format($ADD_JOBCOST,2)."</span>".$ADDVALM_VW.$RecItemV."</div>",
 											//"<div style='text-align:right;'><span class='label label-".$STATCOL."' style='font-size:12px'>".number_format($BUDG_DEV,2)."</span></div>",

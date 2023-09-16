@@ -266,6 +266,16 @@ $moneyFormat = new moneyFormat();
                 $ITM_AMOUNT_PPH = $rw_01->ITM_AMOUNT_PPH;
                 $TAXCODE_PPH    = $rw_01->TAXCODE_PPH;
 
+                // CEK APAKAH DI HEADER MEMILIH MANUAL PPH
+                    $VOCPPH    = 0;
+                    $s_02       = "SELECT A.INV_AMOUNT_PPH FROM tbl_pinv_header A WHERE A.INV_NUM = '$INV_NUM' AND A.PRJCODE = '$PRJCODE'";
+                    $r_02       = $this->db->query($s_02)->result();
+                    foreach($r_02 as $rw_02):
+                        $VOCPPH = $rw_02->INV_AMOUNT_PPH;
+                    endforeach;
+                    if($VOCPPH > 0)
+                        $ITM_AMOUNT_PPH = $VOCPPH;
+
                 $isPPhFin       = 0;
                 $s_ACCPPH       = "SELECT isPPhFinal FROM tbl_chartaccount_$PRJCODEVW
                                         WHERE PRJCODE = '$PRJCODE' AND Account_Number IN (SELECT TAXLA_LINKIN FROM tbl_tax_la WHERE TAXLA_NUM = '$TAXCODE_PPH') LIMIT 1";

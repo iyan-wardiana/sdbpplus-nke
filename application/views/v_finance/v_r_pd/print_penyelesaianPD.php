@@ -99,6 +99,12 @@ $moneyFormat = new moneyFormat();
         $TOTINV_Amount = $rw_VOC->TOTINV_Amount;
     endforeach;
 
+    $s_PPN          = "SELECT IFNULL(SUM(PPN_Amount),0) AS PPNH_Amount FROM tbl_journaldetail_pd WHERE JournalH_Code = '$JournalH_Code'";
+    $r_PPN          = $this->db->query($s_PPN);
+    foreach($r_PPN->result() as $rw_PPN):
+        $PPNH_Amount = $rw_PPN->PPNH_Amount;
+    endforeach;
+
     $Amount         = $Journal_Amount;
     $TAmount        = $Journal_Amount + $PPNH_Amount - $PPHH_Amount;
     $TREALZAmount   = $Journal_AmountReal + $PPNH_Amount - $PPHH_Amount + $TOTINV_Amount;
@@ -313,6 +319,12 @@ $moneyFormat = new moneyFormat();
 </head>
 <body class="page A4">
     <section class="page sheet custom">
+        <div id="Layer1" <?php if($GEJ_STAT_PD == 2) echo "style='display: none;'" ?>>
+            <a href="#" onClick="Layer1.style.visibility='hidden'; self.print(); self.close();" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Print</a>
+            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; display: none;">
+            <i class="fa fa-download"></i> Generate PDF
+            </button>
+        </div>
         <div class="cont">
             <div class="box-header">
                 <div class="box-column-logo">
@@ -507,12 +519,6 @@ $moneyFormat = new moneyFormat();
                     </tr>
                 </table>
             </div>
-        </div>
-        <div id="Layer1">
-            <a href="#" onClick="Layer1.style.visibility='hidden'; self.print(); self.close();" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Print</a>
-            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; display: none;">
-            <i class="fa fa-download"></i> Generate PDF
-            </button>
         </div>
     </section>
     <section class="page sheet custom" <?php if($isManualClose == 1) echo "style='display: none;'"; ?>>

@@ -205,6 +205,7 @@
 						$dashboardT	= "Beranda";
 						$LockScr	= "Kunci Layar";
 						$LockTrx	= "Kunci Jurnal";
+						$bcWA		= "Broadcash Pesan";
 						$mnLKH		= "Lap. Kerja Harian";
 						$HowToUse	= "Cara Penggunaan";
 						$Reservat	= "Pemesanan";
@@ -231,6 +232,7 @@
 						$HowToUse	= "How To Use";
 						$LockScr	= "Lock Screen";
 						$LockTrx	= "Lock Journal";
+						$bcWA		= "Broadcash";
 						$mnLKH		= "Daily Work Report";
 						$Reservat	= "Reservation";
 						$mntWarn1	= "Sorry, '1stWeb Assistance' services will be finished on : ";
@@ -616,15 +618,28 @@
 				            },
 		                <?php
 			        }
+			        if($Emp_ID == 'D15040004221' || $Emp_ID == 'L14030003372')
+			        {
+						?>
+							{
+					            id: 'BROADC',
+					            text: '<?=$bcWA?>',
+					            url: "<?php echo site_url("bcmsg/?id=".$this->url_encryption_helper->encode_url($appName));?>",
+					            targetType: "iframe-tab",
+					            icon: "fa fa-paper-plane",
+					            urlType: 'abosulte'
+				            },
+		                <?php
+			        }
 					?>
-						{
+						/*{
 				            id: 'MNLKH',
 				            text: '<?=$mnLKH?>',
 				            url: "<?php echo site_url("__l1y/lstDWR/?id=".$this->url_encryption_helper->encode_url($appName));?>",
 				            targetType: "iframe-tab",
 				            icon: "fa fa-history",
 				            urlType: 'abosulte'
-			            },
+			            },*/
 	                <?php
 			    }
 			?>

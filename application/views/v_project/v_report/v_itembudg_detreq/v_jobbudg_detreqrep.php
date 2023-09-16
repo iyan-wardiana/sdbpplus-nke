@@ -275,7 +275,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                 $JoinJOBPAR     = join("','", $JOBCODEID);
 
                 $addQITM        = "";
-                if($ITM_CODE[0] != 1)
+                if($ITM_CODE[0] != '1')
                 {
                     $JoinITMCODE    = join("','", $ITM_CODE);
                     $addQITM        = "AND ITM_CODE IN ('$JoinITMCODE')";
@@ -310,10 +310,25 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                         $ITM_UNIT       = $rB->ITM_UNIT;
                         $ITM_VOLMBG     = $rB->ITM_VOLM;
                         $ITM_BUDG       = $rB->ITM_BUDG;
-                        $ADD_VOLM       = $rB->AMD_VOL;
+                        /*$ADD_VOLM       = $rB->AMD_VOL;
                         $ADD_JOBCOST    = $rB->AMD_VAL;
                         $ADDM_VOLM      = $rB->AMDM_VOL;
-                        $ADDM_JOBCOST   = $rB->AMDM_VAL;
+                        $ADDM_JOBCOST   = $rB->AMDM_VAL;*/
+                        $ADD_VOLM       = 0;
+                        $ADD_JOBCOST    = 0;
+                        $ADDM_VOLM      = 0;
+                        $ADDM_JOBCOST   = 0;
+
+                        $s_AMD          = "SELECT SUM(A.AMD_VOL) AS AMD_VOL, SUM(A.AMD_VAL) AS AMD_VAL, SUM(A.AMDM_VOL) AS AMDM_VOL, SUM(A.AMDM_VAL) AS AMDM_VAL
+                                            FROM tbl_item_logbook_$PRJCODEVW A INNER JOIN tbl_joblist_detail_$PRJCODEVW B ON A.JOBCODEID = B.JOBCODEID AND A.PRJCODE = B.PRJCODE
+                                            WHERE A.DOC_CATEG IN ('AMD', 'AMDSUB') AND A.JOBCODEID = '$JOBCODEID' AND (A.DOC_DATE BETWEEN '$Start_Date' AND '$End_Date') GROUP BY A.JOBCODEID";
+                        $r_AMD          = $this->db->query($s_AMD)->result();
+                        foreach($r_AMD as $rD):
+                            $ADD_VOLM       = $rD->AMD_VOL;
+                            $ADD_JOBCOST    = $rD->AMD_VAL;
+                            $ADDM_VOLM      = $rD->AMDM_VOL;
+                            $ADDM_JOBCOST   = $rD->AMDM_VAL;
+                        endforeach;
 
                         // Addendum
                             $ADDVOLM        = $ADD_VOLM - $ADDM_VOLM;
@@ -672,12 +687,11 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                                         <td style="text-align: center;"><?php echo $ITM_UNIT; ?></td>
                                                         <td style="text-align: center;"><?php echo number_format($PO_VOLM, $decFormat); ?></td>
                                                         <td style="text-align: center;"><?php echo number_format($PO_CVOL, $decFormat); ?></td>
-                                                        <!-- <td style="text-align: right;">
+                                                        <td style="text-align: right;">
                                                             <?php
-                                                                // echo number_format($PO_PRICE, $decFormat)."<br><div style='font-style: italic;'>".$PO_TPOTV."</div>";
+                                                                echo number_format($PO_PRICE, $decFormat)."<br><div style='font-style: italic;'>".$PO_TPOTV."</div>";
                                                             ?>
-                                                        </td> -->
-                                                        <td style="text-align: right;"><?php echo number_format($PO_PRICE, $decFormat);?></td>
+                                                        </td>
                                                         <td style="text-align: right;"><?php echo number_format($PO_COST, $decFormat); ?></td>
                                                         <td style="text-align: center;"><?php echo $STATDESC; ?></td>
                                                         <td style="text-align: center;"><?php echo number_format($REM_VOLMBG, $decFormat); ?></td>
@@ -1027,8 +1041,11 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                                 FROM tbl_journaldetail_cprj A 
                                                 INNER JOIN tbl_journalheader_cprj B ON B.JournalH_Code = A.JournalH_Code AND B.proj_Code = A.proj_Code
                                                 LEFT JOIN tbl_employee C ON B.PERSL_EMPID = C.Emp_ID
-                                                WHERE A.proj_Code = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND A.ITM_CODE = '$ITM_CODE' AND B.GEJ_STAT NOT IN (5,9)
-                                                AND (A.JournalH_Date BETWEEN '$Start_Date' AND '$End_Date')
+                                                WHERE A.proj_Code = '$PRJCODE'
+                                                    AND A.JOBCODEID = '$JOBCODEID'
+                                                    -- AND A.ITM_CODE = '$ITM_CODE'
+                                                    AND B.GEJ_STAT NOT IN (5,9)
+                                                    AND (A.JournalH_Date BETWEEN '$Start_Date' AND '$End_Date')
                                                 ORDER BY A.JournalH_Date ASC";
                             $resDataVLK     = $this->db->query($getDataVLK);
                             if($resDataVLK->num_rows() > 0)

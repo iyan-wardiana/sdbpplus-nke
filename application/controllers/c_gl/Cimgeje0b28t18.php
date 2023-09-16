@@ -311,6 +311,8 @@ class Cimgeje0b28t18 extends CI_Controller
 				$delID 				= "$secDelIcut~tbl_journalheader_imp~tbl_journaldetail_imp~JournalH_Code~$JournalH_Code~proj_Code~$PRJCODE";
 				$secVoid 			= base_url().'index.php/__l1y/trashCHO/?id=';
 				$voidID 			= "$secVoid~tbl_journalheader_imp~tbl_journaldetail_imp~JournalH_Code~$JournalH_Code~proj_Code~$PRJCODE";
+                $secRev 			= base_url().'index.php/__l1y/trashIMPREV/?id=';
+				$RevID 				= "$secRev~tbl_journalheader_imp~tbl_journaldetail_imp~JournalH_Code~$JournalH_Code~proj_Code~$PRJCODE";
                 
                 $revDesc 			= "";
                 if($JournalH_Desc2 != '')
@@ -321,7 +323,7 @@ class Cimgeje0b28t18 extends CI_Controller
 								  	</div>";
                 }
 
-				if($GEJ_STAT == 1 || $GEJ_STAT == 4) 
+				/*if($GEJ_STAT == 1 || $GEJ_STAT == 4) 
 				{
 					$secPrint	= 	"<input type='hidden' name='urlPrint".$noU."' id='urlPrint".$noU."' value='".$secPrint1."'>
 								   	<input type='hidden' name='urlDel".$noU."' id='urlDel".$noU."' value='".$delID."'>
@@ -341,10 +343,11 @@ class Cimgeje0b28t18 extends CI_Controller
 									</label>";
 				}
 				elseif($GEJ_STAT == 3)
-				{
+				{*/
 					$secPrint	= 	"<input type='hidden' name='urlPrint".$noU."' id='urlPrint".$noU."' value='".$secPrint1."'>
 								   	<input type='hidden' name='urlDel".$noU."' id='urlDel".$noU."' value='".$delID."'>
 									<input type='hidden' name='urlVoid".$noU."' id='urlVoid".$noU."' value='".$voidID."'>
+									<input type='hidden' name='urlRev".$noU."' id='urlRev".$noU."' value='".$RevID."'>
 								   	<label style='white-space:nowrap'>
 								   	<a href='".$secUpd."' class='btn btn-info btn-xs' title='Update'>
 								   		<i class='glyphicon glyphicon-pencil'></i>
@@ -352,6 +355,9 @@ class Cimgeje0b28t18 extends CI_Controller
 								   	<a href='javascript:void(null);' class='btn btn-primary btn-xs' onClick='printD(".$noU.")'>
                                         <i class='glyphicon glyphicon-print'></i>
                                     </a>
+									<a href='javascript:void(null);' class='btn btn-danger btn-xs' onClick='revDOC(".$noU.")' title='Void'>
+										<i class='glyphicon glyphicon-repeat'></i>
+									</a>
 									<a href='javascript:void(null);' class='btn btn-warning btn-xs' onClick='voidDOC(".$noU.")' title='Void'>
 										<i class='glyphicon glyphicon-off'></i>
 									</a>
@@ -359,7 +365,7 @@ class Cimgeje0b28t18 extends CI_Controller
 										<i class='fa fa-trash-o'></i>
 									</a>
 									</label>";
-				}
+				/*}
 				else
 				{
 					$secPrint	= 	"<input type='hidden' name='urlPrint".$noU."' id='urlPrint".$noU."' value='".$secPrint1."'>
@@ -378,7 +384,7 @@ class Cimgeje0b28t18 extends CI_Controller
 										<i class='fa fa-trash-o'></i>
 									</a>
 									</label>";
-				}
+				}*/
 
                 // SATRT : GET CREATER
 					$Emp_ID			= $dataI['Emp_ID'];
@@ -1914,7 +1920,7 @@ class Cimgeje0b28t18 extends CI_Controller
 			$data['CB_NUM'] 	= $CB_NUM;
 			$data['title'] 		= $appName;
 			
-			$this->load->view('v_gl/v_imgej_entry/imgej_print', $data);
+			$this->load->view('v_gl/v_imgej_entry/gej_print', $data);
 		}
 		else
 		{
@@ -3355,25 +3361,6 @@ class Cimgeje0b28t18 extends CI_Controller
 			
 			$MenuCode 				= 'MN028';
 			$data["MenuCode"] 		= 'MN028';
-
-			// START : UPDATE TO T-TRACK
-				date_default_timezone_set("Asia/Jakarta");
-				$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
-				$TTR_PRJCODE	= $PRJCODE;
-				$TTR_REFDOC		= '';
-				$MenuCode 		= 'MN028';
-				$TTR_CATEG		= 'A';
-				
-				$this->load->model('m_updash/m_updash', '', TRUE);				
-				$paramTrack 	= array('TTR_EMPID' 	=> $DefEmp_ID,
-										'TTR_DATE' 		=> date('Y-m-d H:i:s'),
-										'TTR_MNCODE'	=> $MenuCode,
-										'TTR_CATEG'		=> $TTR_CATEG,
-										'TTR_PRJCODE'	=> $TTR_PRJCODE,
-										'TTR_REFDOC'	=> $TTR_REFDOC,
-										'TTR_NOTES'		=> "Open form gej");
-				$this->m_updash->updateTrack($paramTrack);
-			// END : UPDATE TO T-TRACK
 			
 			$this->load->view('v_gl/v_imgej_entry/imgej_entry_form', $data);
 			
@@ -3432,17 +3419,24 @@ class Cimgeje0b28t18 extends CI_Controller
 			$noU			= $start + 1;
 			foreach ($query->result_array() as $dataI) 
 			{
+				$jID 			= $dataI['JournalD_Id'];
                	$JournalH_Code 	= $dataI['JournalH_Code'];
-                $Manual_No 		= $dataI['Manual_No'];
                 $Acc_Id 		= $dataI['Acc_Id'];
+                $Base_Debet		= $dataI['JournalD_Debet'];
+                $Base_Kredit 	= $dataI['JournalD_Kredit'];
+                $Manual_No 		= $dataI['Manual_No'];
+                $Journal_DK	 	= $dataI['Journal_DK'];
+                $Other_Desc	 	= $dataI['Other_Desc'];
+                $oth_reason	 	= $dataI['oth_reason'];
                 $proj_Code 		= $dataI['proj_Code'];
+                $GEJ_STAT 		= $dataI['GEJ_STAT'];
                 $PRJCODEVW 		= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $proj_Code));
 
                 $noPRJ 			= "";
                 $noAcc 			= "";
                 $ItmCol1		= "";
                 $ItmCol2		= "";
-                $s_PRJC 		= "tbl_project WHERE PRJCODE = '$proj_Code'";
+                /*$s_PRJC 		= "tbl_project WHERE PRJCODE = '$proj_Code'";
 				$r_PRJC			= $this->db->count_all($s_PRJC);
 				if($r_PRJC == 0)
 				{
@@ -3455,31 +3449,40 @@ class Cimgeje0b28t18 extends CI_Controller
 				{
 					$ItmCol1	= '<br><span class="label label-danger" style="font-size:12px; font-style: italic;">';
 					$ItmCol2	= '</span>';
-	                $s_ACCC 	= "tbl_chartaccount WHERE Account_Number = '$Acc_Id'";
+	                $s_ACCC 	= "tbl_chartaccount_$PRJCODEVW WHERE Account_Number = '$Acc_Id'";
 					$r_ACCC		= $this->db->count_all($s_ACCC);
 					if($r_ACCC == 0)
 					{
 						$noAcc 	= "- Kode akun $Acc_Id belum terdapat di sistem SdBP+";
 					}
-				}
+				}*/
 
 				$collDesc 		= $noPRJ.$noAcc;
 
-                $Base_Debet		= $dataI['JournalD_Debet'];
-                $Base_Kredit 	= $dataI['JournalD_Kredit'];
-                $Other_Desc	 	= $dataI['Other_Desc'];
-                $Journal_DK	 	= $dataI['Journal_DK'];
-                $oth_reason	 	= $dataI['oth_reason'];
                 $SALDO 			= $Base_Debet-$Base_Kredit;
                 $TOT_D 			= $TOT_D+$Base_Debet;
                 $TOT_K 			= $TOT_K+$Base_Kredit;
+
+				$vwBase_Debet 	= number_format($Base_Debet,2);
+				$vwBase_Kredit 	= number_format($Base_Kredit,2);
+				if($GEJ_STAT == 1 || $GEJ_STAT == 4)
+				{
+					$vwBase_Debet 	= "<div class='input-group'>
+										<input type='text' class='form-control' style='min-width:130px; max-width:130px; text-align:right' name='Base_DebetX".$noU."' id='Base_DebetX".$noU."' value='".number_format($Base_Debet, 2)."' onKeyPress='return isIntOnlyNew(event);' onBlur='getD(".$noU.");'>
+										<div class='input-group-addon'><i class='fa fa-save' onClick='saveDK(".$jID.",".$noU.");' style='cursor: pointer'></i></div></div>";
+					$vwBase_Kredit 	= "<div class='input-group'>
+										<input type='text' class='form-control' style='min-width:130px; max-width:130px; text-align:right' name='Base_KreditX".$noU."' id='Base_KreditX".$noU."' value='".number_format($Base_Kredit, 2)."' onKeyPress='return isIntOnlyNew(event);' onBlur='getK(".$noU.");'>
+										<div class='input-group-addon'><i class='fa fa-save' onClick='saveDK(".$jID.",".$noU.");' style='cursor: pointer'></i></div></div>";
+				}
 
 				$output['data'][] = array("$noU",
 										  $Manual_No,
 										  $Other_Desc.$ItmCol1.$collDesc.$ItmCol2,
 										  $Journal_DK,
-										  number_format($Base_Debet,2),
-										  number_format($Base_Kredit,2),
+										  "<input type='hidden' id='data".$noU."Base_Debet' name='data[".$noU."][Base_Debet]' value='".$Base_Debet."'>
+										  <input type='hidden' id='data".$noU."Base_Kredit' name='data[".$noU."][Base_Kredit]' value='".$Base_Kredit."'>"
+										  .$vwBase_Debet,
+										  $vwBase_Kredit,
 										  number_format($SALDO,2),
 										  "<span class='label label-danger' style='font-size:12px'>$oth_reason</span>");
 				$noU		= $noU + 1;
@@ -3502,14 +3505,32 @@ class Cimgeje0b28t18 extends CI_Controller
 				$GTOT_K 	= $TOT_K;
             	$GSALDO 	= $GTOT_D-$GTOT_K;
             }
+			// $output['data'][] 	= array("",
+			// 						  	"",
+			// 						  	"",
+			// 						  	"",
+			// 						  	"<strong>".number_format($GTOT_D,2)."</strong>",
+			// 						  	"<strong>".number_format($GTOT_K,2)."</strong>",
+			// 						  	"<strong>".number_format($GSALDO,2)."</strong>",
+			// 							"");
 			$output['data'][] 	= array("",
-									  	"",
-									  	"",
-									  	"",
-									  	number_format($GTOT_D,2),
-									  	number_format($GTOT_K,2),
-									  	number_format($GSALDO,2),
+										"",
+										"",
+										"",
+										"<input type='text' class='form-control' style='min-width:130px; max-width:130px; text-align:right; font-weight: bold;' name='GTOT_D' id='GTOT_D' value='".number_format($GTOT_D, 2)."' readonly>",
+										"<input type='text' class='form-control' style='min-width:130px; max-width:130px; text-align:right; font-weight: bold;' name='GTOT_K' id='GTOT_K' value='".number_format($GTOT_K, 2)."' readonly>",
+										"<input type='text' class='form-control' style='min-width:130px; max-width:130px; text-align:right; font-weight: bold;' name='GSALDO' id='GSALDO' value='".number_format($GSALDO, 2)."' readonly>",
 										"");
+
+			$output['data'][] 	= array("",
+										"",
+										"",
+										"",
+										"",
+										"",
+										"<input type='hidden' name='totalrow' id='totalrow' value='$noU'>",
+										"");
+
 
 			/*$output['data'][] = array("A",
 									  "B",
@@ -3523,4 +3544,22 @@ class Cimgeje0b28t18 extends CI_Controller
 			echo json_encode($output);
 		// END : FOR SERVER-SIDE
 	}
+
+    function saveDK()
+    {
+		date_default_timezone_set("Asia/Jakarta");
+
+		$jID 	= $_POST['jID'];
+		$baseD 	= $_POST['baseD'];
+		$baseK 	= $_POST['baseK'];
+		$defEMP	= $this->session->userdata['Emp_ID'];
+		$updDt 	= date('Y-m-d H:i:s');
+
+		$s_01 	= "UPDATE tbl_journaldetail_imp SET JournalD_Debet = $baseD, Base_Debet = $baseD, JournalD_Kredit = $baseK, Base_Kredit = $baseK,
+					Notes = 'Ada perubahan nilai oleh $defEMP on $updDt', Revise_Desc = 'Ada perubahan nilai oleh $defEMP on $updDt', oth_reason = 'Ada perubahan nilai oleh $defEMP on $updDt'
+					WHERE JournalD_Id = $jID";
+		$r_01 	= $this->db->query($s_01);
+
+		echo "$s_01";
+    }
 }

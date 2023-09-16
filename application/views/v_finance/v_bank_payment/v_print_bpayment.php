@@ -391,7 +391,7 @@ if($getDOCNO->num_rows() > 0)
                             // $this->db->where_in("B.Faktur_No", $VOC_NUM);
                             $getVoucher = $this->db->get();*/
 
-                            $s_00       = "SELECT DISTINCT A.JournalH_Code, A.JournalType, A.JournalH_Desc, A.JournalH_Desc2, A.JournalH_Date, 
+                            $s_00       = "SELECT A.JournalH_Code, A.JournalType, A.JournalH_Desc, A.JournalH_Desc2, A.JournalH_Date, 
                                                 A.JournalH_Date_PD, A.PlanRDate, A.Reference_Number, A.Reference_Type,
                                                 A.ISPERSL, A.PERSL_EMPID, A.Journal_Amount, A.PPNH_Amount, A.PPHH_Amount, 
                                                 A.GJournal_Total, A.Manual_No, A.SPLCODE, A.GEJ_STAT, 

@@ -336,7 +336,7 @@ $comp_name 		= $this->session->userdata['comp_name'];
 				                        <tr>
 				                            <td style="line-height: 10px; font-family:Arial, Helvetica, sans-serif; font-size:10px;">KONSULTAN SUPERVISI</td>
 				                            <td style="line-height: 10px; font-family:Arial, Helvetica, sans-serif; font-size:10px;">:</td>
-				                            <td style="line-height: 10px; font-family:Arial, Helvetica, sans-serif; font-size:10px;">PT. MOJOPAHIT AGUNG KONSULTAN & GPS</td>
+				                            <td style="line-height: 10px; font-family:Arial, Helvetica, sans-serif; font-size:10px;"></td>
 				                            <td style="line-height: 10px; font-family:Arial, Helvetica, sans-serif; font-size:10px;">HALAMAN</td>
 				                            <td style="line-height: 10px; font-family:Arial, Helvetica, sans-serif; font-size:10px;">:</td>
 				                            <td style="line-height: 10px; font-family:Arial, Helvetica, sans-serif; font-size:10px;">1</td>

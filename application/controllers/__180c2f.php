@@ -1040,5 +1040,148 @@ class __180c2f extends CI_Controller
 
 	        echo $sendData;
 	    endforeach;
+
+	    // START : ALERT BERKAS JAMINAN
+			$s_01 		= "SELECT GF_NUM, GF_CODE, GF_NAME, GF_DATES, GF_DATEE, GF_PENJAMIN, GF_NILAI_JAMINAN, SPLCODE, DATEDIFF(GF_DATEE, NOW()) AS REM_DAY, SPLDESC, WO_CODE
+							FROM tbl_gfile_alert7";
+	        $r_01 		= $this->db->query($s_01);
+	        if($r_01->num_rows() > 0)
+	        {
+	        	$TXT01 		= "";
+		        foreach($r_01->result() as $rw_01) :
+		        	$GF_NUM 	= $rw_01->GF_NUM;
+		        	$GF_CODE 	= $rw_01->GF_CODE;
+		        	$GF_NAME 	= $rw_01->GF_NAME;
+		        	$GF_DATES 	= $rw_01->GF_DATES;
+		        	$GF_DATEE 	= $rw_01->GF_DATEE;
+		        	$GF_PENJ 	= $rw_01->GF_PENJAMIN;
+		        	$GF_VALUE 	= $rw_01->GF_NILAI_JAMINAN;
+		        	$REM_DAY 	= $rw_01->REM_DAY;
+		        	$SPLDESC 	= $rw_01->SPLDESC;
+		        	$WO_CODE 	= $rw_01->WO_CODE;
+
+		        	$TXT01 		= $TXT01."Kode Jaminan : *$GF_CODE*\nNama Jaminan : $GF_NAME\nPenjamin : $GF_PENJ\nSupplier : *$SPLDESC*\nOP/SPK No. : *$WO_CODE*\nBerakhir Pada : *$GF_DATEE*\n\n";
+
+		        	$s_UPD 		= "UPDATE tbl_gfile SET ALERTSTAT7 = 1 WHERE GF_NUM = '$GF_NUM'";
+		        	$this->db->query($s_UPD);
+		        endforeach;
+
+				/* ------------------------------ Maxhat.id -------------------------------------- */
+					// $url 		= "https://user.maxchat.id/nke-official-center/api/messages?direct=true";
+					$url 		= "https://core.maxchat.id/nke-official-center/api/messages";
+					$token 		= "Pzdt3uJuftCaXivWuxn3Tt";
+					$BC_CONTX	= $TXT01;
+					
+					$s_1a		= "SELECT EMP_NAME, TRIM(EMP_PHONE) AS EMP_PHONE FROM tbl_gfile_alerts_emp ORDER BY EMP_NAME";
+					$r_1a 		= $this->db->query($s_1a)->result();
+					foreach($r_1a as $rw_1a) :
+						$EMP_NAME 	= $rw_1a->EMP_NAME;
+						$EMP_PHONE 	= $rw_1a->EMP_PHONE;
+
+						$BC_CONT1 	= "Dear Bpk/Ibu *$EMP_NAME*,\n\nFYI, berikut daftar Berkas Jaminan Bank yang akan berakhir 7 hari mendatang:";
+						$BC_CONT2 	= $BC_CONTX;
+						$BC_CONT3 	= "Demikian informasi ini kami sampaikan, agar menjadi perhatian.\n\nTerimakasih\n*NKE Smart System*";
+						$BC_CONT 	= "$BC_CONT1\n\n$BC_CONT2$BC_CONT3";
+						
+						$JSON_DATA	= array("to" => $EMP_PHONE, "type" => "text", "text" => "$BC_CONT", "useTyping" => false);
+						$curl 		= curl_init();
+
+						curl_setopt_array($curl, array(
+							CURLOPT_URL => $url,
+							CURLOPT_SSL_VERIFYHOST => false,
+							CURLOPT_SSL_VERIFYPEER => false,
+							CURLOPT_RETURNTRANSFER => true,
+							CURLOPT_ENCODING => "",
+							CURLOPT_MAXREDIRS => 10,
+							CURLOPT_TIMEOUT => 500,
+							CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+							CURLOPT_CUSTOMREQUEST => "POST",
+							CURLOPT_POSTFIELDS => json_encode($JSON_DATA),
+							CURLOPT_HTTPHEADER => array(
+								"Authorization: Bearer " . $token,
+								"Content-Type: application/json",
+								"cache-control: no-cache"
+							),
+						));
+
+						$response = curl_exec($curl);
+						$err = curl_error($curl);
+
+						curl_close($curl);
+					endforeach;
+				/*-------------------------------- Maxhat.id ---------------------------------- */
+		    }
+
+		    $BC_CONTX 	= "";
+			$s_01 		= "SELECT GF_NUM, GF_CODE, GF_NAME, GF_DATES, GF_DATEE, GF_PENJAMIN, GF_NILAI_JAMINAN, SPLCODE, DATEDIFF(GF_DATEE, NOW()) AS REM_DAY, SPLDESC, WO_CODE
+							FROM tbl_gfile_alert3";
+	        $r_01 		= $this->db->query($s_01);
+	        if($r_01->num_rows() > 0)
+	        {
+	        	$TXT01 		= "";
+		        foreach($r_01->result() as $rw_01) :
+		        	$GF_NUM 	= $rw_01->GF_NUM;
+		        	$GF_CODE 	= $rw_01->GF_CODE;
+		        	$GF_NAME 	= $rw_01->GF_NAME;
+		        	$GF_DATES 	= $rw_01->GF_DATES;
+		        	$GF_DATEE 	= $rw_01->GF_DATEE;
+		        	$GF_PENJ 	= $rw_01->GF_PENJAMIN;
+		        	$GF_VALUE 	= $rw_01->GF_NILAI_JAMINAN;
+		        	$REM_DAY 	= $rw_01->REM_DAY;
+		        	$SPLDESC 	= $rw_01->SPLDESC;
+		        	$WO_CODE 	= $rw_01->WO_CODE;
+
+		        	$TXT01 		= $TXT01."Kode Jaminan : *$GF_CODE*\nNama Jaminan : $GF_NAME\nPenjamin : $GF_PENJ\nSupplier : *$SPLDESC*\nOP/SPK No. : *$WO_CODE*\nBerakhir Pada : *$GF_DATEE*\n\n";
+
+		        	$s_UPD 		= "UPDATE tbl_gfile SET ALERTSTAT3 = 1 WHERE GF_NUM = '$GF_NUM'";
+		        	$this->db->query($s_UPD);
+		        endforeach;
+
+				/* ------------------------------ Maxhat.id -------------------------------------- */
+					// $url 		= "https://user.maxchat.id/nke-official-center/api/messages?direct=true";
+					$url 		= "https://core.maxchat.id/nke-official-center/api/messages";
+					$token 		= "Pzdt3uJuftCaXivWuxn3Tt";
+					$BC_CONTX	= $TXT01;
+					
+					$s_1a		= "SELECT EMP_NAME, TRIM(EMP_PHONE) AS EMP_PHONE FROM tbl_gfile_alerts_emp ORDER BY EMP_NAME";
+					$r_1a 		= $this->db->query($s_1a)->result();
+					foreach($r_1a as $rw_1a) :
+						$EMP_NAME 	= $rw_1a->EMP_NAME;
+						$EMP_PHONE 	= $rw_1a->EMP_PHONE;
+
+						$BC_CONT1 	= "Dear Bpk/Ibu *$EMP_NAME*,\n\nFYI, berikut daftar Berkas Jaminan Bank yang akan berakhir 3 hari mendatang:";
+						$BC_CONT2 	= $BC_CONTX;
+						$BC_CONT3 	= "Demikian informasi ini kami sampaikan, agar menjadi perhatian.\n\nTerimakasih\n*NKE Smart System*";
+						$BC_CONT 	= "$BC_CONT1\n\n$BC_CONT2$BC_CONT3";
+						
+						$JSON_DATA	= array("to" => $EMP_PHONE, "type" => "text", "text" => "$BC_CONT", "useTyping" => false);
+						$curl 		= curl_init();
+
+						curl_setopt_array($curl, array(
+							CURLOPT_URL => $url,
+							CURLOPT_SSL_VERIFYHOST => false,
+							CURLOPT_SSL_VERIFYPEER => false,
+							CURLOPT_RETURNTRANSFER => true,
+							CURLOPT_ENCODING => "",
+							CURLOPT_MAXREDIRS => 10,
+							CURLOPT_TIMEOUT => 500,
+							CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+							CURLOPT_CUSTOMREQUEST => "POST",
+							CURLOPT_POSTFIELDS => json_encode($JSON_DATA),
+							CURLOPT_HTTPHEADER => array(
+								"Authorization: Bearer " . $token,
+								"Content-Type: application/json",
+								"cache-control: no-cache"
+							),
+						));
+
+						$response = curl_exec($curl);
+						$err = curl_error($curl);
+
+						curl_close($curl);
+					endforeach;
+				/*-------------------------------- Maxhat.id ---------------------------------- */
+		    }
+	    // START : ALERT BERKAS JAMINAN
 	}
 }

@@ -387,6 +387,7 @@
 	          type: "POST",
 	            url: "<?php echo base_url("c_project/c_r3p/getJOBPARENT1") ?>",
 	            dataType: "JSON",
+				async: true,
 	            data: {PRJCODE:PRJCODE},
                 beforeSend: function() {
                     $('#JOBPARENT').select2({

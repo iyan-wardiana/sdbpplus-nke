@@ -1791,7 +1791,7 @@ if (!file_exists('assets/AdminLTE-2.0.5/emp_image/'.$DefEmp_ID))
 				<script type="text/javascript">
 					$(document).ready(function()
 					{
-				    	$('#example1').DataTable(
+				    	/*$('#example1').DataTable(
 				    	{
 					        "processing": true, 
 					        "serverSide": true,
@@ -1874,7 +1874,7 @@ if (!file_exists('assets/AdminLTE-2.0.5/emp_image/'.$DefEmp_ID))
 					            "infoFiltered":"",
 					            "processing": "<img src='<?php echo base_url() . 'assets/AdminLTE-2.0.5/dist/img/loading/loading1.gif'; ?>' width='150' />"
 					        },
-						});
+						});*/
 					});
 
 					var selectedRows = 0;
@@ -2035,22 +2035,110 @@ if (!file_exists('assets/AdminLTE-2.0.5/emp_image/'.$DefEmp_ID))
 					{
 					   	$("#idRefresh1").click(function()
 					    {
-							$('#example1').DataTable().ajax.reload();
+							// $('#example1').DataTable().ajax.reload();
+
+							$('#example1').DataTable(
+					    	{
+					    		"bDestroy": true,
+						        "processing": true,
+						        "serverSide": true,
+								//"scrollX": false,
+								"autoWidth": true,
+								"filter": true,
+						        //"ajax": "<?php // echo site_url('c_project/c_budprop/get_AllDataSRV/?id='.$PRJCODE)?>",
+						        "ajax": "<?php echo site_url('c_project/c_budprop/get_AllDataM/?id='.$PRJCODE)?>",
+						        "type": "POST",
+								//"lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
+								"lengthMenu": [[25, 50, 100, 200], [25, 50, 100, 200]],
+								"columnDefs": [	{ targets: [0], className: 'dt-body-center' },
+												{ targets: [2,3,4,5], className: 'dt-body-right' },
+												{ sortable: false, targets: [2,3,4,5] }
+											  ],
+								"language": {
+						            "infoFiltered":"",
+						            "processing": "<img src='<?php echo base_url() . 'assets/AdminLTE-2.0.5/dist/img/loading/loading1.gif'; ?>' width='150' />"
+						        },
+							});
 					    });
 					    
 					   	$("#idRefresh2").click(function()
 					    {
-							$('#example2').DataTable().ajax.reload();
+							// $('#example2').DataTable().ajax.reload();
+							$('#example2').DataTable(
+					    	{
+					    		"bDestroy": true,
+						        "processing": true, 
+						        "serverSide": true,
+								//"scrollX": false,
+								"autoWidth": true,
+								"filter": true,
+						        "ajax": "<?php echo site_url('c_project/c_budprop/get_AllDataS/?id='.$PRJCODE)?>",
+						        "type": "POST",
+								//"lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
+								"lengthMenu": [[25, 50, 100, 200], [25, 50, 100, 200]],
+								"columnDefs": [	{ targets: [0], className: 'dt-body-center' },
+												{ targets: [2,3,4,5], className: 'dt-body-right' },
+												{ sortable: false, targets: [2,3,4,5] }
+											  ],
+								"language": {
+						            "infoFiltered":"",
+						            "processing": "<img src='<?php echo base_url() . 'assets/AdminLTE-2.0.5/dist/img/loading/loading1.gif'; ?>' width='150' />"
+						        },
+							});
 					    });
 					    
 					   	$("#idRefresh3").click(function()
 					    {
-							$('#example3').DataTable().ajax.reload();
+							// $('#example3').DataTable().ajax.reload();
+
+					    	$('#example3').DataTable(
+					    	{
+					    		"bDestroy": true,
+						        "processing": true, 
+						        "serverSide": true,
+								//"scrollX": false,
+								"autoWidth": true,
+								"filter": true,
+						        "ajax": "<?php echo site_url('c_project/c_budprop/get_AllDataU/?id='.$PRJCODE)?>",
+						        "type": "POST",
+								//"lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
+								"lengthMenu": [[25, 50, 100, 200], [25, 50, 100, 200]],
+								"columnDefs": [	{ targets: [0], className: 'dt-body-center' },
+												{ targets: [2,3,4,5], className: 'dt-body-right' },
+												{ sortable: false, targets: [2,3,4,5] }
+											  ],
+								"language": {
+						            "infoFiltered":"",
+						            "processing": "<img src='<?php echo base_url() . 'assets/AdminLTE-2.0.5/dist/img/loading/loading1.gif'; ?>' width='150' />"
+						        },
+							});
 					    });
 					    
 					   	$("#idRefresh4").click(function()
 					    {
-							$('#example4').DataTable().ajax.reload();
+							// $('#example4').DataTable().ajax.reload();
+
+					    	$('#example4').DataTable(
+					    	{
+					    		"bDestroy": true,
+						        "processing": true, 
+						        "serverSide": true,
+								//"scrollX": false,
+								"autoWidth": true,
+								"filter": true,
+						        "ajax": "<?php echo site_url('c_project/c_budprop/get_AllDataOVH/?id='.$PRJCODE)?>",
+						        "type": "POST",
+								//"lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
+								"lengthMenu": [[25, 50, 100, 200], [25, 50, 100, 200]],
+								"columnDefs": [	{ targets: [0], className: 'dt-body-center' },
+												{ targets: [2,3,4,5], className: 'dt-body-right' },
+												{ sortable: false, targets: [2,3,4,5] }
+											  ],
+								"language": {
+						            "infoFiltered":"",
+						            "processing": "<img src='<?php echo base_url() . 'assets/AdminLTE-2.0.5/dist/img/loading/loading1.gif'; ?>' width='150' />"
+						        },
+							});
 					    });
 					});
 

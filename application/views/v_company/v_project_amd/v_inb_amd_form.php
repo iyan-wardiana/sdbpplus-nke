@@ -648,6 +648,7 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 			                                    <option value="SI" <?php if($AMD_CATEG == 'SI') { ?> selected <?php } ?>>Site Instruction - SI</option>
 			                                    <option value="SINJ" <?php if($AMD_CATEG == 'SINJ') { ?> selected <?php } ?>>Site Instruction - SI New Job</option>
 			                                    <option value="OTH" <?php if($AMD_CATEG == 'OTH') { ?> selected <?php } ?>>Lainnya</option>
+			                                    <option value="EFS" <?php if($AMD_CATEG == 'EFS') { ?> selected <?php } ?>>E : Efisiensi</option>
 			                                </select>
 			                                <input type="hidden" name="AMD_CATEG" class="form-control" id="AMD_CATEG" value="<?php echo $AMD_CATEG; ?>">
 			                          	</div>
@@ -776,7 +777,7 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 	                                                <button type="button" class="btn btn-primary" id="btnselSI" <?php if($AMD_STAT != 1 && $AMD_STAT != 4) { ?> disabled <?php } else { ?> onClick="selSI();" <?php } ?>><i class="fa fa-search" ></i></button>
 	                                            </div>
 	                                            <input type="hidden" class="form-control" name="AMD_REFNO" id="AMD_REFNO" value="<?php echo $AMD_REFNO; ?>" >
-	                                            <input type="text" class="form-control" name="AMD_REFNOX" id="AMD_REFNOX" value="<?php echo $AMD_REFNO; ?>" <?php if($AMD_CATEG == 'OB' || $AMD_CATEG == 'NB') { ?> disabled <?php } ?>>
+	                                            <input type="text" class="form-control" name="AMD_REFNOX" id="AMD_REFNOX" value="<?php echo $AMD_REFNO; ?>" <?php if($AMD_CATEG == 'OB' || $AMD_CATEG == 'NB' || $AMD_CATEG == 'EFS') { ?> disabled <?php } ?>>
 					                        	<a class="btn btn-sm btn-warning" data-toggle="modal" data-target="#mdl_addSI" id="btnModalSI" style="display: none;">
 					                        		<i class="glyphicon glyphicon-search"></i>&nbsp;&nbsp;
 					                        	</a>
@@ -800,6 +801,16 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 										foreach($resJDESCX as $rowJDESCX) :
 											$JOBDESC 	= $rowJDESCX->JOBDESC;
 										endforeach;
+
+										if($AMD_CATEG == 'EFS')
+										{
+				                        	$sqlJDESCX 	= "SELECT JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
+				                        					WHERE JOBCODEID = '$JOBCODEID' LIMIT 1";
+											$resJDESCX 	= $this->db->query($sqlJDESCX)->result();
+											foreach($resJDESCX as $rowJDESCX) :
+												$JOBDESC 	= $rowJDESCX->JOBDESC;
+											endforeach;
+										}
 			                        ?>
 			                        <div class="form-group">
 			                          	<label for="inputName" class="col-sm-3 control-label"><?php echo $itmJob ?> </label>
@@ -812,7 +823,7 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 			                                    <input type="hidden" class="form-control" name="ITM_CODEH" id="ITM_CODEH" value="<?php echo $JOBCODEID; ?>" >
 			                                    <input type="hidden" class="form-control" name="AMD_JOBDESC" id="AMD_JOBDESC" value="<?php echo $AMD_JOBDESC; ?>" >
 			                                    <input type="hidden" class="form-control" name="AMD_UNIT" id="AMD_UNIT" value="<?php echo $AMD_UNIT; ?>" >
-			                                    <input type="text" class="form-control" name="JOBCODEID1" id="JOBCODEID1" value="<?php echo "$JOBCODEID $JOBDESC"; ?>" onClick="selItem()">
+			                                    <input type="text" class="form-control" name="JOBCODEID1" id="JOBCODEID1" value="<?php echo "$JOBCODEID $JOBDESC"; ?>" onClick="selItem()" disabled>
 			                                    <input type="hidden" class="form-control" name="JOBCODEID2" id="JOBCODEID2" value="<?php echo $JOBCODEID; ?>" data-toggle="modal" data-target="#mdl_addItm">
 			                                </div>
 			                            </div>
@@ -1037,7 +1048,7 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 	                    </div>
 	                </div>
 			    	<div class="row">
-	                    <div class="col-md-12" id="detItm1" <?php if($AMD_CATEG == 'OTH') { ?> style="display: none;" <?PHP } ?>>
+	                    <div class="col-md-12" id="detItm1" <?php if($AMD_CATEG == 'OTH' || $AMD_CATEG == 'EFS') { ?> style="display: none;" <?PHP } ?>>
 	                        <div class="box box-primary">
 								<div class="box-header with-border">
 									<i class="glyphicon glyphicon-circle-arrow-down"></i>
@@ -1294,7 +1305,7 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 								$TOT_OBOVH	= $rw_JDSC->TOT_OB;
 							endforeach;
 	                    ?>
-	                    <div class="col-md-6" id="detItmOB" <?php if($AMD_CATEG != 'OTH') { ?> style="display: none;" <?PHP } ?>>
+	                    <div class="col-md-6" id="detItmOB" <?php if($AMD_CATEG != 'OTH') { ?> style="display: none;" <?php } ?>>
 	                        <div class="box box-danger">
 								<div class="box-header with-border">
 									<i class="glyphicon glyphicon-circle-arrow-down"></i>
@@ -1532,6 +1543,241 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 		                        </div>
 	                        </div>
 	                    </div>
+
+	                    <?php
+	                    	if($AMD_CATEG == 'EFS')
+	                    	{
+	                    		$TOTAMD = 0;
+	                    		$s_AMDS	= "SELECT IFNULL(SUM(AMD_TOTAL),0) AS TOTAMD FROM tbl_amd_detail_subs
+                                            WHERE AMD_NUM = '$AMD_NUM' AND PRJCODE = '$PRJCODE'";
+                                $r_AMDS = $this->db->query($s_AMDS)->result();
+                                foreach($r_AMDS as $rw_AMDS) :
+                                    $TOTAMD = $rw_AMDS->TOTAMD;
+                                endforeach;
+                                $TOT_OBOVH 	= $TOTAMD;
+	                    	}
+	                    ?>
+	                    <div class="col-md-6" id="detItmEFS" <?php if($AMD_CATEG != 'EFS') { ?> style="display: none;" <?php } ?>>
+	                        <div class="box box-danger">
+								<div class="box-header with-border">
+									<i class="glyphicon glyphicon-circle-arrow-up"></i>
+									<h3 class="box-title">Item Efisiensi</h3>
+									<h3 class="box-title pull-right">Total :
+										<span id="totOBVW">
+											<?php echo number_format($TOT_OBOVH, 2); ?>
+										</span>
+										<input type="hidden" name="totOBEF" id="totOBEF" value="<?php echo $TOT_OBOVH; ?>" />
+									</h3>
+								</div>
+								<div class="box-body">
+			                        <div class="search-table-outter">
+			                            <table id="tbl_iefs" class="table table-bordered table-striped table-responsive search-table inner" width="100%">
+		                                    <tr style="background:#CCCCCC">
+												<th width="2%" style="text-align:center; vertical-align: middle;">No.</th>
+												<th width="55%" style="text-align:center; vertical-align: middle;" id="colItmNm"><div id="itmName"><?php echo $ItemName ?></div></th>
+												<th width="3%" style="text-align:center; vertical-align: middle;">Sat.</th>
+												<!-- <th width="15%" style="text-align:center; vertical-align: middle;" nowrap>Jumlah</th> -->
+												<th width="3%" style="text-align:center; vertical-align: middle;" nowrap>Vol.</th>
+												<th width="15%" style="text-align:center; vertical-align: middle;">Harga</th>
+												<th width="20%" style="text-align:center; vertical-align: middle;">Jumlah</th>
+												<th width="2%" style="text-align:center; vertical-align: middle;">&nbsp;</th>
+		                                    </tr>
+		                                    <?php
+		                                    $cRwIEFS 	= 0;
+	                                        $s_ITMEFC	= "tbl_joblist_detail_$PRJCODEVW A
+		                                                        INNER JOIN tbl_item_$PRJCODEVW B ON A.ITM_CODE = B.ITM_CODE
+		                                                            AND B.PRJCODE = '$PRJCODE'
+		                                                    WHERE B.PRJCODE = '$PRJCODE' AND B.ITM_KIND = 99";
+	                                        $r_ITMEFC 	= $this->db->count_all($s_ITMEFC);
+
+	                                        if($r_ITMEFC > 0)
+	                                        {
+		                                        $s_ITMEF	= "SELECT A.JOBCODEID, A.ITM_CODE, A.ITM_UNIT, 1 AS AMD_VOL, 1 AS REM_VOL,
+			                                        				1 AS REM_BUDG, A.AMD_VAL AS AMD_PRICE, A.AMD_VAL AS AMD_TOTAL,
+			                                        				A.JOBDESC AS AMD_DESC, 2 AS AMD_CLASS, A.JOBPARENT,
+																	B.ITM_NAME, B.ITM_GROUP
+			                                                    FROM tbl_joblist_detail_$PRJCODEVW A
+			                                                        INNER JOIN tbl_item_$PRJCODEVW B ON A.ITM_CODE = B.ITM_CODE
+			                                                            AND B.PRJCODE = A.PRJCODE
+			                                                    WHERE B.PRJCODE = '$PRJCODE' AND B.ITM_KIND = 99";
+		                                        $r_ITMEF 	= $this->db->query($s_ITMEF)->result();
+
+		                                        $i		= 0;
+		                                        $j		= 0;
+		                                        foreach($r_ITMEF as $row) :
+		                                            $cRwIEFS  		= ++$i;
+		                                            $JOBCODEID 		= $row->JOBCODEID;
+		                                            $ITM_CODE 		= $row->ITM_CODE;
+		                                            $ITM_GROUP 		= $row->ITM_GROUP;
+		                                            $ITM_UNIT 		= strtoupper($row->ITM_UNIT);
+		                                            $AMD_VOLM 		= $row->AMD_VOL;
+		                                            $REM_VOL 		= $row->REM_VOL;
+		                                            $REM_VAL 		= $row->AMD_TOTAL;
+		                                            $REM_BUDG 		= $row->REM_BUDG;
+		                                            $AMD_PRICE 		= $row->AMD_PRICE;
+		                                            $ITM_PRICE 		= $row->AMD_PRICE;
+		                                            $AMD_TOTAL 		= $row->AMD_TOTAL;
+		                                            $AMD_DESC 		= $row->AMD_DESC;
+													$AMD_CLASS		= $row->AMD_CLASS;
+		                                            $ITM_NAME 		= $row->ITM_NAME;
+		                                            $JOBPARENT 		= $row->JOBPARENT;
+
+		                                            $ITM_VOL 		= $row->REM_VOL;
+		                                            $ITM_VAL 		= $row->AMD_TOTAL;
+
+		                                            $JOBPARDESC		= "";
+		                                            $s_JDSC 		= "SELECT JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
+		                                            					WHERE JOBCODEID = '$JOBPARENT' AND PRJCODE = '$PRJCODE' LIMIT 1";
+													$r_JDSC			= $this->db->query($s_JDSC)->result();
+													foreach($r_JDSC as $rw_JDSC):
+														$JOBPARDESC	= wordwrap($rw_JDSC->JOBDESC, 30, "<br>", true);
+													endforeach;
+
+							                    	$TOT_OBEFS 	= 0;
+						                            $s_EFSD 	= "SELECT SUM(AMD_TOTAL) AS TOT_OB FROM tbl_amd_detail
+					                            					WHERE PRJCODE = '$PRJCODE' AND AMD_NUM != '$AMD_NUM'
+					                            						AND JOBCODEID = '$JOBCODEID' AND AMD_STAT IN (3,6)";
+													$r_EFSD		= $this->db->query($s_EFSD)->result();
+													foreach($r_EFSD as $rw_EFSD):
+														$TOT_OBEFS	= round($rw_EFSD->TOT_OB);
+													endforeach;
+
+													$TOT_EFSV 		= 	"<div style='white-space:nowrap; font-weight: bold'>
+																			<span class='text-green' style='white-space:nowrap;'><i class='fa fa-diamond'></i>
+																	  		".number_format($TOT_OBEFS, 2)."</span>
+																	  	</div>";
+
+													$AMD_ITMTOT 	= 0;
+													$s_eXist 		= "SELECT AMD_TOTAL AS AMD_ITMTOT
+																		FROM tbl_amd_detail WHERE ITM_CODE = '$ITM_CODE'
+																			AND JOBCODEID = '$JOBCODEID' AND PRJCODE = '$PRJCODE'";
+													$r_eXist 		= $this->db->query($s_eXist);
+													if($r_eXist->num_rows() > 0)
+													{
+														foreach($r_eXist->result() as $rwIEFS):
+															$AMD_ITMTOT = $rwIEFS->AMD_ITMTOT;
+														endforeach;
+													}
+
+													$r_isLS 		= 1;
+		                                            ?>
+		                                            <tr id="tr_iefs<?php echo $cRwIEFS; ?>">
+			                                            <!-- NO URUT -->
+			                                            <td height="25" style="text-align:center;">
+			                                              	<?php
+				                                                if($AMD_STAT == 1)
+				                                                {
+				                                                    ?>
+				                                                    <a href="#" onClick="deleteRow_iefs(<?php echo $cRwIEFS; ?>)" title="Delete Document" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></a>
+				                                                    <?php
+				                                                }
+				                                                else
+				                                                {
+				                                                    echo "$cRwIEFS.";
+				                                                }
+			                                              	?>
+			                                            	<input type="hidden" id="chk" name="chk" value="<?php echo $cRwIEFS; ?>" width="10" size="15" readonly class="form-control" style="max-width:350px;text-align:right">
+			                                                <!-- Checkbox -->
+			                                            </td>
+
+			                                            <!-- ITM_CODE : ITM_NAME -->
+			                                            <td nowrap>
+															<?php echo "$JOBCODEID : $ITM_NAME<br>"; ?>
+			                                                <?php echo "$JOBPARENT : $JOBPARDESC $TOT_EFSV";?>
+			                                                <input type="hidden" value="<?php echo "$JOBPARENT : $JOBPARDESC";?>" class="form-control inplabel" width="100%">
+			                                                <input type="hidden" id="dataIEFS<?php echo $cRwIEFS; ?>ITM_GROUP" name="dataIEFS[<?php echo $cRwIEFS; ?>][ITM_GROUP]" value="<?php echo $ITM_GROUP; ?>" class="form-control" style="max-width:300px;">
+			                                                <input type="hidden" id="dataIEFS<?php echo $cRwIEFS; ?>ITM_CODE" name="dataIEFS[<?php echo $cRwIEFS; ?>][ITM_CODE]" value="<?php echo $ITM_CODE; ?>" class="form-control" style="max-width:300px;">
+			                                                <input type="hidden" id="dataIEFS<?php echo $cRwIEFS; ?>AMD_NUM" name="dataIEFS[<?php echo $cRwIEFS; ?>][AMD_NUM]" value="<?php echo $ITM_CODE; ?>" class="form-control" style="max-width:300px;">
+			                                                <input type="hidden" name="dataIEFS[<?php echo $cRwIEFS; ?>][JOBCODEID]" id="dataIEFS<?php echo $cRwIEFS; ?>JOBCODEID" value="<?php echo $JOBCODEID; ?>" class="form-control" >
+			                                                <input type="hidden" name="dataIEFS[<?php echo $cRwIEFS; ?>][JOBPARENT]" id="dataIEFS<?php echo $cRwIEFS; ?>JOBPARENT" value="<?php echo $JOBPARENT; ?>" class="form-control" >
+			                                                <input type="hidden" id="dataIEFS<?php echo $cRwIEFS; ?>JOBDESC" name="dataIEFS[<?php echo $cRwIEFS; ?>][JOBDESC]" value="<?php echo $ITM_NAME; ?>" class="form-control">
+			                                          	</td>
+
+			                                            <!-- REMAIN VOLUME -->
+			                                            <?php
+			                                            	$COLLDATA 		= "'$JOBCODEID~$JOBPARENT'";
+			                                            ?>
+
+			                                            <!-- ITM_UNIT -->
+			                                          	<td style="text-align:left">
+															<label style='white-space:nowrap'>
+																<?php echo "$ITM_UNIT"; ?>
+															</label>
+														  	<input type="hidden" name="dataIEFS[<?php echo $cRwIEFS; ?>][ITM_UNIT]" id="dataIEFS<?php echo $cRwIEFS; ?>ITM_UNIT" value="<?php echo $ITM_UNIT; ?>" class="form-control" style="max-width:300px;" >
+			                                          	</td>
+
+			                                            <!-- AMD_VOLM -->
+			                                            <?php
+			                                            	if($AMD_CATEG == 'OTH')
+			                                            	{
+			                                            		$chgVoLF1 	= "chgVolOTH";
+			                                            		$chgVoLF2 	= "chgPriceOTH";
+			                                            	}
+			                                            	else
+			                                            	{
+			                                            		$chgVoLF1 	= "chgPrice";
+			                                            		$chgVoLF2 	= "chgPrice";
+			                                            	}
+			                                            ?>
+			                                         	<td style="text-align: right;" nowrap>
+			                                                <span class='label label-danger' style='font-size:12px; display: none;'>
+			                                               		<?php echo number_format($ITM_VAL, 2); ?> (V)
+			                                                </span>
+			                                                <input type="hidden" id="ITM_REMV<?php echo $cRwIEFS; ?>" value="<?php echo $ITM_VAL; ?>" class="form-control" style="max-width:300px;" >
+			                                                <span class='label label-danger' style='font-size:12px; display: none;'>
+			                                               		<?php echo number_format($ITM_VAL, 2); ?>
+			                                                </span>
+			                                                <input type="hidden" id="ITM_REMVAL<?php echo $cRwIEFS; ?>" value="<?php echo $ITM_VAL; ?>" class="form-control" style="max-width:300px;" >
+			                                                <input type="hidden" name="dataIEFS[<?php echo $cRwIEFS; ?>][AMD_CLASS]" id="dataIEFS<?php echo $cRwIEFS; ?>AMD_CLASS" value="1" class="form-control" style="max-width:300px;" >
+
+		                                                	<?php echo number_format($ITM_VOL, 2); ?>
+		                                                	<input type="hidden" id="<?php echo $cRwIEFS; ?>IEFS_AMD_VOLM" value="<?php echo number_format($ITM_VOL, 2); ?>" class="form-control" style="min-width:60px; max-width:300px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="chgVolOTH(this,<?php echo $cRwIEFS; ?>);" >
+			                                                <input type="hidden" name="dataIEFS[<?php echo $cRwIEFS; ?>][AMD_VOLM]" id="dataIEFS<?php echo $cRwIEFS; ?>AMD_VOLM" value="<?=$ITM_VOL?>" class="form-control" style="max-width:300px;" >
+			                                            </td>
+
+			                                            <!-- AMD_PRICE -->
+			                                         	<td style="text-align:right">
+			                                         		<?php echo number_format($AMD_ITMTOT, 2); ?>
+					                                        <input type="hidden" id="<?php echo $cRwIEFS; ?>IEFS_AMD_PRICE" value="<?php echo number_format($AMD_ITMTOT, 2); ?>" class="form-control" style="min-width:80px; max-width:300px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="chgPriceOTH(this,<?php echo $cRwIEFS; ?>);" >
+
+			                                                <input type="hidden" name="dataIEFS[<?php echo $cRwIEFS; ?>][AMD_PRICE]" id="dataIEFS<?php echo $cRwIEFS; ?>AMD_PRICE" value="<?php echo $AMD_ITMTOT; ?>" class="form-control" style="max-width:300px;" >
+			                                           	</td>
+
+			                                            <!-- IEFS_AMD_TOTAL -->
+			                                            <td style="text-align: right;">
+			                                         		<?php echo number_format($AMD_ITMTOT, 2); ?>
+		                                                	<input type="hidden" name="<?php echo $cRwIEFS; ?>IEFS_AMD_TOTAL" id="<?php echo $cRwIEFS; ?>IEFS_AMD_TOTAL" value="<?php echo number_format($AMD_ITMTOT, 2); ?>" class="form-control" style="min-width:80px; max-width:300px; text-align:right" onKeyPress="return isIntOnlyNew(event);" readonly >
+
+			                                                <input type="hidden" name="dataIEFS[<?php echo $cRwIEFS; ?>][AMD_TOTAL]" id="dataIEFS<?php echo $cRwIEFS; ?>AMD_TOTAL" value="<?php echo $AMD_ITMTOT; ?>" class="form-control" style="max-width:300px;" onKeyPress="return isIntOnlyNew(event);" >
+			                                                <input type="hidden" name="dataIEFS[<?php echo $cRwIEFS; ?>][AMD_DESC]" id="dataIEFS<?php echo $cRwIEFS; ?>AMD_DESC" size="20" value="<?php echo $AMD_DESC; ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:left">
+			                                            </td>
+
+			                                            <!-- BUTTON SEL ITEM -->
+			                                          	<td style="text-align:left">
+														  	<a href="#" title="Tambah Budget" class="btn btn-warning btn-xs" disabled><i class="glyphicon glyphicon-transfer"></i></a>
+														  	<a class="btn btn-sm btn-warning" data-toggle="modal" data-target="#mdl_addJListSubs" id="btnModalB" style="display: none;"><i class="glyphicon glyphicon-search"></i></a>
+			                                                <input type="hidden" id="dataIEFS<?php echo $cRwIEFS; ?>r_isLS" value="<?php echo $r_isLS; ?>" class="form-control">
+			                                          	</td>
+		                                      		</tr>
+		                                        <?php
+		                                        endforeach;
+		                                    }
+		                                    else
+		                                    {
+		                                    	?>
+		                                            <tr>
+			                                            <td height="25" style="text-align:center;" colspan="7">there is no efficiency item</td>
+			                                        </tr>
+		                                    	<?php
+		                                    }
+		                                    ?>
+		                                    <input type="hidden" name="totalrowIEFS" id="totalrowIEFS" value="<?php echo $cRwIEFS; ?>">
+		                                </table>
+		                            </div>
+		                        </div>
+	                        </div>
+	                    </div>
+
 	                    <?php
 	                    	$TOT_SOVH 	= 0;
                             $s_JDSC 	= "SELECT SUM(AMD_TOTAL) AS TOT_OB FROM tbl_amd_detail_subs WHERE AMD_NUM = '$AMD_NUM' AND PRJCODE = '$PRJCODE'";
@@ -1540,7 +1786,7 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 								$TOT_SOVH	= $rw_JDSC->TOT_OB;
 							endforeach;
 	                    ?>
-	                    <div class="col-md-6" id="detItmSUB" <?php if($AMD_CATEG != 'OTH') { ?> style="display: none;" <?PHP } ?>>
+	                    <div class="col-md-6" id="detItmSUB" <?php if($AMD_CATEG != 'OTH' && $AMD_CATEG != 'EFS') { ?> style="display: none;" <?php } ?>>
 	                        <div class="box box-success" id="SUBSItm">
 								<div class="box-header with-border">
 									<i class="glyphicon glyphicon-circle-arrow-left"></i>

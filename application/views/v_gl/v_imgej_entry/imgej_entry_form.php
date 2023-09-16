@@ -840,7 +840,6 @@ else
 				                    <tbody>
 				                    </tbody>
 				                </table>
-								<input type="hidden" name="totalrow" id="totalrow" value="<?php echo $currentRow; ?>">
 		                    </div>
 						</div>
 		                <div class="col-md-6">
@@ -1564,6 +1563,70 @@ else
 
 	    $('#Pattern_Type1').select2({templateResult: hideSelect2Option});
   	});
+
+	function getD(row)
+	{
+		totRow	= document.getElementById('totalrow').value;
+		baseDX	= document.getElementById('Base_DebetX'+row);
+		baseD 	= parseFloat(eval(baseDX).value.split(",").join(""));
+		document.getElementById('data'+row+'Base_Debet').value 	= parseFloat(baseD);
+		document.getElementById('Base_DebetX'+row).value 		= doDecimalFormat(RoundNDecimal(parseFloat(baseD), 2));
+		
+		totD 	= 0;
+		totK 	= 0;
+		for(i=1;i<=totRow;i++)
+		{
+			let myObj 	= document.getElementById('data'+i+'Base_Debet');
+			var values 	= typeof myObj !== 'undefined' ? myObj : '';
+			
+			if(values != null)
+			{
+				BaseD 	= document.getElementById('data'+i+'Base_Debet').value;
+				BaseK 	= document.getElementById('data'+i+'Base_Kredit').value;
+				
+				totD	= parseFloat(totD) + parseFloat(BaseD);
+				totK	= parseFloat(totK) + parseFloat(BaseK);
+			}
+		}
+
+		totS 	= parseFloat(totD) - parseFloat(totK);
+
+		document.getElementById('GTOT_D').value = doDecimalFormat(RoundNDecimal(parseFloat(totD), 2));
+		document.getElementById('GTOT_K').value = doDecimalFormat(RoundNDecimal(parseFloat(totK), 2));
+		document.getElementById('GSALDO').value = doDecimalFormat(RoundNDecimal(parseFloat(totS), 2));
+	}
+
+	function getK(row)
+	{
+		totRow	= document.getElementById('totalrow').value;
+		baseKX	= document.getElementById('Base_KreditX'+row);
+		baseK 	= parseFloat(eval(baseKX).value.split(",").join(""));
+		document.getElementById('data'+row+'Base_Kredit').value = parseFloat(baseK);
+		document.getElementById('Base_KreditX'+row).value 		= doDecimalFormat(RoundNDecimal(parseFloat(baseK), 2));
+		
+		totD 	= 0;
+		totK 	= 0;
+		for(i=1;i<=totRow;i++)
+		{
+			let myObj 	= document.getElementById('data'+i+'Base_Debet');
+			var values 	= typeof myObj !== 'undefined' ? myObj : '';
+			
+			if(values != null)
+			{
+				BaseD 	= document.getElementById('data'+i+'Base_Debet').value;
+				BaseK 	= document.getElementById('data'+i+'Base_Kredit').value;
+				
+				totD	= parseFloat(totD) + parseFloat(BaseD);
+				totK	= parseFloat(totK) + parseFloat(BaseK);
+			}
+		}
+
+		totS 	= parseFloat(totD) - parseFloat(totK);
+
+		document.getElementById('GTOT_D').value = doDecimalFormat(RoundNDecimal(parseFloat(totD), 2));
+		document.getElementById('GTOT_K').value = doDecimalFormat(RoundNDecimal(parseFloat(totK), 2));
+		document.getElementById('GSALDO').value = doDecimalFormat(RoundNDecimal(parseFloat(totS), 2));
+	}
 	
 	function validateInData()
 	{
@@ -1623,6 +1686,27 @@ else
 	  return ext == null ? "" : ext[1];
 	}
 
+	function saveDK(jID, noU)
+	{
+		var baseD 	= document.getElementById('data'+noU+'Base_Debet').value;
+		var baseK 	= document.getElementById('data'+noU+'Base_Kredit').value;
+		var frmData = 	{
+							jID 	: jID,
+							baseD 	: baseD,
+							baseK 	: baseK
+						};
+		
+		$.ajax({
+			type 	: 'POST',
+			url 	: "<?php echo site_url('c_gl/cimgeje0b28t18/saveDK')?>",
+			data 	: frmData,
+			success: function(response)
+			{
+				alert('data telah dirubah = '+response);
+			}
+		})
+	}
+
 	function procIMP()
 	{
         swal({
@@ -1664,41 +1748,53 @@ else
 
 	function procTRX()
 	{
-        swal({
-            title: "<?php echo $alert18; ?>",
-            text: "<?php echo $alert19; ?>",
-            icon: "warning",
-            buttons: ["Tidak", "Ya"],
-		})
-		.then((willDelete) => {
-			if (willDelete) 
+		var GSALDO 	= parseFloat(document.getElementById('GSALDO').value);
+		if(GSALDO != 0)
+		{
+			swal('<?php echo $alert9; ?>',
 			{
-				swal("<?php echo $alert17; ?>", {icon: "success"})
-				.then((value) => {
-					document.getElementById('idprogbar').style.display = '';
-				    document.getElementById("progressbarXX").innerHTML="<div class='cssProgress-bar cssProgress-primary cssProgress-active' style='width: 100%; text-align:center; font-weight:bold;'><span style='text-align:center; font-weight:bold'>Preparing ...</span></div>";
-					document.getElementById('loading_1').style.display = '';
-					document.getElementById('loading_2').style.display = '';
-					var PRJCODE = '<?php echo $PRJCODE; ?>';
-					var collID1	= '<?php echo $impLink; ?>';
-					var IMPCODE = document.getElementById('JournalH_Code').value;
-					var collID	= collID1;
-				    var myarr 	= collID.split("~");
-				    var url 	= myarr[0];
-					var perc 	= 0;
+				icon: "warning",
+			});
+			return false;
+		}
+		else
+		{
+			swal({
+				title: "<?php echo $alert18; ?>",
+				text: "<?php echo $alert19; ?>",
+				icon: "warning",
+				buttons: ["Tidak", "Ya"],
+			})
+			.then((willDelete) => {
+				if (willDelete) 
+				{
+					swal("<?php echo $alert17; ?>", {icon: "success"})
+					.then((value) => {
+						document.getElementById('idprogbar').style.display = '';
+						document.getElementById("progressbarXX").innerHTML="<div class='cssProgress-bar cssProgress-primary cssProgress-active' style='width: 100%; text-align:center; font-weight:bold;'><span style='text-align:center; font-weight:bold'>Preparing ...</span></div>";
+						document.getElementById('loading_1').style.display = '';
+						document.getElementById('loading_2').style.display = '';
+						var PRJCODE = '<?php echo $PRJCODE; ?>';
+						var collID1	= '<?php echo $impLink; ?>';
+						var IMPCODE = document.getElementById('JournalH_Code').value;
+						var collID	= collID1;
+						var myarr 	= collID.split("~");
+						var url 	= myarr[0];
+						var perc 	= 0;
 
-					var butSubm = $("#myiFrame")[0].contentWindow.sample_form;
-					$("#myiFrame")[0].contentWindow.PRJCODE.value 		= PRJCODE;
-					$("#myiFrame")[0].contentWindow.IMP_CODEX.value 	= IMPCODE;
-					$("#myiFrame")[0].contentWindow.IMP_TYPE.value 		= 'IMP-TRX2';
-					butSubm.submit();
-				});
-			} 
-			else 
-			{
-				//swal("<?php echo $alert6; ?>", {icon: "error"})
-			}
-        });
+						var butSubm = $("#myiFrame")[0].contentWindow.sample_form;
+						$("#myiFrame")[0].contentWindow.PRJCODE.value 		= PRJCODE;
+						$("#myiFrame")[0].contentWindow.IMP_CODEX.value 	= IMPCODE;
+						$("#myiFrame")[0].contentWindow.IMP_TYPE.value 		= 'IMP-TRX2';
+						butSubm.submit();
+					});
+				} 
+				else 
+				{
+					//swal("<?php echo $alert6; ?>", {icon: "error"})
+				}
+			});
+		}
 	}
 	
     function sleep(milliseconds) { 

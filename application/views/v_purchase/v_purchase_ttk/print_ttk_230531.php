@@ -164,11 +164,11 @@
 		 /*@page { margin: 0 }*/
 		 body { margin: 0; font-size: 9pt; }
         .sheet {
-          margin: 0;
-          overflow: hidden;
-          position: relative;
-          box-sizing: border-box;
-          page-break-after: always;
+			margin: 0;
+			overflow: hidden;
+			position: relative;
+			box-sizing: border-box;
+			page-break-after: always;
         }
 
         /** Paper sizes **/
@@ -192,25 +192,25 @@
 
         /** For screen preview **/
         @media screen {
-          body { background: #e0e0e0 }
-          .sheet {
-            background: white;
-            box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
-            margin: 5mm auto;
-            border-radius: 5px 5px 5px 5px;
-          }
+			body { background: #e0e0e0 }
+			.sheet {
+				background: white;
+				box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
+				margin: 5mm auto;
+				border-radius: 5px 5px 5px 5px;
+			}
         }
 
         /** Fix for Chrome issue #273306 **/
         @media print {
-          /* @page { size: a4;} */
-          body.A3.landscape { width: 420mm }
-          body.A3, body.A4.landscape { width: 297mm }
-          body.A4, body.A5.landscape { width: 210mm }
-          body.A5                    { width: 148mm }
-          body.letter, body.legal    { width: 216mm }
-          body.letter.landscape      { width: 280mm }
-          body.legal.landscape       { width: 357mm }
+          	/* @page { size: a4;} */
+          	body.A3.landscape { width: 420mm }
+          	body.A3, body.A4.landscape { width: 297mm }
+          	body.A4, body.A5.landscape { width: 210mm }
+          	body.A5                    { width: 148mm }
+          	body.letter, body.legal    { width: 216mm }
+          	body.letter.landscape      { width: 280mm }
+          	body.legal.landscape       { width: 357mm }
 
 		  .sheet { padding: 0.5cm 0.5cm 0.97cm 0.5cm }
         }
@@ -404,7 +404,7 @@
 				<table width="100%" border="0" cellpadding="0" cellspacing="0">
 					<thead>
 						<tr>
-							<th>KODE PROYEK</th>
+							<th>PROYEK</th>
 							<th>NO. OP / SPK</th>
 							<th>NO. KWITANSI / INVOICE</th>
 							<th>TANGGAL KWITANSI</th>
@@ -413,20 +413,38 @@
 					</thead>
 					<tbody>
 						<?php
-							$s_01 	= "SELECT A.TTK_NUM, A.TTK_CODE, A.PRJCODE, A.TTK_REF1_NUM, A.TTK_REF1_CODE, A.TTK_REF1_AM AS TOT_TTKAM, 
-										A.TTK_REF1_PPN AS TOT_TTKPPN, A.TTK_REF1_PPH AS TOT_TTKPPH, A.TTK_REF1_DPB AS TOT_TTKDP, 
-										A.TTK_REF1_RET AS TOT_TTKRET, A.TTK_REF1_POT AS TOT_TTKPOT, A.TTK_REF1_GTOT,
-										A.TTK_REF2_NUM, A.TTK_REF2_CODE, A.TTK_DESC
+							$TTK_GTOTAL = 0;
+							/*$s_01 	= "SELECT A.TTK_NUM, A.TTK_CODE, A.PRJCODE, A.TTK_REF1_NUM, A.TTK_REF1_CODE, B.TTK_GTOTAL AS TTK_GTOTAL, B.TTK_AMOUNT AS TOT_TTKAM, 
+											B.TTK_AMOUNT_PPN AS TOT_TTKPPN, B.TTK_AMOUNT_PPH AS TOT_TTKPPH, B.TTK_AMOUNT_DPB AS TOT_TTKDP, 
+											B.TTK_AMOUNT_RET AS TOT_TTKRET, B.TTK_AMOUNT_POT AS TOT_TTKPOT, 
+											A.TTK_REF2_NUM, A.TTK_REF2_CODE, A.TTK_DESC,
+											C.TTKT_SPLINVDATE, C.TTKT_SPLINVNO, IFNULL(C.TTKT_SPLINVVAL, 0) AS TTKT_SPLINVVAL, C.TTKT_TAXAMOUNT
 										FROM tbl_ttk_detail A INNER JOIN tbl_ttk_header B ON A.TTK_NUM = B.TTK_NUM
+											LEFT JOIN tbl_ttk_tax C ON C.TTK_NUM = A.TTK_NUM
+										WHERE A.TTK_NUM = '$TTK_NUM'
+										GROUP BY A.TTK_REF2_NUM";*/
+							$s_01 	= "SELECT A.TTK_NUM, A.TTK_CODE, A.PRJCODE, A.TTK_REF1_NUM, A.TTK_REF1_CODE, A.TTK_REF1_GTOT AS TTK_GTOTAL, A.TTK_REF1_AM AS TOT_TTKAM, 
+											B.TTK_AMOUNT_PPN AS TOT_TTKPPN, B.TTK_AMOUNT_PPH AS TOT_TTKPPH, B.TTK_AMOUNT_DPB AS TOT_TTKDP, 
+											B.TTK_AMOUNT_RET AS TOT_TTKRET, B.TTK_AMOUNT_POT AS TOT_TTKPOT, 
+											A.TTK_REF2_NUM, A.TTK_REF2_CODE, A.TTK_DESC,
+											C.TTKT_SPLINVDATE, C.TTKT_SPLINVNO, IFNULL(C.TTKT_SPLINVVAL, 0) AS TTKT_SPLINVVAL, C.TTKT_TAXAMOUNT
+										FROM tbl_ttk_detail A INNER JOIN tbl_ttk_header B ON A.TTK_NUM = B.TTK_NUM
+											LEFT JOIN tbl_ttk_tax C ON C.TTK_NUM = A.TTK_NUM
 										WHERE A.TTK_NUM = '$TTK_NUM'
 										GROUP BY A.TTK_REF2_NUM";
 							$r_01 	= $this->db->query($s_01);
 							if($r_01->num_rows() > 0)
 							{
-								$no = 0;
+								$no 			= 0;
 								$TTK_AMOUNT 	= 0;
 								$TTK_AMOUNT_POT = 0;
 								$TTK_GAMOUNT	= 0;
+
+								$TOT_DPP 		= 0;
+								$TOT_PPN 		= 0;
+								$TOT_PPH 		= 0;
+								$TOT_PUM 		= 0;
+								$TOT_RET 		= 0;
 								foreach($r_01->result() as $rw_01):
 									$no 			= $no + 1;
 									$TTK_NUM		= $rw_01->TTK_NUM;	
@@ -434,24 +452,35 @@
 									$PRJCODE		= $rw_01->PRJCODE;	
 									$TTK_REF1_NUM	= $rw_01->TTK_REF1_NUM;	
 									$TTK_REF1_CODE	= $rw_01->TTK_REF1_CODE;	
+									$TTK_GTOTAL		= $rw_01->TTK_GTOTAL;
 									$TOT_TTKAM		= $rw_01->TOT_TTKAM;
-									$TOT_TTKPPN		= $rw_01->TOT_TTKPPN;
-									$TOT_TTKPPH		= $rw_01->TOT_TTKPPH;
-									$TOT_TTKDP		= $rw_01->TOT_TTKDP;
-									$TOT_TTKRET		= $rw_01->TOT_TTKRET;
-									$TOT_TTKPOT		= $rw_01->TOT_TTKPOT;
+									$TOT_TTKPPN		= $rw_01->TOT_TTKPPN;	
+									$TOT_TTKPPH		= $rw_01->TOT_TTKPPH;	
+									$TOT_TTKDP		= $rw_01->TOT_TTKDP;	
+									$TOT_TTKRET		= $rw_01->TOT_TTKRET;	
+									$TOT_TTKPOT		= $rw_01->TOT_TTKPOT;	
 									$TTK_REF2_NUM	= $rw_01->TTK_REF2_NUM;	
 									$TTK_REF2_CODE	= $rw_01->TTK_REF2_CODE;	
 									$TTK_DESC		= $rw_01->TTK_DESC;
-									$TTK_REF1_GTOT	= $rw_01->TTK_REF1_GTOT;
-														
-
+									$SPLINV_DATE	= $rw_01->TTKT_SPLINVDATE;
+									$SPLINV_CODE	= $rw_01->TTKT_SPLINVNO;
+									$SPLINV_VAL		= $rw_01->TTKT_SPLINVVAL;
+									$SPLINV_VAL		= $rw_01->TTKT_SPLINVVAL;
+									$SPLINV_PPNVAL	= $rw_01->TTKT_TAXAMOUNT;
 
 									$TTK_AMOUNT_POT	= $TOT_TTKDP + $TOT_TTKRET + $TOT_TTKPOT + $TOT_TTKPPH;
-									$TTK_AMOUNT 	= $TOT_TTKAM + $TOT_TTKPPN - $TTK_AMOUNT_POT;
+									//$TTK_AMOUNT 	= $SPLINV_VAL + $SPLINV_PPNVAL - $TTK_AMOUNT_POT;
+									//$TTK_AMOUNT 	= $SPLINV_VAL + $SPLINV_PPNVAL - $TOT_TTKPPH;
+									$TTK_AMOUNT 	= $SPLINV_VAL + $SPLINV_PPNVAL - $TTK_AMOUNT_POT;
 
-									$TTK_GAMOUNT 	= $TTK_GAMOUNT + $TTK_AMOUNT;
-									// $TTK_GAMOUNT 	= $TTK_GAMOUNT + $TTK_REF1_GTOT;
+									//$TOT_DPP 		= $TOT_DPP + $SPLINV_VAL;
+									$TOT_DPP 		= $TOT_DPP + $TOT_TTKAM;
+									$TOT_PUM 		= $TOT_PUM + $TOT_TTKDP;
+									$TOT_RET 		= $TOT_RET + $TOT_TTKRET;
+									$TOT_PPN 		= $TOT_PPN + $SPLINV_PPNVAL;
+									$TOT_PPH 		= $TOT_PPH + $TOT_TTKPPH;
+
+									$TTK_GAMOUNT 	= $TTK_GAMOUNT + $TOT_DPP - $TOT_PUM - $TOT_RET + $TOT_PPN - $TOT_PPH;
 
 									$s_02 	= "SELECT TTKT_SPLINVNO, TTKT_SPLINVDATE FROM tbl_ttk_tax WHERE TTK_NUM = '$TTK_NUM'";
 									$r_02 	= $this->db->query($s_02);
@@ -469,13 +498,11 @@
 
 									$PRJCODEV 			= "";
 									$TTK_AMOUNTV 		= "";
-									$PRJCODEV 		= $PRJCODE;
-									$TTK_AMOUNTV 	= number_format($TTK_AMOUNT, 2);
-									// if($no == 1)
-									// {
-									// 	$PRJCODEV 		= $PRJCODE;
-									// 	$TTK_AMOUNTV 	= number_format($TTK_AMOUNT, 2);
-									// }
+									if($no == 1)
+									{
+										$PRJCODEV 		= $PRJCODE;
+										$TTK_AMOUNTV 	= number_format($TOT_TTKAM, 2);
+									}
 									
 									?>
 										<tr>
@@ -504,7 +531,50 @@
 									}
 								}
 
+								$TTK_GAMOUNT 	= $TOT_DPP - $TOT_PUM - $TOT_RET + $TOT_PPN - $TOT_PPH;
 								?>
+									<tr style="font-weight: bold;">
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td style="text-align: right;" nowrap>Total</td>
+										<td width="150" style="text-align: right;"><?php echo number_format($TOT_DPP,2); ?></td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td style="text-align: right;" nowrap>Uang Muka</td>
+										<td width="150" style="text-align: right;"><?php echo number_format($TOT_PUM,2); ?></td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td style="text-align: right;" nowrap>Retensi</td>
+										<td width="150" style="text-align: right;"><?php echo number_format($TOT_RET,2); ?></td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td style="text-align: right;">PPN</td>
+										<td width="150" style="text-align: right;"><?php echo number_format($TOT_PPN,2); ?></td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td style="text-align: right;">PPH</td>
+										<td width="150" style="text-align: right;"><?php echo number_format($TOT_PPH,2); ?></td>
+									</tr>
+									<tr style="font-weight: bold;">
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td style="text-align: right;" nowrap>Grand Total</td>
+										<td width="150" style="text-align: right;"><?php echo number_format($TTK_GAMOUNT,2); ?></td>
+									</tr>
 									<tr id="tfoot">
 										<td colspan="5">Terbilang : <?php echo ucwords(terbilang(round($TTK_GAMOUNT,2))); ?> Rupiah</td>
 									</tr>

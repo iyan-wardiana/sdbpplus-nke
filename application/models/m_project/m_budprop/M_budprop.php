@@ -372,11 +372,11 @@ class M_budprop extends CI_Model
 
 		if($PGFROM == 'SALT')
 		{
-			$sql		= "vw_joblist_detail_$PRJCODEVW WHERE PRJCODE = '$PRJCODE' AND ITM_GROUP NOT IN ('M') AND ISLAST = 1 $QRYJBCODY";
+			$sql		= "tbl_joblist_detail_$PRJCODEVW WHERE PRJCODE = '$PRJCODE' AND ITM_GROUP NOT IN ('M') AND ISLAST = 1 $QRYJBCODY";
 		}
 		else
 		{
-			$sql		= "vw_joblist_detail_$PRJCODEVW WHERE PRJCODE = '$PRJCODE' AND ITM_GROUP NOT IN ('M') AND ISLAST = 1 $QRYJBCODY";
+			$sql		= "tbl_joblist_detail_$PRJCODEVW WHERE PRJCODE = '$PRJCODE' AND ITM_GROUP NOT IN ('M') AND ISLAST = 1 $QRYJBCODY";
 		}		
 		return $this->db->count_all($sql);
 
@@ -404,7 +404,7 @@ class M_budprop extends CI_Model
 							A.OPN_AMOUNT, A.JOBPARENT,
 							A.ADD_VOLM, A.ADD_PRICE, A.ADD_JOBCOST, A.JOBDESC, A.ITM_GROUP,
 							B.ITM_NAME
-							FROM vw_joblist_detail_$PRJCODEVW A
+							FROM tbl_joblist_detail_$PRJCODEVW A
 							LEFT JOIN tbl_item B ON A.ITM_CODE = B.ITM_CODE
 								AND B.PRJCODE = '$PRJCODE'
 							WHERE A.PRJCODE = '$PRJCODE' AND A.ITM_GROUP NOT IN ('M') AND ISLAST = 1 $QRYJBCODY";
@@ -417,7 +417,7 @@ class M_budprop extends CI_Model
 							A.OPN_AMOUNT, A.JOBPARENT,
 							A.ADD_VOLM, A.ADD_PRICE, A.ADD_JOBCOST, A.JOBDESC, A.ITM_GROUP,
 							B.ITM_NAME
-							FROM vw_joblist_detail_$PRJCODEVW A
+							FROM tbl_joblist_detail_$PRJCODEVW A
 							LEFT JOIN tbl_item B ON A.ITM_CODE = B.ITM_CODE
 								AND B.PRJCODE = '$PRJCODE'
 							WHERE A.PRJCODE = '$PRJCODE' AND A.ITM_GROUP NOT IN ('M') AND ISLAST = 1 $QRYJBCODY";
@@ -1230,7 +1230,7 @@ class M_budprop extends CI_Model
 			$PRJCODEVW	= strtolower($rw_prjvw->PRJCODEVW);
 		endforeach;
 
-		$sql 		= "vw_joblist_detail_$PRJCODEVW A
+		$sql 		= "tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE'
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!')";
@@ -1256,7 +1256,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE'
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID, $order $dir";
@@ -1269,7 +1269,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE'
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID";
@@ -1286,7 +1286,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE'
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID, $order $dir
@@ -1300,7 +1300,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE'
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID LIMIT $start, $length";
@@ -1318,7 +1318,7 @@ class M_budprop extends CI_Model
 			$PRJCODEVW	= strtolower($rw_prjvw->PRJCODEVW);
 		endforeach;
 
-		$sql 		= "vw_joblist_detail_$PRJCODEVW A
+		$sql 		= "tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('M', 'T')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!')";
@@ -1344,7 +1344,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('M', 'T')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID, $order $dir";
@@ -1357,7 +1357,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('M', 'T')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID";
@@ -1374,7 +1374,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('M', 'T')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID, $order $dir
@@ -1388,7 +1388,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('M', 'T')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID LIMIT $start, $length";
@@ -1406,7 +1406,7 @@ class M_budprop extends CI_Model
 			$PRJCODEVW	= strtolower($rw_prjvw->PRJCODEVW);
 		endforeach;
 
-		$sql 		= "vw_joblist_detail_$PRJCODEVW A
+		$sql 		= "tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('SC', 'S')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!')";
@@ -1432,7 +1432,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('SC', 'S')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID, $order $dir";
@@ -1445,7 +1445,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('SC', 'S')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID";
@@ -1462,7 +1462,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('SC', 'S')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID, $order $dir
@@ -1476,7 +1476,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('SC', 'S')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID LIMIT $start, $length";
@@ -1494,7 +1494,7 @@ class M_budprop extends CI_Model
 			$PRJCODEVW	= strtolower($rw_prjvw->PRJCODEVW);
 		endforeach;
 
-		$sql 		= "vw_joblist_detail_$PRJCODEVW A
+		$sql 		= "tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('U')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!')";
@@ -1520,7 +1520,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('U')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID, $order $dir";
@@ -1533,7 +1533,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('U')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID";
@@ -1550,7 +1550,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('U')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID, $order $dir
@@ -1564,7 +1564,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('U')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID LIMIT $start, $length";
@@ -1582,7 +1582,7 @@ class M_budprop extends CI_Model
 			$PRJCODEVW	= strtolower($rw_prjvw->PRJCODEVW);
 		endforeach;
 
-		$sql 		= "vw_joblist_detail_$PRJCODEVW A
+		$sql 		= "tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('I', 'R', 'O')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!')";
@@ -1608,7 +1608,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('I', 'R', 'O')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID, $order $dir";
@@ -1621,7 +1621,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('I', 'R', 'O')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID";
@@ -1638,7 +1638,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('I', 'R', 'O')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID, $order $dir
@@ -1652,7 +1652,7 @@ class M_budprop extends CI_Model
 							A.WO_QTY,  A.WO_AMOUNT, A.OPN_QTY, A.OPN_AMOUNT, A.PO_VOLM, A.PO_AMOUNT, A.IR_VOLM, A.IR_AMOUNT,
 							A.ITM_USED, A.ITM_USED_AM, A.ITM_STOCK, A.ITM_STOCK_AM, 
 							A.ITM_BUDG, A.IS_LEVEL, A.ISLAST
-						FROM vw_joblist_detail_$PRJCODEVW A
+						FROM tbl_joblist_detail_$PRJCODEVW A
 						WHERE A.PRJCODE = '$PRJCODE' AND ISLAST = 1 AND ITM_GROUP IN ('I', 'R', 'O')
 							AND (A.JOBCODEID LIKE '%$search%' ESCAPE '!' OR A.ITM_UNIT LIKE '%$search%' ESCAPE '!'
 						OR A.JOBDESC LIKE '%$search%' ESCAPE '!') ORDER BY A.ORD_ID LIMIT $start, $length";

@@ -671,7 +671,7 @@ class M_updash extends CI_Model
 							VALUES ('$TTR_EMPID', '$TTR_DATE', '$TTR_MNCODE', '$TTR_LINK', '$TTR_TYPE', '$TTR_CATEG', '$TTR_PRJCODE', '$TTR_REFDOC', '$TTR_NOTES')";
 		$this->db->query($sqlIns);
 		
-		$ACT_DATE 		= date('Y-m-d');
+		/*$ACT_DATE 		= date('Y-m-d');
 		$selACT 		= "tbl_employee_activity WHERE ACT_EMPID = '$TTR_EMPID' AND ACT_DATE = '$ACT_DATE'";
 		$resACT			= $this->db->count_all($selACT);
 		if($resACT == 0)
@@ -684,7 +684,7 @@ class M_updash extends CI_Model
 		{
 			$sqlUpd		= "UPDATE tbl_employee_activity SET ACT_COUNT = ACT_COUNT+1 WHERE ACT_EMPID = '$TTR_EMPID' AND ACT_DATE = '$ACT_DATE'";
 			$this->db->query($sqlUpd);
-		}
+		}*/
 	}
 	
 	function insAppHist($insAppHist) // OK
@@ -1314,7 +1314,8 @@ class M_updash extends CI_Model
 				$PRJCODE 	= $rowSTAT->proj_Code;
 			endforeach;
 
-			$sqlPRJ 	= "SELECT PRJCODE_HO, PRJPERIOD FROM tbl_project_budg WHERE PRJCODE = '$PRJCODE'";
+			// $sqlPRJ 	= "SELECT PRJCODE_HO, PRJPERIOD FROM tbl_project_budg WHERE PRJCODE = '$PRJCODE'";
+			$sqlPRJ 	= "SELECT PRJCODE_HO, PRJPERIOD FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
 			$resPRJ		= $this->db->query($sqlPRJ)->result();
 			foreach($resPRJ as $row):
 				$PRJCODE_HO	= $row->PRJCODE_HO;
@@ -4355,7 +4356,7 @@ class M_updash extends CI_Model
 		if(isset($param['isManual']))
 		{
 			$isManual		= $param['isManual'];
-			echo "isManual = $isManual";
+			// echo "isManual = $isManual";
 		}
 
 		$docDateY	= date('Y',strtotime(str_replace('/', '-', $DOCDATE)));
@@ -4482,7 +4483,6 @@ class M_updash extends CI_Model
 			$RUNCODE	= $nol.$RUNUM;
 			$docDateY	= date('y',strtotime(str_replace('/', '-', $DOCDATE)));
 
-			// $DOCCODE 	= "$MNCODE";
 			if($isManual == 0)
 				$DOCCODE 	= "$PATTCODE-$docDateY$docDateM$RUNCODE";
 
@@ -5321,7 +5321,7 @@ class M_updash extends CI_Model
 								FROM tbl_employee WHERE Emp_ID = '$APPROVER_1'";
 				$r_EMP 		= $this->db->query($s_EMP)->result();
 				foreach($r_EMP as $rw_EMP) :
-					$AS_EMPNAME	= $rw_EMP->COMPLNAME;
+					$AS_EMPNAME	= htmlspecialchars($rw_EMP->COMPLNAME, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 					$AS_EMPNICK	= $rw_EMP->Middle_Name;
 					$AS_MPHONE 	= $rw_EMP->AS_MPHONE;
 				endforeach;
@@ -5387,10 +5387,13 @@ class M_updash extends CI_Model
 								--------------------------------------- pickyassist.com -------------------------- */
 
 								/* ------------------------------ Maxhat.id -------------------------------------- */
-									$url 		= "https://user.maxchat.id/nke-official-center/api/messages";
+									// $url 		= "https://user.maxchat.id/nke-official-center/api/messages?direct=true";
+									// migrasi akun tgl. 15-08-2023
+									$url 		= "https://core.maxchat.id/nke-official-center/api/messages";
 									$token 		= "Pzdt3uJuftCaXivWuxn3Tt";
 									// $AS_MPHONE 	= "6282116474710";
-									$JSON_DATA	= array("to" => $AS_MPHONE, "text" => "Halo Bapak/Ibu *$AS_EMPNAME*, Anda memiliki dokumen $AS_CATEGD yang harus disetujui:\n$AS_DOCCODE\nMohon segera untuk ditindaklanjuti.\nhttps://sdbpplus.nke.co.id/\n\n Terimakasih. \n *_NKE Smart System_*");
+									// $JSON_DATA	= array("to" => $AS_MPHONE, "text" => "Halo Bapak/Ibu *$AS_EMPNAME*, Anda memiliki dokumen $AS_CATEGD yang harus disetujui:\n$AS_DOCCODE\nMohon segera untuk ditindaklanjuti.\nhttps://sdbpplus.nke.co.id/\n\n Terimakasih. \n *_NKE Smart System_*");
+									$JSON_DATA	= array("to" => $AS_MPHONE, "type" => "text", "text" => "Halo Bapak/Ibu *$AS_EMPNAME*, Anda memiliki dokumen $AS_CATEGD yang harus disetujui:\n$AS_DOCCODE\nMohon segera untuk ditindaklanjuti.\nhttps://sdbpplus.nke.co.id/\n\n Terimakasih. \n *_NKE Smart System_*", "useTyping" => false);
 									$curl 		= curl_init();
 
 									curl_setopt_array($curl, array(
@@ -5493,7 +5496,7 @@ class M_updash extends CI_Model
 								FROM tbl_employee WHERE Emp_ID = '$APPROVER_1'";
 				$r_EMP 		= $this->db->query($s_EMP)->result();
 				foreach($r_EMP as $rw_EMP) :
-					$AS_EMPNAME	= $rw_EMP->COMPLNAME;
+					$AS_EMPNAME	= htmlspecialchars($rw_EMP->COMPLNAME, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 					$AS_EMPNICK	= $rw_EMP->Middle_Name;
 					$AS_MPHONE 	= $rw_EMP->AS_MPHONE;
 				endforeach;
@@ -5538,10 +5541,13 @@ class M_updash extends CI_Model
 								--------------------------------------- pickyassist.com -------------------------- */
 
 								/* ------------------------------ Maxhat.id -------------------------------------- */
-									$url 		= "https://user.maxchat.id/nke-official-center/api/messages";
+									// $url 		= "https://user.maxchat.id/nke-official-center/api/messages?direct=true";
+									// migrasi akun tgl. 15-08-2023
+									$url 		= "https://core.maxchat.id/nke-official-center/api/messages";
 									$token 		= "Pzdt3uJuftCaXivWuxn3Tt";
 									// $AS_MPHONE 	= "6282116474710";
-									$JSON_DATA	= array("to" => $AS_MPHONE, "text" => "Halo Bapak/Ibu *$AS_EMPNAME*, Anda memiliki dokumen $AS_CATEGD yang harus disetujui:\n$AS_DOCCODE\nMohon segera untuk ditindaklanjuti.\nhttps://sdbpplus.nke.co.id/\n\n Terimakasih. \n *_NKE Smart System_*");
+									// $JSON_DATA	= array("to" => $AS_MPHONE, "text" => "Halo Bapak/Ibu *$AS_EMPNAME*, Anda memiliki dokumen $AS_CATEGD yang harus disetujui:\n$AS_DOCCODE\nMohon segera untuk ditindaklanjuti.\nhttps://sdbpplus.nke.co.id/\n\n Terimakasih. \n *_NKE Smart System_*");
+									$JSON_DATA	= array("to" => $AS_MPHONE, "type" => "text", "text" => "Halo Bapak/Ibu *$AS_EMPNAME*, Anda memiliki dokumen $AS_CATEGD yang harus disetujui:\n$AS_DOCCODE\nMohon segera untuk ditindaklanjuti.\nhttps://sdbpplus.nke.co.id/\n\n Terimakasih. \n *_NKE Smart System_*", "useTyping" => false);
 									$curl 		= curl_init();
 
 									curl_setopt_array($curl, array(
@@ -5661,7 +5667,7 @@ class M_updash extends CI_Model
 										FROM tbl_employee WHERE Emp_ID = '$APPROVER_1'";
 						$r_EMP 		= $this->db->query($s_EMP)->result();
 						foreach($r_EMP as $rw_EMP) :
-							$AS_EMPNAME	= $rw_EMP->COMPLNAME;
+							$AS_EMPNAME	= htmlspecialchars($rw_EMP->COMPLNAME, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 							$AS_EMPNICK	= $rw_EMP->Middle_Name;
 							$AS_MPHONE 	= $rw_EMP->AS_MPHONE;
 						endforeach;
@@ -5721,10 +5727,13 @@ class M_updash extends CI_Model
 								--------------------------------------- pickyassist.com -------------------------- */
 
 								/* ------------------------------ Maxhat.id -------------------------------------- */
-									$url 		= "https://user.maxchat.id/nke-official-center/api/messages";
+									// $url 		= "https://user.maxchat.id/nke-official-center/api/messages?direct=true";
+									// migrasi akun tgl. 15-08-2023
+									$url 		= "https://core.maxchat.id/nke-official-center/api/messages";
 									$token 		= "Pzdt3uJuftCaXivWuxn3Tt";
 									// $AS_MPHONE 	= "6282116474710";
-									$JSON_DATA	= array("to" => $AS_MPHONE, "text" => "Halo Bapak/Ibu *$AS_EMPNAME*, Anda memiliki dokumen $AS_CATEGD yang harus disetujui:\n$AS_DOCCODE\nMohon segera untuk ditindaklanjuti.\nhttps://sdbpplus.nke.co.id/\n\n Terimakasih. \n *_NKE Smart System_*");
+									// $JSON_DATA	= array("to" => $AS_MPHONE, "text" => "Halo Bapak/Ibu *$AS_EMPNAME*, Anda memiliki dokumen $AS_CATEGD yang harus disetujui:\n$AS_DOCCODE\nMohon segera untuk ditindaklanjuti.\nhttps://sdbpplus.nke.co.id/\n\n Terimakasih. \n *_NKE Smart System_*");
+									$JSON_DATA	= array("to" => $AS_MPHONE, "type" => "text", "text" => "Halo Bapak/Ibu *$AS_EMPNAME*, Anda memiliki dokumen $AS_CATEGD yang harus disetujui:\n$AS_DOCCODE\nMohon segera untuk ditindaklanjuti.\nhttps://sdbpplus.nke.co.id/\n\n Terimakasih. \n *_NKE Smart System_*", "useTyping" => false);
 									$curl 		= curl_init();
 
 									curl_setopt_array($curl, array(
@@ -8385,278 +8394,383 @@ class M_updash extends CI_Model
 		}
 		elseif($DOC_CATEG == 'AMD')
 		{
-    		$delIL 		= "DELETE FROM tbl_item_logbook_$PRJCODEVW WHERE DOC_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE'";
-    		$this->db->query($delIL);
-		
-			$updDET		= "UPDATE tbl_amd_detail A, tbl_amd_header B SET A.AMD_CODE = B.AMD_CODE, A.AMD_STAT = B.AMD_STAT, A.AMD_DATE = B.AMD_DATE
-							WHERE A.AMD_NUM = B.AMD_NUM AND A.AMD_NUM = '$DOC_NUM'";
-			$this->db->query($updDET);
-		
-			$updDET		= "UPDATE tbl_amd_detail_subs A, tbl_amd_header B SET A.AMD_CODE = B.AMD_CODE, A.AMD_STAT = B.AMD_STAT, A.AMD_DATE = B.AMD_DATE
-							WHERE A.AMD_NUM = B.AMD_NUM AND A.AMD_NUM = '$DOC_NUM'";
-			$this->db->query($updDET);
-
-			if($DOC_STAT == 3 || $DOC_STAT == 6)
+			if(isset($parIL['AMD_FUNC']) && $parIL['AMD_FUNC'] == 'MIN')
 			{
-				$copyDATA	= "INSERT INTO tbl_item_logbook_$PRJCODEVW (PRJCODE, DOC_ID, DOC_NUM, DOC_CODE, DOC_DATE, DOC_CATEG, DOC_STAT, REF_ID, JOBCODEID, ITM_CODE, ITM_UNIT,
-									ITM_GROUP, RAP_VOL, RAP_VAL, DOC_VOL, DOC_VAL, DOC_CVOL, DOC_CVAL, AMD_VOL, AMD_VAL, DOC_DESC, DOC_CREATER, DOC_CREATED)
-								SELECT A.PRJCODE, A.AMDD_ID, A.AMD_NUM, A.AMD_CODE, A.AMD_DATE, 'AMD', A.AMD_STAT, 0, A.JOBCODEID, A.ITM_CODE, A.ITM_UNIT,
-									A.ITM_GROUP, B.ITM_VOLM, B.ITM_BUDG, A.AMD_VOLM, A.AMD_TOTAL, 0, 0, A.AMD_VOLM, A.AMD_TOTAL, A.AMD_DESC, '$DefEmp_ID', '$DOC_CREATED'
-								FROM tbl_amd_detail A INNER JOIN tbl_joblist_detail B ON A.JOBCODEID = B.JOBCODEID AND A.PRJCODE = B.PRJCODE
-								WHERE A.AMD_NUM = '$DOC_NUM' ORDER BY A.AMD_DATE, A.AMD_CODE";
-				$this->db->query($copyDATA);
+	    		$delIL 		= "DELETE FROM tbl_item_logbook_$PRJCODEVW WHERE DOC_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE'";
+	    		$this->db->query($delIL);
+			
+				$updDET		= "UPDATE tbl_amd_detail A, tbl_amd_header B SET A.AMD_CODE = B.AMD_CODE, A.AMD_STAT = B.AMD_STAT, A.AMD_DATE = B.AMD_DATE
+								WHERE A.AMD_NUM = B.AMD_NUM AND A.AMD_NUM = '$DOC_NUM'";
+				$this->db->query($updDET);
+			
+				$updDET		= "UPDATE tbl_amd_detail_subs A, tbl_amd_header B SET A.AMD_CODE = B.AMD_CODE, A.AMD_STAT = B.AMD_STAT, A.AMD_DATE = B.AMD_DATE
+								WHERE A.AMD_NUM = B.AMD_NUM AND A.AMD_NUM = '$DOC_NUM'";
+				$this->db->query($updDET);
 
-				$copyDATA	= "INSERT INTO tbl_item_logbook_$PRJCODEVW (PRJCODE, DOC_ID, DOC_NUM, DOC_CODE, DOC_DATE, DOC_CATEG, DOC_STAT, REF_ID, JOBCODEID, ITM_CODE, ITM_UNIT,
-									ITM_GROUP, RAP_VOL, RAP_VAL, DOC_VOL, DOC_VAL, DOC_CVOL, DOC_CVAL, AMDM_VOL, AMDM_VAL, DOC_DESC, DOC_CREATER, DOC_CREATED)
-								SELECT A.PRJCODE, A.AMDD_ID, A.AMD_NUM, A.AMD_CODE, A.AMD_DATE, 'AMDSUB', A.AMD_STAT, 0, A.JOBCODEID, A.ITM_CODE, A.ITM_UNIT,
-									A.ITM_GROUP, B.ITM_VOLM, B.ITM_BUDG, A.AMD_VOLM, A.AMD_TOTAL, 0, 0, A.AMD_VOLM, A.AMD_TOTAL, A.AMD_DESC, '$DefEmp_ID', '$DOC_CREATED'
-								FROM tbl_amd_detail_subs A INNER JOIN tbl_joblist_detail B ON A.JOBCODEID = B.JOBCODEID AND A.PRJCODE = B.PRJCODE
-								WHERE A.AMD_NUM = '$DOC_NUM' ORDER BY A.AMD_DATE, A.AMD_CODE";
-				$this->db->query($copyDATA);
+				if($DOC_STAT == 3 || $DOC_STAT == 6)
+				{
+					$copyDATA	= "INSERT INTO tbl_item_logbook_$PRJCODEVW (PRJCODE, DOC_ID, DOC_NUM, DOC_CODE, DOC_DATE, DOC_CATEG, DOC_STAT, REF_ID, JOBCODEID, ITM_CODE, ITM_UNIT,
+										ITM_GROUP, RAP_VOL, RAP_VAL, DOC_VOL, DOC_VAL, DOC_CVOL, DOC_CVAL, AMDM_VOL, AMDM_VAL, DOC_DESC, DOC_CREATER, DOC_CREATED)
+									SELECT A.PRJCODE, A.AMDD_ID, A.AMD_NUM, A.AMD_CODE, A.AMD_DATE, 'AMD-MIN', A.AMD_STAT, 0, A.JOBCODEID, A.ITM_CODE, A.ITM_UNIT,
+										A.ITM_GROUP, B.ITM_VOLM, B.ITM_BUDG, A.AMD_VOLM, A.AMD_TOTAL, 0, 0, A.AMD_VOLM, A.AMD_TOTAL, A.AMD_DESC, '$DefEmp_ID', '$DOC_CREATED'
+									FROM tbl_amd_detail A INNER JOIN tbl_joblist_detail B ON A.JOBCODEID = B.JOBCODEID AND A.PRJCODE = B.PRJCODE
+									WHERE A.AMD_NUM = '$DOC_NUM' ORDER BY A.AMD_DATE, A.AMD_CODE";
+					$this->db->query($copyDATA);
 
-				$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY JOBCODEID";
-				$r_DOC		= $this->db->query($s_DOC)->result();
-				foreach($r_DOC as $rw_DOC):
-					$JOBCODEID 	= $rw_DOC->JOBCODEID;
-					$ITM_CODE 	= $rw_DOC->ITM_CODE;
+					$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY JOBCODEID";
+					$r_DOC		= $this->db->query($s_DOC)->result();
+					foreach($r_DOC as $rw_DOC):
+						$JOBCODEID 	= $rw_DOC->JOBCODEID;
+						$ITM_CODE 	= $rw_DOC->ITM_CODE;
 
-					$u_JL		= "UPDATE tbl_joblist_detail_$PRJCODEVW A SET
-										A.AMD_VOL  = (SELECT sum(B.AMD_VOLM) 	FROM   tbl_amd_detail B WHERE  B.JOBCODEID = A.JOBCODEID),
-										A.AMD_VAL  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail B WHERE  B.JOBCODEID = A.JOBCODEID)
-									WHERE A.JOBCODEID = '$JOBCODEID'";
-					$this->db->query($u_JL);
-				endforeach;
-
-				$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY ITM_CODE";
-				$r_DOC		= $this->db->query($s_DOC)->result();
-				foreach($r_DOC as $rw_DOC):
-					$JOBCODEID 	= $rw_DOC->JOBCODEID;
-					$ITM_CODE 	= $rw_DOC->ITM_CODE;
-
-					$u_ITM		= "UPDATE tbl_item_$PRJCODEVW A SET
-										A.AMD_VOL = (SELECT sum(B.AMD_VOLM) 	FROM   tbl_amd_detail B WHERE  B.ITM_CODE = A.ITM_CODE),
-										A.AMD_VAL = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail B WHERE  B.ITM_CODE = A.ITM_CODE)
-									WHERE A.ITM_CODE = '$ITM_CODE'";
-					$this->db->query($u_ITM);
-				endforeach;
-
-				// START : UPDATE JOBLIST DETAIL
-					$tblD_NM	= "tbl_amd_detail";
-					$FLD_NUM 	= "AMD_NUM";
-					$FLD_STAT 	= "AMD_STAT";
-					$FLD_VOL	= "AMD_VOL";
-					$FLD_VAL	= "AMD_VAL";
-					//$FLD_CVOL	= "AMD_CVOL";
-					//$FLD_CVAL	= "AMD_CVAL";
-					$FLD_VOL_R	= "AMD_VOL_R";
-					$FLD_VAL_R	= "AMD_VAL_R";
-
-					$s_00 	= "SELECT DISTINCT JOBCODEID FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND $FLD_NUM = '$DOC_NUM'";
-					$r_00	= $this->db->query($s_00)->result();
-					foreach($r_00 as $rw_00):
-						$JOBID 	= $rw_00->JOBCODEID;
-
-						$s_01 	= "SELECT
-										IFNULL(SUM(AMD_VOLM), 0) 	AS TDOC_VOL,
-										IFNULL(SUM(AMD_TOTAL), 0)	AS TDOC_VAL
-									FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
-						$r_01	= $this->db->query($s_01)->result();
-						foreach($r_01 as $rw_01):
-							$TDOC_VOL 	= $rw_01->TDOC_VOL;
-							$TDOC_VAL 	= $rw_01->TDOC_VAL;
-
-							$s_UPDJLD 	= "UPDATE tbl_joblist_detail_$PRJCODEVW SET $FLD_VOL = $TDOC_VOL, $FLD_VAL = $TDOC_VAL
-											WHERE JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
-							$this->db->query($s_UPDJLD);
-						endforeach;
+						$u_JL		= "UPDATE tbl_joblist_detail_$PRJCODEVW A SET
+											A.AMDM_VOL  = (SELECT sum(B.AMD_VOLM) 	FROM   tbl_amd_detail B WHERE  B.JOBCODEID = A.JOBCODEID),
+											A.AMDM_VAL  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail B WHERE  B.JOBCODEID = A.JOBCODEID)
+										WHERE A.JOBCODEID = '$JOBCODEID'";
+						$this->db->query($u_JL);
 					endforeach;
 
-					$s_00 	= "SELECT DISTINCT ITM_CODE FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND $FLD_NUM = '$DOC_NUM'";
-					$r_00	= $this->db->query($s_00)->result();
-					foreach($r_00 as $rw_00):
-						$ITM_CODE 	= $rw_00->ITM_CODE;
+					$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY ITM_CODE";
+					$r_DOC		= $this->db->query($s_DOC)->result();
+					foreach($r_DOC as $rw_DOC):
+						$JOBCODEID 	= $rw_DOC->JOBCODEID;
+						$ITM_CODE 	= $rw_DOC->ITM_CODE;
 
-						$s_03 		= "SELECT 
+						$u_ITM		= "UPDATE tbl_item_$PRJCODEVW A SET
+											A.AMDM_VOL = (SELECT sum(B.AMD_VOLM) 	FROM   tbl_amd_detail B WHERE  B.ITM_CODE = A.ITM_CODE),
+											A.AMDM_VAL = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail B WHERE  B.ITM_CODE = A.ITM_CODE)
+										WHERE A.ITM_CODE = '$ITM_CODE'";
+						$this->db->query($u_ITM);
+					endforeach;
+
+					// START : UPDATE JOBLIST DETAIL
+						$tblD_NM	= "tbl_amd_detail";
+						$FLD_NUM 	= "AMD_NUM";
+						$FLD_STAT 	= "AMD_STAT";
+						$FLD_VOL	= "AMDM_VOL";
+						$FLD_VAL	= "AMDM_VAL";
+						//$FLD_CVOL	= "AMD_CVOL";
+						//$FLD_CVAL	= "AMD_CVAL";
+						$FLD_VOL_R	= "AMD_VOL_R";
+						$FLD_VAL_R	= "AMD_VAL_R";
+
+						$s_00 	= "SELECT DISTINCT JOBCODEID FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND $FLD_NUM = '$DOC_NUM'";
+						$r_00	= $this->db->query($s_00)->result();
+						foreach($r_00 as $rw_00):
+							$JOBID 	= $rw_00->JOBCODEID;
+
+							$s_01 	= "SELECT
 											IFNULL(SUM(AMD_VOLM), 0) 	AS TDOC_VOL,
-											IFNULL(SUM(AMD_TOTAL), 0) 	AS TDOC_VAL
-										FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
-						$r_03	= $this->db->query($s_03)->result();
-						foreach($r_03 as $rw_03):
-							$TDOC_VOL 	= $rw_03->TDOC_VOL;
-							$TDOC_VAL 	= $rw_03->TDOC_VAL;
+											IFNULL(SUM(AMD_TOTAL), 0)	AS TDOC_VAL
+										FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
+							$r_01	= $this->db->query($s_01)->result();
+							foreach($r_01 as $rw_01):
+								$TDOC_VOL 	= $rw_01->TDOC_VOL;
+								$TDOC_VAL 	= $rw_01->TDOC_VAL;
 
-							$s_UPDJLD 	= "UPDATE tbl_item_$PRJCODEVW SET $FLD_VOL = $TDOC_VOL, $FLD_VAL = $TDOC_VAL
-											WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
-							$this->db->query($s_UPDJLD);
+								$s_UPDJLD 	= "UPDATE tbl_joblist_detail_$PRJCODEVW SET $FLD_VOL = $TDOC_VOL, $FLD_VAL = $TDOC_VAL
+												WHERE JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
+								$this->db->query($s_UPDJLD);
+							endforeach;
 						endforeach;
-					endforeach;
-				// END : UPDATE JOBLIST DETAIL
 
-				// START : UPDATE JOBLIST DETAIL
-					$tblD_NM	= "tbl_amd_detail_subs";
-					$FLD_NUM 	= "AMD_NUM";
-					$FLD_STAT 	= "AMD_STAT";
-					$FLD_VOL	= "AMD_VOL";
-					$FLD_VAL	= "AMD_VAL";
-					//$FLD_CVOL	= "AMD_CVOL";
-					//$FLD_CVAL	= "AMD_CVAL";
-					$FLD_VOL_R	= "AMD_VOL_R";
-					$FLD_VAL_R	= "AMD_VAL_R";
+						$s_00 	= "SELECT DISTINCT ITM_CODE FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND $FLD_NUM = '$DOC_NUM'";
+						$r_00	= $this->db->query($s_00)->result();
+						foreach($r_00 as $rw_00):
+							$ITM_CODE 	= $rw_00->ITM_CODE;
 
-					$s_00 	= "SELECT DISTINCT JOBCODEID FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND $FLD_NUM = '$DOC_NUM'";
-					$r_00	= $this->db->query($s_00)->result();
-					foreach($r_00 as $rw_00):
-						$JOBID 	= $rw_00->JOBCODEID;
+							$s_03 		= "SELECT 
+												IFNULL(SUM(AMD_VOLM), 0) 	AS TDOC_VOL,
+												IFNULL(SUM(AMD_TOTAL), 0) 	AS TDOC_VAL
+											FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
+							$r_03	= $this->db->query($s_03)->result();
+							foreach($r_03 as $rw_03):
+								$TDOC_VOL 	= $rw_03->TDOC_VOL;
+								$TDOC_VAL 	= $rw_03->TDOC_VAL;
 
-						$s_01 	= "SELECT
-										IFNULL(SUM(AMD_VOLM), 0) 	AS TDOC_VOL,
-										IFNULL(SUM(AMD_TOTAL), 0)	AS TDOC_VAL
-									FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
-						$r_01	= $this->db->query($s_01)->result();
-						foreach($r_01 as $rw_01):
-							$TDOC_VOL 	= $rw_01->TDOC_VOL;
-							$TDOC_VAL 	= $rw_01->TDOC_VAL;
-
-							$s_UPDJLD 	= "UPDATE tbl_joblist_detail_$PRJCODEVW SET $FLD_VOL = $TDOC_VOL, $FLD_VAL = $TDOC_VAL
-											WHERE JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
-							$this->db->query($s_UPDJLD);
+								$s_UPDJLD 	= "UPDATE tbl_item_$PRJCODEVW SET $FLD_VOL = $TDOC_VOL, $FLD_VAL = $TDOC_VAL
+												WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
+								$this->db->query($s_UPDJLD);
+							endforeach;
 						endforeach;
-					endforeach;
-
-					$s_00 	= "SELECT DISTINCT ITM_CODE FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND $FLD_NUM = '$DOC_NUM'";
-					$r_00	= $this->db->query($s_00)->result();
-					foreach($r_00 as $rw_00):
-						$ITM_CODE 	= $rw_00->ITM_CODE;
-
-						$s_03 		= "SELECT 
-											IFNULL(SUM(AMD_VOLM), 0) 	AS TDOC_VOL,
-											IFNULL(SUM(AMD_TOTAL), 0) 	AS TDOC_VAL
-										FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
-						$r_03	= $this->db->query($s_03)->result();
-						foreach($r_03 as $rw_03):
-							$TDOC_VOL 	= $rw_03->TDOC_VOL;
-							$TDOC_VAL 	= $rw_03->TDOC_VAL;
-
-							$s_UPDJLD 	= "UPDATE tbl_item_$PRJCODEVW SET $FLD_VOL = $TDOC_VOL, $FLD_VAL = $TDOC_VAL
-											WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
-							$this->db->query($s_UPDJLD);
-						endforeach;
-					endforeach;
-				// END : UPDATE JOBLIST DETAIL
+					// END : UPDATE JOBLIST DETAIL
+				}
 			}
-			elseif($DOC_STAT == 1 || $DOC_STAT == 2 || $DOC_STAT == 4 || $DOC_STAT == 7)
+			else
 			{
-				$copyDATA	= "INSERT INTO tbl_item_logbook_$PRJCODEVW (PRJCODE, DOC_ID, DOC_NUM, DOC_CODE, DOC_DATE, DOC_CATEG, DOC_STAT, REF_ID, JOBCODEID, ITM_CODE, ITM_UNIT,
-									ITM_GROUP, RAP_VOL, RAP_VAL, DOC_VOL, DOC_VAL, DOC_CVOL, DOC_CVAL, AMD_VOL_R, AMD_VAL_R, DOC_DESC, DOC_CREATER, DOC_CREATED)
-								SELECT A.PRJCODE, A.AMDD_ID, A.AMD_NUM, A.AMD_CODE, A.AMD_DATE, 'AMD', A.AMD_STAT, 0, A.JOBCODEID, A.ITM_CODE, A.ITM_UNIT,
-									A.ITM_GROUP, B.ITM_VOLM, B.ITM_BUDG, A.AMD_VOLM, A.AMD_TOTAL, 0, 0, A.AMD_VOLM, A.AMD_TOTAL, A.AMD_DESC, '$DefEmp_ID', '$DOC_CREATED'
-								FROM tbl_amd_detail A INNER JOIN tbl_joblist_detail B ON A.JOBCODEID = B.JOBCODEID AND A.PRJCODE = B.PRJCODE
-								WHERE A.AMD_NUM = '$DOC_NUM' ORDER BY A.AMD_DATE, A.AMD_CODE";
-				$this->db->query($copyDATA);
+	    		$delIL 		= "DELETE FROM tbl_item_logbook_$PRJCODEVW WHERE DOC_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE'";
+	    		$this->db->query($delIL);
+			
+				$updDET		= "UPDATE tbl_amd_detail A, tbl_amd_header B SET A.AMD_CODE = B.AMD_CODE, A.AMD_STAT = B.AMD_STAT, A.AMD_DATE = B.AMD_DATE
+								WHERE A.AMD_NUM = B.AMD_NUM AND A.AMD_NUM = '$DOC_NUM'";
+				$this->db->query($updDET);
+			
+				$updDET		= "UPDATE tbl_amd_detail_subs A, tbl_amd_header B SET A.AMD_CODE = B.AMD_CODE, A.AMD_STAT = B.AMD_STAT, A.AMD_DATE = B.AMD_DATE
+								WHERE A.AMD_NUM = B.AMD_NUM AND A.AMD_NUM = '$DOC_NUM'";
+				$this->db->query($updDET);
 
-				$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY JOBCODEID";
-				$r_DOC		= $this->db->query($s_DOC)->result();
-				foreach($r_DOC as $rw_DOC):
-					$JOBCODEID 	= $rw_DOC->JOBCODEID;
-					$ITM_CODE 	= $rw_DOC->ITM_CODE;
+				if($DOC_STAT == 3 || $DOC_STAT == 6)
+				{
+					$copyDATA	= "INSERT INTO tbl_item_logbook_$PRJCODEVW (PRJCODE, DOC_ID, DOC_NUM, DOC_CODE, DOC_DATE, DOC_CATEG, DOC_STAT, REF_ID, JOBCODEID, ITM_CODE, ITM_UNIT,
+										ITM_GROUP, RAP_VOL, RAP_VAL, DOC_VOL, DOC_VAL, DOC_CVOL, DOC_CVAL, AMD_VOL, AMD_VAL, DOC_DESC, DOC_CREATER, DOC_CREATED)
+									SELECT A.PRJCODE, A.AMDD_ID, A.AMD_NUM, A.AMD_CODE, A.AMD_DATE, 'AMD', A.AMD_STAT, 0, A.JOBCODEID, A.ITM_CODE, A.ITM_UNIT,
+										A.ITM_GROUP, B.ITM_VOLM, B.ITM_BUDG, A.AMD_VOLM, A.AMD_TOTAL, 0, 0, A.AMD_VOLM, A.AMD_TOTAL, A.AMD_DESC, '$DefEmp_ID', '$DOC_CREATED'
+									FROM tbl_amd_detail A INNER JOIN tbl_joblist_detail B ON A.JOBCODEID = B.JOBCODEID AND A.PRJCODE = B.PRJCODE
+									WHERE A.AMD_NUM = '$DOC_NUM' ORDER BY A.AMD_DATE, A.AMD_CODE";
+					$this->db->query($copyDATA);
 
-					$u_JL		= "UPDATE tbl_joblist_detail_$PRJCODEVW A SET
-										A.AMD_VOL_R  = (SELECT sum(B.AMD_VOLM) 		FROM   tbl_amd_detail B WHERE  B.JOBCODEID = A.JOBCODEID),
-										A.AMD_VAL_R  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail B WHERE  B.JOBCODEID = A.JOBCODEID)
-									WHERE A.JOBCODEID = '$JOBCODEID'";
-					$this->db->query($u_JL);
-				endforeach;
+					$copyDATA	= "INSERT INTO tbl_item_logbook_$PRJCODEVW (PRJCODE, DOC_ID, DOC_NUM, DOC_CODE, DOC_DATE, DOC_CATEG, DOC_STAT, REF_ID, JOBCODEID, ITM_CODE, ITM_UNIT,
+										ITM_GROUP, RAP_VOL, RAP_VAL, DOC_VOL, DOC_VAL, DOC_CVOL, DOC_CVAL, AMDM_VOL, AMDM_VAL, DOC_DESC, DOC_CREATER, DOC_CREATED)
+									SELECT A.PRJCODE, A.AMDD_ID, A.AMD_NUM, A.AMD_CODE, A.AMD_DATE, 'AMDSUB', A.AMD_STAT, 0, A.JOBCODEID, A.ITM_CODE, A.ITM_UNIT,
+										A.ITM_GROUP, B.ITM_VOLM, B.ITM_BUDG, A.AMD_VOLM, A.AMD_TOTAL, 0, 0, A.AMD_VOLM, A.AMD_TOTAL, A.AMD_DESC, '$DefEmp_ID', '$DOC_CREATED'
+									FROM tbl_amd_detail_subs A INNER JOIN tbl_joblist_detail B ON A.JOBCODEID = B.JOBCODEID AND A.PRJCODE = B.PRJCODE
+									WHERE A.AMD_NUM = '$DOC_NUM' ORDER BY A.AMD_DATE, A.AMD_CODE";
+					$this->db->query($copyDATA);
 
-				$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY ITM_CODE";
-				$r_DOC		= $this->db->query($s_DOC)->result();
-				foreach($r_DOC as $rw_DOC):
-					$JOBCODEID 	= $rw_DOC->JOBCODEID;
-					$ITM_CODE 	= $rw_DOC->ITM_CODE;
+					$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY JOBCODEID";
+					$r_DOC		= $this->db->query($s_DOC)->result();
+					foreach($r_DOC as $rw_DOC):
+						$JOBCODEID 	= $rw_DOC->JOBCODEID;
+						$ITM_CODE 	= $rw_DOC->ITM_CODE;
 
-					$u_ITM		= "UPDATE tbl_item_$PRJCODEVW A SET
-										A.AMD_VOL_R  = (SELECT sum(B.AMD_VOLM) 		FROM   tbl_amd_detail B WHERE  B.ITM_CODE = A.ITM_CODE),
-										A.AMD_VAL_R  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail B WHERE  B.ITM_CODE = A.ITM_CODE)
-									WHERE A.ITM_CODE = '$ITM_CODE'";
-					$this->db->query($u_ITM);
-				endforeach;
-
-				$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail_subs WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY JOBCODEID";
-				$r_DOC		= $this->db->query($s_DOC)->result();
-				foreach($r_DOC as $rw_DOC):
-					$JOBCODEID 	= $rw_DOC->JOBCODEID;
-					$ITM_CODE 	= $rw_DOC->ITM_CODE;
-
-					$u_JL		= "UPDATE tbl_joblist_detail_$PRJCODEVW A SET
-										A.AMDM_VOL  = (SELECT sum(B.AMD_VOLM) 	FROM   tbl_amd_detail_subs B WHERE  B.JOBCODEID = A.JOBCODEID),
-										A.AMDM_VAL  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail_subs B WHERE  B.JOBCODEID = A.JOBCODEID)
-									WHERE A.JOBCODEID = '$JOBCODEID'";
-					$this->db->query($u_JL);
-				endforeach;
-
-				$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail_subs WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY ITM_CODE";
-				$r_DOC		= $this->db->query($s_DOC)->result();
-				foreach($r_DOC as $rw_DOC):
-					$JOBCODEID 	= $rw_DOC->JOBCODEID;
-					$ITM_CODE 	= $rw_DOC->ITM_CODE;
-
-					$u_ITM		= "UPDATE tbl_item_$PRJCODEVW A SET
-										A.AMDM_VOL  = (SELECT sum(B.AMD_VOLM) 	FROM   tbl_amd_detail_subs B WHERE  B.ITM_CODE = A.ITM_CODE),
-										A.AMDM_VAL  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail_subs B WHERE  B.ITM_CODE = A.ITM_CODE)
-									WHERE A.ITM_CODE = '$ITM_CODE'";
-					$this->db->query($u_ITM);
-				endforeach;
-
-				// START : UPDATE JOBLIST DETAIL
-					$tblD_NM	= "tbl_amd_detail";
-					$FLD_NUM 	= "AMD_NUM";
-					$FLD_STAT 	= "AMD_STAT";
-					$FLD_VOL	= "AMD_VOL";
-					$FLD_VAL	= "AMD_VAL";
-					//$FLD_CVOL	= "AMD_CVOL";
-					//$FLD_CVAL	= "AMD_CVAL";
-					$FLD_VOL_R	= "AMD_VOL_R";
-					$FLD_VAL_R	= "AMD_VAL_R";
-
-					$s_00 	= "SELECT DISTINCT JOBCODEID FROM $tblD_NM WHERE $FLD_STAT IN (1,2,4,7) AND $FLD_NUM = '$DOC_NUM'";
-					$r_00	= $this->db->query($s_00)->result();
-					foreach($r_00 as $rw_00):
-						$JOBID 	= $rw_00->JOBCODEID;
-
-						$s_02 	= "SELECT
-										IFNULL(SUM(OPND_VOLM), 0) 		AS TDOC_VOL,
-										IFNULL(SUM(OPND_ITMTOTAL), 0) 	AS TDOC_VAL
-									FROM $tblD_NM WHERE $FLD_STAT IN (1,2,4,7) AND JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
-						$r_02	= $this->db->query($s_02)->result();
-						foreach($r_02 as $rw_02):
-							$TDOC_VOL_R = $rw_02->TDOC_VOL;
-							$TDOC_VAL_R = $rw_02->TDOC_VAL;
-
-							$s_UPDJLD 	= "UPDATE tbl_joblist_detail_$PRJCODEVW SET $FLD_VOL_R = $TDOC_VOL_R, $FLD_VAL_R = $TDOC_VAL_R
-											WHERE JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
-							$this->db->query($s_UPDJLD);
-						endforeach;
+						$u_JL		= "UPDATE tbl_joblist_detail_$PRJCODEVW A SET
+											A.AMD_VOL  = (SELECT sum(B.AMD_VOLM) 	FROM   tbl_amd_detail B WHERE  B.JOBCODEID = A.JOBCODEID),
+											A.AMD_VAL  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail B WHERE  B.JOBCODEID = A.JOBCODEID)
+										WHERE A.JOBCODEID = '$JOBCODEID'";
+						$this->db->query($u_JL);
 					endforeach;
 
-					$s_00 	= "SELECT DISTINCT ITM_CODE FROM $tblD_NM WHERE $FLD_STAT IN (1,2,4,7) AND $FLD_NUM = '$DOC_NUM'";
-					$r_00	= $this->db->query($s_00)->result();
-					foreach($r_00 as $rw_00):
-						$ITM_CODE 	= $rw_00->ITM_CODE;
+					$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY ITM_CODE";
+					$r_DOC		= $this->db->query($s_DOC)->result();
+					foreach($r_DOC as $rw_DOC):
+						$JOBCODEID 	= $rw_DOC->JOBCODEID;
+						$ITM_CODE 	= $rw_DOC->ITM_CODE;
 
-						$s_04 	= "SELECT
-										IFNULL(SUM(OPND_VOLM), 0) 		AS TDOC_VOL,
-										IFNULL(SUM(OPND_ITMTOTAL), 0) 	AS TDOC_VAL
-									FROM $tblD_NM WHERE $FLD_STAT IN (1,2,4,7) AND ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
-						$r_04	= $this->db->query($s_04)->result();
-						foreach($r_04 as $rw_04):
-							$TDOC_VOL_R = $rw_04->TDOC_VOL;
-							$TDOC_VAL_R = $rw_04->TDOC_VAL;
-
-							$s_UPDJLD 	= "UPDATE tbl_item_$PRJCODEVW SET $FLD_VOL_R = $TDOC_VOL_R, $FLD_VAL_R = $TDOC_VAL_R
-											WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
-							$this->db->query($s_UPDJLD);
-						endforeach;
+						$u_ITM		= "UPDATE tbl_item_$PRJCODEVW A SET
+											A.AMD_VOL = (SELECT sum(B.AMD_VOLM) 	FROM   tbl_amd_detail B WHERE  B.ITM_CODE = A.ITM_CODE),
+											A.AMD_VAL = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail B WHERE  B.ITM_CODE = A.ITM_CODE)
+										WHERE A.ITM_CODE = '$ITM_CODE'";
+						$this->db->query($u_ITM);
 					endforeach;
-				// END : UPDATE JOBLIST DETAIL
+
+					// START : UPDATE JOBLIST DETAIL
+						$tblD_NM	= "tbl_amd_detail";
+						$FLD_NUM 	= "AMD_NUM";
+						$FLD_STAT 	= "AMD_STAT";
+						$FLD_VOL	= "AMD_VOL";
+						$FLD_VAL	= "AMD_VAL";
+						//$FLD_CVOL	= "AMD_CVOL";
+						//$FLD_CVAL	= "AMD_CVAL";
+						$FLD_VOL_R	= "AMD_VOL_R";
+						$FLD_VAL_R	= "AMD_VAL_R";
+
+						$s_00 	= "SELECT DISTINCT JOBCODEID FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND $FLD_NUM = '$DOC_NUM'";
+						$r_00	= $this->db->query($s_00)->result();
+						foreach($r_00 as $rw_00):
+							$JOBID 	= $rw_00->JOBCODEID;
+
+							$s_01 	= "SELECT
+											IFNULL(SUM(AMD_VOLM), 0) 	AS TDOC_VOL,
+											IFNULL(SUM(AMD_TOTAL), 0)	AS TDOC_VAL
+										FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
+							$r_01	= $this->db->query($s_01)->result();
+							foreach($r_01 as $rw_01):
+								$TDOC_VOL 	= $rw_01->TDOC_VOL;
+								$TDOC_VAL 	= $rw_01->TDOC_VAL;
+
+								$s_UPDJLD 	= "UPDATE tbl_joblist_detail_$PRJCODEVW SET $FLD_VOL = $TDOC_VOL, $FLD_VAL = $TDOC_VAL
+												WHERE JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
+								$this->db->query($s_UPDJLD);
+							endforeach;
+						endforeach;
+
+						$s_00 	= "SELECT DISTINCT ITM_CODE FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND $FLD_NUM = '$DOC_NUM'";
+						$r_00	= $this->db->query($s_00)->result();
+						foreach($r_00 as $rw_00):
+							$ITM_CODE 	= $rw_00->ITM_CODE;
+
+							$s_03 		= "SELECT 
+												IFNULL(SUM(AMD_VOLM), 0) 	AS TDOC_VOL,
+												IFNULL(SUM(AMD_TOTAL), 0) 	AS TDOC_VAL
+											FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
+							$r_03	= $this->db->query($s_03)->result();
+							foreach($r_03 as $rw_03):
+								$TDOC_VOL 	= $rw_03->TDOC_VOL;
+								$TDOC_VAL 	= $rw_03->TDOC_VAL;
+
+								$s_UPDJLD 	= "UPDATE tbl_item_$PRJCODEVW SET $FLD_VOL = $TDOC_VOL, $FLD_VAL = $TDOC_VAL
+												WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
+								$this->db->query($s_UPDJLD);
+							endforeach;
+						endforeach;
+					// END : UPDATE JOBLIST DETAIL
+
+					// START : UPDATE JOBLIST DETAIL
+						$tblD_NM	= "tbl_amd_detail_subs";
+						$FLD_NUM 	= "AMD_NUM";
+						$FLD_STAT 	= "AMD_STAT";
+						$FLD_VOL	= "AMD_VOL";
+						$FLD_VAL	= "AMD_VAL";
+						//$FLD_CVOL	= "AMD_CVOL";
+						//$FLD_CVAL	= "AMD_CVAL";
+						$FLD_VOL_R	= "AMD_VOL_R";
+						$FLD_VAL_R	= "AMD_VAL_R";
+
+						$s_00 	= "SELECT DISTINCT JOBCODEID FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND $FLD_NUM = '$DOC_NUM'";
+						$r_00	= $this->db->query($s_00)->result();
+						foreach($r_00 as $rw_00):
+							$JOBID 	= $rw_00->JOBCODEID;
+
+							$s_01 	= "SELECT
+											IFNULL(SUM(AMD_VOLM), 0) 	AS TDOC_VOL,
+											IFNULL(SUM(AMD_TOTAL), 0)	AS TDOC_VAL
+										FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
+							$r_01	= $this->db->query($s_01)->result();
+							foreach($r_01 as $rw_01):
+								$TDOC_VOL 	= $rw_01->TDOC_VOL;
+								$TDOC_VAL 	= $rw_01->TDOC_VAL;
+
+								$s_UPDJLD 	= "UPDATE tbl_joblist_detail_$PRJCODEVW SET $FLD_VOL = $TDOC_VOL, $FLD_VAL = $TDOC_VAL
+												WHERE JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
+								$this->db->query($s_UPDJLD);
+							endforeach;
+						endforeach;
+
+						$s_00 	= "SELECT DISTINCT ITM_CODE FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND $FLD_NUM = '$DOC_NUM'";
+						$r_00	= $this->db->query($s_00)->result();
+						foreach($r_00 as $rw_00):
+							$ITM_CODE 	= $rw_00->ITM_CODE;
+
+							$s_03 		= "SELECT 
+												IFNULL(SUM(AMD_VOLM), 0) 	AS TDOC_VOL,
+												IFNULL(SUM(AMD_TOTAL), 0) 	AS TDOC_VAL
+											FROM $tblD_NM WHERE $FLD_STAT IN (3,6) AND ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
+							$r_03	= $this->db->query($s_03)->result();
+							foreach($r_03 as $rw_03):
+								$TDOC_VOL 	= $rw_03->TDOC_VOL;
+								$TDOC_VAL 	= $rw_03->TDOC_VAL;
+
+								$s_UPDJLD 	= "UPDATE tbl_item_$PRJCODEVW SET $FLD_VOL = $TDOC_VOL, $FLD_VAL = $TDOC_VAL
+												WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
+								$this->db->query($s_UPDJLD);
+							endforeach;
+						endforeach;
+					// END : UPDATE JOBLIST DETAIL
+				}
+				elseif($DOC_STAT == 1 || $DOC_STAT == 2 || $DOC_STAT == 4 || $DOC_STAT == 7)
+				{
+					$copyDATA	= "INSERT INTO tbl_item_logbook_$PRJCODEVW (PRJCODE, DOC_ID, DOC_NUM, DOC_CODE, DOC_DATE, DOC_CATEG, DOC_STAT, REF_ID, JOBCODEID, ITM_CODE, ITM_UNIT,
+										ITM_GROUP, RAP_VOL, RAP_VAL, DOC_VOL, DOC_VAL, DOC_CVOL, DOC_CVAL, AMD_VOL_R, AMD_VAL_R, DOC_DESC, DOC_CREATER, DOC_CREATED)
+									SELECT A.PRJCODE, A.AMDD_ID, A.AMD_NUM, A.AMD_CODE, A.AMD_DATE, 'AMD', A.AMD_STAT, 0, A.JOBCODEID, A.ITM_CODE, A.ITM_UNIT,
+										A.ITM_GROUP, B.ITM_VOLM, B.ITM_BUDG, A.AMD_VOLM, A.AMD_TOTAL, 0, 0, A.AMD_VOLM, A.AMD_TOTAL, A.AMD_DESC, '$DefEmp_ID', '$DOC_CREATED'
+									FROM tbl_amd_detail A INNER JOIN tbl_joblist_detail B ON A.JOBCODEID = B.JOBCODEID AND A.PRJCODE = B.PRJCODE
+									WHERE A.AMD_NUM = '$DOC_NUM' ORDER BY A.AMD_DATE, A.AMD_CODE";
+					$this->db->query($copyDATA);
+
+					$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY JOBCODEID";
+					$r_DOC		= $this->db->query($s_DOC)->result();
+					foreach($r_DOC as $rw_DOC):
+						$JOBCODEID 	= $rw_DOC->JOBCODEID;
+						$ITM_CODE 	= $rw_DOC->ITM_CODE;
+
+						$u_JL		= "UPDATE tbl_joblist_detail_$PRJCODEVW A SET
+											A.AMD_VOL_R  = (SELECT sum(B.AMD_VOLM) 		FROM   tbl_amd_detail B WHERE  B.JOBCODEID = A.JOBCODEID),
+											A.AMD_VAL_R  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail B WHERE  B.JOBCODEID = A.JOBCODEID)
+										WHERE A.JOBCODEID = '$JOBCODEID'";
+						$this->db->query($u_JL);
+					endforeach;
+
+					$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY ITM_CODE";
+					$r_DOC		= $this->db->query($s_DOC)->result();
+					foreach($r_DOC as $rw_DOC):
+						$JOBCODEID 	= $rw_DOC->JOBCODEID;
+						$ITM_CODE 	= $rw_DOC->ITM_CODE;
+
+						$u_ITM		= "UPDATE tbl_item_$PRJCODEVW A SET
+											A.AMD_VOL_R  = (SELECT sum(B.AMD_VOLM) 		FROM   tbl_amd_detail B WHERE  B.ITM_CODE = A.ITM_CODE),
+											A.AMD_VAL_R  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail B WHERE  B.ITM_CODE = A.ITM_CODE)
+										WHERE A.ITM_CODE = '$ITM_CODE'";
+						$this->db->query($u_ITM);
+					endforeach;
+
+					$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail_subs WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY JOBCODEID";
+					$r_DOC		= $this->db->query($s_DOC)->result();
+					foreach($r_DOC as $rw_DOC):
+						$JOBCODEID 	= $rw_DOC->JOBCODEID;
+						$ITM_CODE 	= $rw_DOC->ITM_CODE;
+
+						$u_JL		= "UPDATE tbl_joblist_detail_$PRJCODEVW A SET
+											A.AMDM_VOL  = (SELECT sum(B.AMD_VOLM) 	FROM   tbl_amd_detail_subs B WHERE  B.JOBCODEID = A.JOBCODEID),
+											A.AMDM_VAL  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail_subs B WHERE  B.JOBCODEID = A.JOBCODEID)
+										WHERE A.JOBCODEID = '$JOBCODEID'";
+						$this->db->query($u_JL);
+					endforeach;
+
+					$s_DOC		= "SELECT JOBCODEID, ITM_CODE FROM tbl_amd_detail_subs WHERE AMD_NUM = '$DOC_NUM' AND PRJCODE = '$PRJCODE' GROUP BY ITM_CODE";
+					$r_DOC		= $this->db->query($s_DOC)->result();
+					foreach($r_DOC as $rw_DOC):
+						$JOBCODEID 	= $rw_DOC->JOBCODEID;
+						$ITM_CODE 	= $rw_DOC->ITM_CODE;
+
+						$u_ITM		= "UPDATE tbl_item_$PRJCODEVW A SET
+											A.AMDM_VOL  = (SELECT sum(B.AMD_VOLM) 	FROM   tbl_amd_detail_subs B WHERE  B.ITM_CODE = A.ITM_CODE),
+											A.AMDM_VAL  = (SELECT sum(B.AMD_TOTAL) 	FROM   tbl_amd_detail_subs B WHERE  B.ITM_CODE = A.ITM_CODE)
+										WHERE A.ITM_CODE = '$ITM_CODE'";
+						$this->db->query($u_ITM);
+					endforeach;
+
+					// START : UPDATE JOBLIST DETAIL
+						$tblD_NM	= "tbl_amd_detail";
+						$FLD_NUM 	= "AMD_NUM";
+						$FLD_STAT 	= "AMD_STAT";
+						$FLD_VOL	= "AMD_VOL";
+						$FLD_VAL	= "AMD_VAL";
+						//$FLD_CVOL	= "AMD_CVOL";
+						//$FLD_CVAL	= "AMD_CVAL";
+						$FLD_VOL_R	= "AMD_VOL_R";
+						$FLD_VAL_R	= "AMD_VAL_R";
+
+						$s_00 	= "SELECT DISTINCT JOBCODEID FROM $tblD_NM WHERE $FLD_STAT IN (1,2,4,7) AND $FLD_NUM = '$DOC_NUM'";
+						$r_00	= $this->db->query($s_00)->result();
+						foreach($r_00 as $rw_00):
+							$JOBID 	= $rw_00->JOBCODEID;
+
+							$s_02 	= "SELECT
+											IFNULL(SUM(AMD_VOLM), 0) 		AS TDOC_VOL,
+											IFNULL(SUM(AMD_TOTAL), 0) 	AS TDOC_VAL
+										FROM $tblD_NM WHERE $FLD_STAT IN (1,2,4,7) AND JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
+							$r_02	= $this->db->query($s_02)->result();
+							foreach($r_02 as $rw_02):
+								$TDOC_VOL_R = $rw_02->TDOC_VOL;
+								$TDOC_VAL_R = $rw_02->TDOC_VAL;
+
+								$s_UPDJLD 	= "UPDATE tbl_joblist_detail_$PRJCODEVW SET $FLD_VOL_R = $TDOC_VOL_R, $FLD_VAL_R = $TDOC_VAL_R
+												WHERE JOBCODEID = '$JOBID' AND PRJCODE = '$PRJCODE'";
+								$this->db->query($s_UPDJLD);
+							endforeach;
+						endforeach;
+
+						$s_00 	= "SELECT DISTINCT ITM_CODE FROM $tblD_NM WHERE $FLD_STAT IN (1,2,4,7) AND $FLD_NUM = '$DOC_NUM'";
+						$r_00	= $this->db->query($s_00)->result();
+						foreach($r_00 as $rw_00):
+							$ITM_CODE 	= $rw_00->ITM_CODE;
+
+							$s_04 	= "SELECT
+											IFNULL(SUM(AMD_VOLM), 0) 		AS TDOC_VOL,
+											IFNULL(SUM(AMD_TOTAL), 0) 	AS TDOC_VAL
+										FROM $tblD_NM WHERE $FLD_STAT IN (1,2,4,7) AND ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
+							$r_04	= $this->db->query($s_04)->result();
+							foreach($r_04 as $rw_04):
+								$TDOC_VOL_R = $rw_04->TDOC_VOL;
+								$TDOC_VAL_R = $rw_04->TDOC_VAL;
+
+								$s_UPDJLD 	= "UPDATE tbl_item_$PRJCODEVW SET $FLD_VOL_R = $TDOC_VOL_R, $FLD_VAL_R = $TDOC_VAL_R
+												WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
+								$this->db->query($s_UPDJLD);
+							endforeach;
+						endforeach;
+					// END : UPDATE JOBLIST DETAIL
+				}
 			}
 		}
 		elseif($DOC_CATEG == 'AMDSUB')

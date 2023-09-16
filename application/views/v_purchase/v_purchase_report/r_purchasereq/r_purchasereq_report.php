@@ -163,18 +163,15 @@ else
     <tr>
         <td colspan="3" class="style2">
             <table width="100%" border="1" rules="all">
-				<tr style="background:#CCCCCC">
-                	<td width="2%" rowspan="3" nowrap style="text-align:center; font-weight:bold">NO.</td>
-                  	<td nowrap colspan="4" style="text-align:center; font-weight:bold">SPP</td>
-                  	<td nowrap colspan="3" nowrap style="text-align:center; font-weight:bold">PO</td>
-                  	<td width="5%" rowspan="3" nowrap style="text-align:center; font-weight:bold">VOL.<br>SISA SPP</td>
-                  	<td width="5%" rowspan="3" nowrap style="text-align:center; font-weight:bold">SATUAN</td>
-                </tr>
                 <tr style="background:#CCCCCC">
-                  	<td width="5%" nowrap style="text-align:center; font-weight:bold">KODE</td>
-                  	<td width="5%" nowrap style="text-align:center; font-weight:bold">TANGGAL</td>
-                  	<td nowrap style="text-align:center; font-weight:bold">ITEM</td>
-                  	<td width="5%" nowrap style="text-align:center; font-weight:bold">VOL. SPP</td>
+                    <td width="2%" rowspan="2" nowrap style="text-align:center; font-weight:bold">NO.</td>
+                  	<td width="5%" rowspan="2" nowrap style="text-align:center; font-weight:bold">KODE</td>
+                  	<td width="5%" rowspan="2" nowrap style="text-align:center; font-weight:bold">TANGGAL</td>
+                  	<td rowspan="2" nowrap style="text-align:center; font-weight:bold">ITEM</td>
+                  	<td width="5%" rowspan="2" nowrap style="text-align:center; font-weight:bold">VOL. SPP</td>
+                  	<td colspan="3" nowrap style="text-align:center; font-weight:bold">PO</td>
+                  	<td width="5%" rowspan="2" nowrap style="text-align:center; font-weight:bold">VOL.<br>SISA SPP</td>
+                  	<td width="5%" rowspan="2" nowrap style="text-align:center; font-weight:bold">SATUAN</td>
               	</tr>
                 <tr style="background:#CCCCCC">
                   <td nowrap style="text-align:center; font-weight:bold">NO. PO</td>
@@ -213,20 +210,18 @@ else
 					}
 					else					// ALL PROJECT
 					{
-						$addQPR_NUM = "";
-						if($PR_NUM != 'All') $addQPR_NUM = "AND B.PR_NUM = '$PR_NUM'";
 						$sql0 		= "tbl_pr_detail A
 											INNER JOIN tbl_pr_header B ON A.PR_NUM = B.PR_NUM
 										WHERE B.PRJCODE IN ('$PRJCODECOL')
 											AND B.PR_DATE > '$StartDate' AND B.PR_DATE < '$EndDate'";
-						$sql1 		= "SELECT A.PR_ID, A.ITM_CODE, A.ITM_UNIT, A.PR_VOLM, A.PR_CVOL, A.PO_VOLM, A.IR_VOLM, (A.PR_TOTAL-A.PR_CTOTAL) AS PR_TOTAL, A.PR_DESC,
+						$sql1 		= "SELECT A.PR_ID, A.ITM_CODE, A.ITM_UNIT, (A.PR_VOLM-A.PR_CVOL) AS PR_VOLM, A.PO_VOLM, A.IR_VOLM, (A.PR_TOTAL-A.PR_CTOTAL) AS PR_TOTAL, A.PR_DESC,
 											B.PR_NUM, B.PR_CODE, B.JOBCODE, B.PR_DATE, A.PRJCODE, B.SPLCODE, B.PR_NOTE, 
 											B.PR_NOTE2, B.PR_PLAN_IR,
 											B.PR_STAT, B.PR_VALUE, B.PR_REFNO
 										FROM tbl_pr_detail A
 											INNER JOIN tbl_pr_header B ON A.PR_NUM = B.PR_NUM
 										WHERE B.PRJCODE IN ('$PRJCODECOL')
-											AND B.PR_DATE >= '$StartDate' AND B.PR_DATE <= '$EndDate' $addQPR_NUM
+											AND B.PR_DATE >= '$StartDate' AND B.PR_DATE <= '$EndDate'
 										ORDER BY B.PR_NUM";
 					}
 					
@@ -268,7 +263,6 @@ else
 							$ITM_NAME	= '';
 							$ITM_UNIT 	= $rowsql1->ITM_UNIT;
 							$PR_VOLM 	= $rowsql1->PR_VOLM;
-							$PR_CVOL 	= $rowsql1->PR_CVOL;
 							$PO_VOLM 	= $rowsql1->PO_VOLM;
 							$IR_VOLM 	= $rowsql1->IR_VOLM;
 							$PR_TOTAL 	= $rowsql1->PR_TOTAL;

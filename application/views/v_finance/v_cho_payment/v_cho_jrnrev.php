@@ -32,7 +32,8 @@ $DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 
 $PRJNAME	= '';
 $PRJSTAT	= 0;
-$sql 		= "SELECT PRJNAME, PRJSTAT FROM tbl_project_budg WHERE PRJCODE = '$PRJCODE'";
+// $sql 		= "SELECT PRJNAME, PRJSTAT FROM tbl_project_budg WHERE PRJCODE = '$PRJCODE'";
+$sql 		= "SELECT PRJNAME, PRJSTAT FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
 $result		= $this->db->query($sql)->result();
 foreach($result as $row) :
 	$PRJNAME = $row ->PRJNAME;

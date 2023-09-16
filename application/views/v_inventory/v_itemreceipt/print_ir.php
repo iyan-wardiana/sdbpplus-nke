@@ -663,6 +663,8 @@
                                     $ITM_TOTAL      = $ITM_QTY * $ITM_PRICE; // jumlah penerimaan sebelum ditambah OA (ongkos angkut)
                                     $NOTES          = $row->NOTES;
 
+                                    $IR_AMOUNT      = $IR_AMOUNT + $ITM_TOTAL;
+
                                     if($ITM_UNIT2 == '') $ITM_UNIT2 = $ITM_UNIT;
 
                                     if($JOBPARENT == '')
@@ -725,7 +727,9 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="11">CATATAN HASIL PENERAPAN :</td>
+                            <td colspan="7">CATATAN HASIL PENERAPAN :</td>
+                            <td colspan="1" style="text-align: right; font-weight: bold;"><b> <?=number_format($IR_AMOUNT,2)?></b></td>
+                            <td colspan="3">&nbsp;</td>
                         </tr>
                     </tfoot>
                 </table>

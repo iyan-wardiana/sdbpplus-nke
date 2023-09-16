@@ -228,6 +228,15 @@ else
 			document.getElementById('urlSv').value 			= urlSv;
 			document.getElementById('btnModal').click();
 		}
+
+		function showHist(LinkD)
+		{
+			w = 1000;
+			h = 550;
+			var left = (screen.width/2)-(w/2);
+			var top = (screen.height/2)-(h/2);
+			window.open(LinkD,'popUpWindow','height='+h+',width='+w+',left='+left+',top='+top+',resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+		}
 	</script>
 	<?php
 
@@ -803,14 +812,18 @@ else
 	    });
 	});
 
+	var ITM_GROUP 	= document.getElementById('ITM_GROUP').value;
+	var ITM_CATEG 	= document.getElementById('ITM_CATEG').value;
+
 	$(document).ready(function() {
 	    $('#example').DataTable( {
+			"bDestroy": true,
 	        "processing": true,
 	        "serverSide": true,
 			//"scrollX": false,
 			"autoWidth": true,
 			"filter": true,
-	        "ajax": "<?php echo site_url('c_inventory/c_it180e2elst/get_AllData/?id='.$PRJCODE)?>",
+	        "ajax": "<?php echo site_url('c_inventory/c_it180e2elst/get_AllDataGRP/?id='.$PRJCODE)?>"+'&ITMGRP='+ITM_GROUP+'&ITMCAT='+ITM_CATEG,
 	        "type": "POST",
 			"lengthMenu": [[10, 25, 50, 100, 200], [10, 25, 50, 100, 200]],
 			"columnDefs": [	{ targets: [2,3,4,5,6], className: 'dt-body-right' },

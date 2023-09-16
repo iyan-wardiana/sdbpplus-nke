@@ -119,14 +119,72 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 		}
 
 		$PRJCODE		= $PRJCODE;
-		$sql 			= "SELECT PRJNAME, PRJCOST, RAPT_STAT, RAPP_STAT FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
+		$PRJ_IMGNAME 	= "building.jpg";
+		$RAPP_STAT 		= 0;
+		$RAPT_STAT 		= 0;
+		$PRJADD 		= "-";
+		$PRJ_ISLOCK 	= 0;
+		$RAPT_EDATE 	= date('Y-m-d');
+		$RAPP_EDATE 	= date('Y-m-d');
+		$PRJSTAT 		= 0;
+		$sql 			= "SELECT PRJNAME, PRJPERIOD, PRJ_IMGNAME, PRJCOST, PRJRAPT, RAPP_STAT, RAPT_STAT, PRJADD, PRJ_LOCK_STAT, RAPT_EDATE, RAPP_EDATE, PRJSTAT
+								FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
 		$result 		= $this->db->query($sql)->result();
 		foreach($result as $row) :
 			$PRJNAME 	= $row->PRJNAME;
+			$PRJPERIOD 	= $row->PRJPERIOD;
+			$PRJ_IMGNAME= $row->PRJ_IMGNAME;
 			$PRJCOST 	= $row->PRJCOST;
-			$RAPT_STAT 	= $row->RAPT_STAT;
+			$PRJRAPT 	= $row->PRJRAPT;
 			$RAPP_STAT 	= $row->RAPP_STAT;
+			$RAPT_STAT 	= $row->RAPT_STAT;
+			$PRJADD 	= $row->PRJADD;
+			$PRJ_ISLOCK	= $row->PRJ_LOCK_STAT;
+			$RAPT_EDATE = $row->RAPT_EDATE;
+			$RAPP_EDATE = $row->RAPP_EDATE;
+			$PRJSTAT 	= $row->PRJSTAT;
 		endforeach;
+		if($RAPT_STAT == 0)
+			$RAPP_STAT 	= 0;
+
+		// START : LOCK PROCEDURE
+			$dtRAPT   	= date('Y-m-d', strtotime($RAPT_EDATE));
+			$dtRAPP   	= date('Y-m-d', strtotime($RAPP_EDATE));
+			$dtN 		= date('Y-m-d');
+			$dtNOW 		= new DateTime($dtN);
+			$dtRAPTE	= new DateTime($dtRAPT);
+			$dtRAPPE	= new DateTime($dtRAPP);
+			$remRAPT	= $dtNOW->diff($dtRAPTE)->days + 1;
+			$remRAPP	= $dtNOW->diff($dtRAPPE)->days + 1;
+
+			$remRAPTD 	= $remRAPT." hari";
+			$remRAPPD 	= $remRAPP." hari";
+			$LOCRAPTKD 	= "";
+			$LOCRAPPKD 	= "";
+			if($dtN > $dtRAPT && $RAPT_STAT == 0 && $PRJSTAT == 1)			// LOCK RAPT 16 DAYS AFTER BOQ
+			{
+				$remRAPTD 	= "- ".$remRAPT." hari";
+				$RAPT_STAT 	= 1;
+				$LOCRAPTKD 	= "Locked by System.";
+			}
+			elseif($dtRAPT < $dtN && $RAPT_STAT == 1 && $PRJSTAT == 1)			// LOCK RAPT 16 DAYS AFTER BOQ
+			{
+				$remRAPTD 	= "Selesai";
+				$RAPT_STAT 	= 1;
+			}
+
+			if($dtN > $dtRAPP && $RAPP_STAT == 0 && $PRJSTAT == 1)			// LOCK RAPP 60 DAYS AFTER RAPT
+			{
+				$remRAPPD 	= "- ".$remRAPP." hari";
+				$RAPP_STAT 	= 1;
+				$LOCRAPPKD 	= "Locked by System.";
+			}
+			elseif($dtRAPP < $dtN && $RAPP_STAT == 1 && $PRJSTAT == 1)			// LOCK RAPT 16 DAYS AFTER BOQ
+			{
+				$remRAPPD 	= "Selesai";
+				$RAPP_STAT 	= 1;
+			}
+		// END : LOCK PROCEDURE
 	?>
 			
 	<style>

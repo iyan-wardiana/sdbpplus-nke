@@ -84,6 +84,7 @@ endforeach;
 		$ISCREATE 	= $this->session->userdata['ISCREATE'];
 		$ISAPPROVE 	= $this->session->userdata['ISAPPROVE'];
 		$ISDWONL 	= $this->session->userdata['ISDWONL'];
+		$ISDELETE 	= $this->session->userdata['ISDELETE'];
 		$LangID 	= $this->session->userdata['LangID'];
 
 		$sqlTransl		= "SELECT MLANG_CODE, MLANG_$LangID AS LangTransl FROM tbl_translate";
@@ -109,6 +110,7 @@ endforeach;
 			if($TranslCode == 'sureDelete')$sureDelete = $LangTransl;
 			if($TranslCode == 'yesDel')$yesDel = $LangTransl;
 			if($TranslCode == 'cancDel')$cancDel = $LangTransl;
+			if($TranslCode == 'Upload')$Upload = $LangTransl;
 		endforeach;
 
 		$comp_color = $this->session->userdata('comp_color');
@@ -165,8 +167,11 @@ endforeach;
                     	if($disAdd == 0 OR $PRJCODE == '363022')
                     	{
 							$url_add = site_url('c_comprof/c_am1h0db2/i180dahdd_pek/?id='.$this->url_encryption_helper->encode_url($PRJCODE));
-							echo anchor("$url_add",'<button class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i></button>&nbsp;&nbsp;');
+							echo anchor("$url_add",'<button class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i></button>&nbsp;');
 						}
+                    	if($ISDELETE == 1)
+                        	echo anchor("$secUpl",'<button class="btn btn-warning" title="'.$Upload.'"><i class="glyphicon glyphicon-import"></i></button>&nbsp;');
+
 						echo anchor("$backURL",'<button class="btn btn-danger" type="button"><i class="fa fa-reply"></i></button>');							
 						if ( ! empty($link))
 						{

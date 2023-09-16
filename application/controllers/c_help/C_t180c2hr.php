@@ -158,8 +158,8 @@ class C_t180c2hr extends CI_Controller
 			{
 				$TASK_CODE		= $dataI['TASK_CODE'];
 				$TASK_MENU		= $dataI['TASK_MENU'];
-				$TASK_DATE		= $dataI['TASK_DATE'];
-				$TASK_DATEV 	= strftime('%d %B %Y', strtotime($TASK_DATE));
+				$TASK_CREATED 	= $dataI['TASK_CREATED'];
+				$TASK_DATEV 	= strftime('%d %B %Y %R', strtotime($TASK_CREATED));
 				$TASK_TITLE		= $dataI['TASK_TITLE'];
 				$TASK_CATEG		= $dataI['TASK_CATEG'];
 				if($TASK_CATEG == 1)
@@ -811,10 +811,13 @@ class C_t180c2hr extends CI_Controller
 						--------------------------------------- pickyassist.com -------------------------- */
 
 						/* ------------------------------ Maxhat.id -------------------------------------- */
-							$url 		= "https://demo.maxchat.id/demo4/api//messages/push";
-							$token 		= "CY94HXh7bYDTkcuMPWxUNo";
+							// $url 		= "https://user.maxchat.id/nke-official-center/api/messages?direct=true";
+							// migrasi akun tgl. 15-08-2023
+							$url 		= "https://core.maxchat.id/nke-official-center/api/messages";
+							$token 		= "Pzdt3uJuftCaXivWuxn3Tt";
 
-							$JSON_DATA	= array("to" => $AS_MPHONE1, "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*");
+							// $JSON_DATA	= array("to" => $AS_MPHONE1, "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*");
+							$JSON_DATA	= array("to" => $AS_MPHONE1, "type" => "text", "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*", "useTyping" => false);
 							$curl 		= curl_init();
 
 							curl_setopt_array($curl, array(
@@ -840,11 +843,11 @@ class C_t180c2hr extends CI_Controller
 
 							curl_close($curl);
 
-							if ($err) {
-								echo "cURL Error #:" . $err;
-							} else {
-								echo $response;
-							}
+							// if ($err) {
+							// 	echo "cURL Error #:" . $err;
+							// } else {
+							// 	echo $response;
+							// }
 
 							$JSON_DATA	= array("to" => $AS_MPHONE2, "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*");
 							$curl 		= curl_init();
@@ -872,11 +875,11 @@ class C_t180c2hr extends CI_Controller
 
 							curl_close($curl);
 
-							if ($err) {
-								echo "cURL Error #:" . $err;
-							} else {
-								echo $response;
-							}
+							// if ($err) {
+							// 	echo "cURL Error #:" . $err;
+							// } else {
+							// 	echo $response;
+							// }
 						/*-------------------------------- Maxhat.id ---------------------------------- */
 					}
 				}
@@ -907,10 +910,13 @@ class C_t180c2hr extends CI_Controller
 						--------------------------------------- pickyassist.com -------------------------- */
 
 						/*-------------------------------- Maxhat.id ---------------------------------- */
-							$url 		= "https://demo.maxchat.id/demo4/api//messages/push";
-							$token 		= "CY94HXh7bYDTkcuMPWxUNo";
+							// $url 		= "https://user.maxchat.id/nke-official-center/api/messages?direct=true";
+							// migrasi akun tgl. 15-08-2023
+							$url 		= "https://core.maxchat.id/nke-official-center/api/messages";
+							$token 		= "Pzdt3uJuftCaXivWuxn3Tt";
 
-							$JSON_DATA	= array("to" => $AS_MPHONE, "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*");
+							// $JSON_DATA	= array("to" => $AS_MPHONE, "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*");
+							$JSON_DATA	= array("to" => $AS_MPHONE, "type" => "text", "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*", "useTyping" => false);
 							$curl 		= curl_init();
 
 							curl_setopt_array($curl, array(
@@ -936,11 +942,11 @@ class C_t180c2hr extends CI_Controller
 
 							curl_close($curl);
 
-							if ($err) {
-								echo "cURL Error #:" . $err;
-							} else {
-								echo $response;
-							}
+							// if ($err) {
+							// 	echo "cURL Error #:" . $err;
+							// } else {
+							// 	echo $response;
+							// }
 						/*-------------------------------- Maxhat.id ---------------------------------- */
 					}
 				}
@@ -1021,6 +1027,8 @@ class C_t180c2hr extends CI_Controller
 		$FileUpName	= $collLink1[1];
 		// echo $theLink;
 		// return false;
+		ob_start();
+		
 		header("Content-Type: text/plain; charset=utf-8");
 		header("Content-Type: application/force-download");
 		header("Content-Disposition: attachment; filename=".$FileUpName);

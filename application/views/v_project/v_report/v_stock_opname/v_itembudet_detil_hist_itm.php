@@ -235,7 +235,7 @@ if($DefEmp_ID == 'D15040004221' || $DefEmp_ID == 'E13120003019' || $DefEmp_ID ==
 								$colStyl 	= "background-color: rgb(233, 233, 233);";
 								$colStyl2 	= "";
 								$r_JLC 		= 0;
-								$sqlJD		= "SELECT * FROM tbl_item_logbook_$PRJCODEVW
+								$sqlJD		= "SELECT *, IF(DOC_STAT=3 OR DOC_STAT=6, 1, 0) AS STAT_PLUS FROM tbl_item_logbook_$PRJCODEVW
 												WHERE PRJCODE = '$PRJCODE' AND ITM_CODE = '$ITM_CODE' AND DOC_CATEG IN ($DOCCATEG) AND DOC_DATE BETWEEN '$Start_Date' AND '$End_Date'
 												ORDER BY DOC_DATE, DOC_CODE, JOBCODEID, DOC_ID";
 								$resJD		= $this->db->query($sqlJD)->result();
@@ -260,7 +260,8 @@ if($DefEmp_ID == 'D15040004221' || $DefEmp_ID == 'E13120003019' || $DefEmp_ID ==
 									$DOC_VAL 		= $rowJD->DOC_VAL;
 									$DOC_CVOL 		= $rowJD->DOC_CVOL;
 									$DOC_CVAL 		= $rowJD->DOC_CVAL;
-									$DOC_DESC 		= $rowJD->DOC_DESC;
+									$DOC_STAT 		= $rowJD->DOC_STAT;
+									$STAT_PLUS 		= $rowJD->STAT_PLUS;
 
 									$RAPVW_VOL 		= 0;
 									$RAPVW_VAL 		= 0;
@@ -332,11 +333,19 @@ if($DefEmp_ID == 'D15040004221' || $DefEmp_ID == 'E13120003019' || $DefEmp_ID ==
 										$REMA_VOL 	= round($REMA_VOL,2);
 										$REMA_VAL 	= round($REMA_VAL,2);
 
-										$REMB_VOL 	= round($REMB_VOL + $AMD_VOL,2);
-										$REMB_VAL 	= round($REMB_VAL + $AMD_VAL,2);
+										$REMB_VOL 	= round($REMB_VOL,2);
+										$REMB_VAL 	= round($REMB_VAL,2);
 
-										$REMC_VOL 	= round($REMC_VOL + $AMD_VOL,2);
-										$REMC_VAL 	= round($REMC_VAL + $AMD_VAL,2);
+										$REMC_VOL 	= round($REMC_VOL,2);
+										$REMC_VAL 	= round($REMC_VAL,2);
+										if($STAT_PLUS == 1)
+										{
+											$REMB_VOL 	= round($REMB_VOL + $AMD_VOL,2);
+											$REMB_VAL 	= round($REMB_VAL + $AMD_VAL,2);
+
+											$REMC_VOL 	= round($REMC_VOL + $AMD_VOL,2);
+											$REMC_VAL 	= round($REMC_VAL + $AMD_VAL,2);
+										}
 
 										// START : VIEW
 											$REMAV_VOL 	= round(0,2);
@@ -366,11 +375,19 @@ if($DefEmp_ID == 'D15040004221' || $DefEmp_ID == 'E13120003019' || $DefEmp_ID ==
 										$REMA_VOL 	= round($REMA_VOL,2);
 										$REMA_VAL 	= round($REMA_VAL,2);
 
-										$REMB_VOL 	= round($REMB_VOL - $AMD_VOL,2);
-										$REMB_VAL 	= round($REMB_VAL - $AMD_VAL,2);
+										$REMB_VOL 	= round($REMB_VOL,2);
+										$REMB_VAL 	= round($REMB_VAL,2);
 
-										$REMC_VOL 	= round($REMC_VOL - $AMD_VOL,2);
-										$REMC_VAL 	= round($REMC_VAL - $AMD_VAL,2);
+										$REMC_VOL 	= round($REMC_VOL,2);
+										$REMC_VAL 	= round($REMC_VAL,2);
+										if($STAT_PLUS == 1)
+										{
+											$REMB_VOL 	= round($REMB_VOL - $AMD_VOL,2);
+											$REMB_VAL 	= round($REMB_VAL - $AMD_VAL,2);
+
+											$REMC_VOL 	= round($REMC_VOL - $AMD_VOL,2);
+											$REMC_VAL 	= round($REMC_VAL - $AMD_VAL,2);
+										}
 
 										// START : VIEW
 											$REMAV_VOL 	= round(0,2);
@@ -486,10 +503,18 @@ if($DefEmp_ID == 'D15040004221' || $DefEmp_ID == 'E13120003019' || $DefEmp_ID ==
 										if(($INV_REF != "" || $BP_REF != "") AND $showINV == 1)
 											$REF_NUM 	= "$INV_REF. $BP_REF";
 
-										$TOT_IRVOL 	= $TOT_IRVOL 	+ $IR_VOL;
-										$TOT_IRVAL 	= $TOT_IRVAL 	+ $IR_VAL;
-										$TOT_VOL 	= $TOT_VOL 		+ $IR_VOL;
-										$TOT_VAL 	= $TOT_VAL 		+ $IR_VAL;
+
+										$TOT_IRVOL 	= $TOT_IRVOL;
+										$TOT_IRVAL 	= $TOT_IRVAL;
+										$TOT_VOL 	= $TOT_VOL;
+										$TOT_VAL 	= $TOT_VAL;
+										if($STAT_PLUS == 1)
+										{
+											$TOT_IRVOL 	= $TOT_IRVOL 	+ $IR_VOL;
+											$TOT_IRVAL 	= $TOT_IRVAL 	+ $IR_VAL;
+											$TOT_VOL 	= $TOT_VOL 		+ $IR_VOL;
+											$TOT_VAL 	= $TOT_VAL 		+ $IR_VAL;
+										}
 									}
 									elseif($DOC_CATEG == 'UM')
 									{
@@ -561,10 +586,17 @@ if($DefEmp_ID == 'D15040004221' || $DefEmp_ID == 'E13120003019' || $DefEmp_ID ==
 										$PWO_VOL 	= $WO_VOL;
 										$PWO_VAL 	= $WO_VAL;
 
-										$TOT_POVOL 	= $TOT_POVOL 	+ $WO_VOL;
-										$TOT_POVAL 	= $TOT_POVAL 	+ $WO_VAL;
-										$TOT_VOL 	= $TOT_VOL 		+ $WO_VOL;
-										$TOT_VAL 	= $TOT_VAL 		+ $WO_VAL;
+										$TOT_POVOL 	= $TOT_POVOL;
+										$TOT_POVAL 	= $TOT_POVAL;
+										$TOT_VOL 	= $TOT_VOL;
+										$TOT_VAL 	= $TOT_VAL;
+										if($STAT_PLUS == 1)
+										{
+											$TOT_POVOL 	= $TOT_POVOL 	+ $WO_VOL;
+											$TOT_POVAL 	= $TOT_POVAL 	+ $WO_VAL;
+											$TOT_VOL 	= $TOT_VOL 		+ $WO_VOL;
+											$TOT_VAL 	= $TOT_VAL 		+ $WO_VAL;
+										}
 									}
 									elseif($DOC_CATEG == 'OPN')
 									{
@@ -658,7 +690,7 @@ if($DefEmp_ID == 'D15040004221' || $DefEmp_ID == 'E13120003019' || $DefEmp_ID ==
 			                                    <td style="text-align:right"><?php echo number_format($PR_VAL,2); ?></td>
 			                                    <td style="text-align:right; background-color: rgb(233, 233, 233);"><?php echo number_format($PWO_VOL,2); ?></td>
 			                                    <td style="text-align:right; background-color: rgb(233, 233, 233);"><?php echo number_format($PWO_VAL,2); ?></td>
-			                                    <td style="text-align:right"><?php echo number_format($IR_VOL,2); ?></td>
+			                                    <td style="text-align:right; <?php if($STAT_PLUS == 0) { ?> background-color: lightyellow; <?php } ?>"><?php echo number_format($IR_VOL,2); ?></td>
 			                                    <td style="text-align:right;"><?php echo number_format($IR_VAL,2); ?></td>
 			                                    <td style="text-align:right; background-color: rgb(233, 233, 233);"><?php echo number_format($UM_VOL,2); ?></td>
 			                                    <td style="text-align:right; background-color: rgb(233, 233, 233);"><?php echo number_format($UM_VAL,2); ?></td>

@@ -744,7 +744,7 @@ $updDESC 	= base_url().'index.php/c_purchase/c_pr180d0c/updDESC/?id=';
 				                    <div class="col-sm-4">
 				                        <div class="input-group date">
 				                        	<div class="input-group-addon"><i class="fa fa-calendar"></i>&nbsp;</div>
-				                        	<input type="text" name="PR_DATEX" class="form-control pull-left" id="datepicker" value="<?php echo $PR_DATE; ?>" onChange="getPR_NUM(this.value)" disabled>
+				                        	<input type="text" name="PR_DATEX" class="form-control pull-left" id="datepicker" value="<?php echo $PR_DATE; ?>" onChange="getPR_NUM(this.value)">
 				                        	<input type="hidden" name="PR_DATE" class="form-control pull-left" id="PR_DATE" value="<?php echo $PR_DATE; ?>">
 				                        </div>
 				                    </div>

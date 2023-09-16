@@ -518,6 +518,7 @@ if($Source == 1)
 			<section class="content">
 		    	<div class="row">
 			        <form class="form-horizontal" name="frm" method="post" action="<?php echo $form_action; ?>" enctype="multipart/form-data" onSubmit="return validateInData()">
+						<input type="hidden" name="DefEmp_ID" id="DefEmp_ID" value="<?php echo $DefEmp_ID; ?>">
 			            <input type="hidden" name="IS_LAST" id="IS_LAST" value="<?php echo $IS_LAST; ?>">
 			            <input type="hidden" name="APP_LEVEL" id="APP_LEVEL" value="<?php echo $APP_LEVEL; ?>">
 			            <input type="hidden" name="decFormat" id="decFormat" value="<?php echo $decFormat; ?>" />
@@ -1683,6 +1684,7 @@ if($Source == 1)
 		{
 			var url         = "<?php echo site_url('lck/appStat')?>";
 			let DOC_DATE 	= $('#datepicker').val();
+			let DEF_EMP 	= $('#DefEmp_ID').val(); 			// L14030003372
 			console.log(DOC_DATE);
 			
 				
@@ -1710,7 +1712,7 @@ if($Source == 1)
 					let UserLockT	= response[0].UserLock;
 					console.log("isLockT ="+isLockT+" isLockJ = "+isLockJ+" LockCateg = "+LockCateg);
 
-					if(isLockJ == 1)
+					if(isLockJ == 1 && DEF_EMP != 'L14030003372')
 					{
 						$('#alrtLockJ').css('display','');
 						document.getElementById('divAlert').style.display   = 'none';
@@ -1725,7 +1727,7 @@ if($Source == 1)
 						// document.getElementById('btnSave').style.display    = '';
 					}
 
-					if(isLockT == 1)
+					if(isLockT == 1 && DEF_EMP != 'L14030003372')
 					{
 						if(LockCateg == 1)
 						{
@@ -1746,7 +1748,7 @@ if($Source == 1)
 					}
 					else
 					{
-						if(LockCateg == 1)
+						if(LockCateg == 1 && DEF_EMP != 'L14030003372')
 						{
 							$('#alrtLockJ').css('display','none');
 							document.getElementById('divAlert').style.display   = 'none';

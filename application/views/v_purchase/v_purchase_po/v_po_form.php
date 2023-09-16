@@ -3658,7 +3658,6 @@ $updDESC 	= base_url().'index.php/c_purchase/c_pr180d0c/updDESC/?id=';
 			            	taxPerc 		= parseFloat(taxPerc1 / 100);
 			            	TAX1VAL			= parseFloat(ITMPRICE_TEMP * taxPerc);
 							document.getElementById('data'+row+'TAXPRICE1').value 	= parseFloat(Math.abs(TAX1VAL));
-							document.getElementById('TAXPRICE1'+row).value 	= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(TAX1VAL)), 2));
 
 							if(taxType == 1)		// 1 = PPn, 2 = PPh
 								PO_COSTnPPn		= parseFloat(ITMPRICE_TEMP + TAX1VAL);
@@ -4035,7 +4034,7 @@ $updDESC 	= base_url().'index.php/c_purchase/c_pr180d0c/updDESC/?id=';
 				let PRD_ID 			= document.getElementById('data'+row+'PRD_ID').value;
 				$.ajax({
                     type: 'POST',
-                    url: "<?php // echo site_url("c_purchase/c_p180c21o/updPOVolTemp"); ?>",
+                    url: "<?php echo site_url("c_purchase/c_p180c21o/updPOVolTemp"); ?>",
                     data: {PR_NUM:PR_NUM, PRJCODE:PRJCODE, JOBCODEID:JOBCODEID, PRD_ID:PRD_ID, PO_VOLM:PO_VOLM, PO_PRICE:PO_PRICE},
                     success: function(response)
                     {
@@ -5002,14 +5001,6 @@ $updDESC 	= base_url().'index.php/c_purchase/c_pr180d0c/updDESC/?id=';
 		$('.select2').select2();
 
 		console.log(intIndex+' => 13');
-
-		// <!-- TAXPRICE1 -->
-		TAXPRICE1vx 	= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(TAXPRICE1)), decFormat));
-		objTD = objTR.insertCell(objTR.cells.length);
-		objTD.style.textAlign = 'right';
-		objTD.innerHTML = '<input type="text" class="form-control" style="text-align:right; min-width:90px;" name="TAXPRICE1'+intIndex+'" id="TAXPRICE1'+intIndex+'" size="10" value="'+TAXPRICE1vx+'" onKeyPress="return isIntOnlyNew(event);" onBlur="getValuePO_TAX('+intIndex+');">'+
-						  '<input style="text-align:right" type="text" name="data['+intIndex+'][TAXPRICE1]" id="data'+intIndex+'TAXPRICE1" value="'+TAXPRICE1+'">';
-		//swal(objTD.innerHTML);
 
 		// <!-- ITEM TOTAL COST -->
 		PO_COSTnPPnvx = doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(PO_COSTnPPn)), decFormat));

@@ -839,6 +839,7 @@ else
 					                    <label for="inputName" class="col-sm-3 control-label"><?php echo $Description; ?></label>
 					                    <div class="col-sm-9">
 					                    	<textarea name="JournalH_Desc" class="form-control" id="JournalH_Desc" style="height: 82px"><?php echo $JournalH_Desc; ?></textarea>
+					                        <input type="hidden" name="DefEmp_ID" id="DefEmp_ID" value="<?php echo $DefEmp_ID; ?>">
 					                        <input type="hidden" name="Journal_Amount" id="Journal_Amount" value="<?php echo $Journal_Amount; ?>">
 					                        <input type="hidden" name="Journal_AmountD" id="Journal_AmountD" value="<?php echo $Journal_Amount; ?>">
 					                        <input type="hidden" name="Journal_AmountK" id="Journal_AmountK" value="<?php echo $Journal_Amount; ?>">
@@ -1960,6 +1961,8 @@ else
 <script>
   	$(function ()
   	{
+  		let DEF_EMP 	= $('#DefEmp_ID').val();
+
 	    //Initialize Select2 Elements
 	    $(".select2").select2();
 
@@ -2001,11 +2004,22 @@ else
 			endDate: '+6d'
 	    });*/
 		$.fn.datepicker.defaults.format = "dd/mm/yyyy";
-	    $('#datepicker').datepicker({
-			autoclose: true,
-			startDate: '-60d',
-			endDate: '+0d'
-	    });
+		if(DEF_EMP == 'L14030003372')
+		{
+		    $('#datepicker').datepicker({
+				autoclose: true,
+				startDate: '-1000d',
+				endDate: '+0d'
+		    });
+		}
+		else
+		{
+		    $('#datepicker').datepicker({
+				autoclose: true,
+				startDate: '-60d',
+				endDate: '+0d'
+		    });
+		}
 
 	    //Date picker
 	    // LOCK DATE
@@ -2063,6 +2077,7 @@ else
 		{
 			var url         = "<?php echo site_url('lck/appStat')?>";
 			let DOC_DATE 	= $('#datepicker').val();
+			let DEF_EMP 	= $('#DefEmp_ID').val(); 			// L14030003372
 			console.log(DOC_DATE);
 			
 				
@@ -2088,9 +2103,8 @@ else
 					let isLockT		= response[0].isLock;	
 					let LockTDate	= response[0].LockDate;	
 					let UserLockT	= response[0].UserLock;
-					console.log("isLockT ="+isLockT+" isLockJ = "+isLockJ+" LockCateg = "+LockCateg);
 
-					if(isLockJ == 1)
+					if(isLockJ == 1 && DEF_EMP != 'L14030003372')
 					{
 						$('#alrtLockJ').css('display','');
 						document.getElementById('divAlert').style.display   = 'none';
@@ -2105,9 +2119,9 @@ else
 						// document.getElementById('btnSave').style.display    = '';
 					}
 
-					if(isLockT == 1)
+					if(isLockT == 1 && DEF_EMP != 'L14030003372')
 					{
-						if(LockCateg == 1)
+						if(LockCateg == 1 && DEF_EMP != 'L14030003372')
 						{
 							$('#alrtLockJ').css('display','');
 							document.getElementById('divAlert').style.display   = 'none';
@@ -2126,7 +2140,7 @@ else
 					}
 					else
 					{
-						if(LockCateg == 1)
+						if(LockCateg == 1 && DEF_EMP != 'L14030003372')
 						{
 							$('#alrtLockJ').css('display','none');
 							document.getElementById('divAlert').style.display   = 'none';

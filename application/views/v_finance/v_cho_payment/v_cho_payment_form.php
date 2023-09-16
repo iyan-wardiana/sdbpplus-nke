@@ -28,7 +28,8 @@ $decFormat		= 2;
 $FlagUSER 		= $this->session->userdata['FlagUSER'];
 $DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 
-$sql = "SELECT PRJNAME FROM tbl_project_budg WHERE PRJCODE = '$PRJCODE'";
+// $sql = "SELECT PRJNAME FROM tbl_project_budg WHERE PRJCODE = '$PRJCODE'";
+$sql = "SELECT PRJNAME FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
 $result = $this->db->query($sql)->result();
 foreach($result as $row) :
 	$PRJNAME = $row ->PRJNAME;

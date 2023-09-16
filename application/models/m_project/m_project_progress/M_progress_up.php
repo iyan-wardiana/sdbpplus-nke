@@ -173,13 +173,38 @@ class M_progress_up extends CI_Model
 
 		if($PROG_PERC > 0)
 		{
-			$s_01 = "UPDATE tbl_joblist SET BOQ_PROGR = $PROG_AKUM, BOQ_BOBOT_PI = BOQ_BOBOT_PI + $PROG_PERC, BOQ_BOBOT_PIV = BOQ_BOBOT_PIV + $PROG_VAL
+			/*$s_01 = "UPDATE tbl_joblist SET BOQ_PROGR = $PROG_AKUM, BOQ_BOBOT_PI = BOQ_BOBOT_PI + $PROG_PERC, BOQ_BOBOT_PIV = BOQ_BOBOT_PIV + $PROG_VAL
 						WHERE PRJCODE = '$PRJCODE' AND JOBCODEID = '$JOBCODEID'";
 			$this->db->query($s_01);
 
 			$s_01 = "UPDATE tbl_joblist_detail SET BOQ_PROGR = $PROG_AKUM, BOQ_BOBOT_PI = BOQ_BOBOT_PI + $PROG_PERC, BOQ_BOBOT_PIV = BOQ_BOBOT_PIV + $PROG_VAL
 						WHERE PRJCODE = '$PRJCODE' AND JOBCODEID = '$JOBCODEID'";
-			$this->db->query($s_01);
+			$this->db->query($s_01);*/
+			
+			$s_PERC		= "SELECT SUM(PROG_VAL) AS PROG_INTV, SUM(PROG_PERC) AS PROG_INTP,
+								SUM(PROG_VAL_EKS) AS PROG_EKSV, SUM(PROG_PERC_EKS) AS PROG_EKSP
+							FROM tbl_project_progress_det WHERE PRJCODE = '$PRJCODE' AND JOBCODEID = '$JOBCODEID'";
+			$r_PERC 		= $this->db->query($s_PERC)->result();
+			foreach($r_PERC as $rw_PERC) :
+				$PROG_INTV 	= $rw_PERC->PROG_INTV;
+				$PROG_INTP 	= $rw_PERC->PROG_INTP;
+				$PROG_EKSV 	= $rw_PERC->PROG_EKSV;
+				$PROG_EKSP 	= $rw_PERC->PROG_EKSP;
+
+				$s_01 	= "UPDATE tbl_joblist SET
+								BOQ_PROGR 		= $PROG_INTP, BOQ_PROGR_PERC 	= BOQ_PROGR * 100,
+								BOQ_BOBOT_PI 	= $PROG_INTP, BOQ_BOBOT_PIV 	= $PROG_INTV,
+								BOQ_BOBOT_PIEKS	= $PROG_EKSP, BOQ_BOBOT_PIEKSV 	= $PROG_EKSV
+							WHERE PRJCODE = '$PRJCODE' AND JOBCODEID = '$JOBCODEID'";
+				$this->db->query($s_01);
+
+				$s_01 	= "UPDATE tbl_joblist_detail SET
+								BOQ_PROGR 		= $PROG_INTP, BOQ_PROGR_PERC 	= BOQ_PROGR * 100,
+								BOQ_BOBOT_PI 	= $PROG_INTP, BOQ_BOBOT_PIV 	= $PROG_INTV,
+								BOQ_BOBOT_PIEKS	= $PROG_EKSP, BOQ_BOBOT_PIEKSV 	= $PROG_EKSV
+							WHERE PRJCODE = '$PRJCODE' AND JOBCODEID = '$JOBCODEID'";
+				$this->db->query($s_01);
+			endforeach;
 		}
 	}
 	
@@ -194,9 +219,30 @@ class M_progress_up extends CI_Model
 	{
 		if($PROG_PERC_EKS > 0)
 		{
-			$s_01 = "UPDATE tbl_joblist SET BOQ_BOBOT_PIEKS = BOQ_BOBOT_PIEKS + $PROG_PERC_EKS, BOQ_BOBOT_PIEKSV = BOQ_BOBOT_PIEKSV + $PROG_VAL_EKS
-						WHERE PRJCODE = '$PRJCODE' AND JOBCODEID = '$JOBCODEID'";
-			$this->db->query($s_01);
+			$s_PERC		= "SELECT SUM(PROG_VAL) AS PROG_INTV, SUM(PROG_PERC) AS PROG_INTP,
+								SUM(PROG_VAL_EKS) AS PROG_EKSV, SUM(PROG_PERC_EKS) AS PROG_EKSP
+							FROM tbl_project_progress_det WHERE PRJCODE = '$PRJCODE' AND JOBCODEID = '$JOBCODEID'";
+			$r_PERC 		= $this->db->query($s_PERC)->result();
+			foreach($r_PERC as $rw_PERC) :
+				$PROG_INTV 	= $rw_PERC->PROG_INTV;
+				$PROG_INTP 	= $rw_PERC->PROG_INTP;
+				$PROG_EKSV 	= $rw_PERC->PROG_EKSV;
+				$PROG_EKSP 	= $rw_PERC->PROG_EKSP;
+
+				$s_01 	= "UPDATE tbl_joblist SET
+								BOQ_PROGR 		= $PROG_INTP, BOQ_PROGR_PERC 	= BOQ_PROGR * 100,
+								BOQ_BOBOT_PI 	= $PROG_INTP, BOQ_BOBOT_PIV 	= $PROG_INTV,
+								BOQ_BOBOT_PIEKS	= $PROG_EKSP, BOQ_BOBOT_PIEKSV 	= $PROG_EKSV
+							WHERE PRJCODE = '$PRJCODE' AND JOBCODEID = '$JOBCODEID'";
+				$this->db->query($s_01);
+
+				$s_01 	= "UPDATE tbl_joblist_detail SET
+								BOQ_PROGR 		= $PROG_INTP, BOQ_PROGR_PERC 	= BOQ_PROGR * 100,
+								BOQ_BOBOT_PI 	= $PROG_INTP, BOQ_BOBOT_PIV 	= $PROG_INTV,
+								BOQ_BOBOT_PIEKS	= $PROG_EKSP, BOQ_BOBOT_PIEKSV 	= $PROG_EKSV
+							WHERE PRJCODE = '$PRJCODE' AND JOBCODEID = '$JOBCODEID'";
+				$this->db->query($s_01);
+			endforeach;
 		}
 	}
 	

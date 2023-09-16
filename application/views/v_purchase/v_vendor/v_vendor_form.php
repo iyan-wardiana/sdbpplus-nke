@@ -14,6 +14,9 @@ $appBody 	= $this->session->userdata['appBody'];
 $FlagUSER 	= $this->session->userdata['FlagUSER'];
 $DefEmp_ID 	= $this->session->userdata['Emp_ID'];
 $DEPCODE 	= $this->session->userdata['DEPCODE'];
+$ISREAD 	= $this->session->userdata['ISREAD'];
+$ISAPPROVE 	= $this->session->userdata('ISAPPROVE');
+$ISCREATE 	= $this->session->userdata('ISCREATE');
 
 //$this->load->view('template/topbar');
 //$this->load->view('template/sidebar');
@@ -330,6 +333,7 @@ else
 		}
 		
 		// START : APPROVE PROCEDURE
+			$disButton	= 1;
 			// DocNumber - PR_VALUE
 			$EMPN_1 	= "";
 			$EMPN_2 	= "";
@@ -350,6 +354,7 @@ else
 			$resCAPP	= $this->db->count_all($sqlCAPP);
 			if($resCAPP > 0)
 			{
+				$disButton	= 1;
 				$sqlAPP	= "SELECT * FROM tbl_docstepapp WHERE MENU_CODE = '$MenuApp'
 							AND PRJCODE IN (SELECT proj_Code FROM tbl_employee_proj WHERE Emp_ID = '$DefEmp_ID')";
 				$resAPP	= $this->db->query($sqlAPP)->result();
@@ -806,11 +811,11 @@ else
 										// Sementara per tanggal 27-03-2023
 										// if(SPLCAT != 'A')
 										// {
-										// 	$('#btn-save').css('display','');
+										// 	$('#btnSave').css('display','');
 										// }
 										// else
 										// {
-										// 	$('#btn-save').css('display','none');
+										// 	$('#btnSave').css('display','none');
 										// }
 		                            }
 
@@ -1102,14 +1107,14 @@ else
 									if($APPROVER_1 == $DefEmp_ID)
 									{
 										$canAPP1 	= 1;
-										$chgStat1D 	= "chgStat1(".$val1App.")";
+										$chgStat1D 	= "chgStat1(1)";
 										$isDis1		= "";
 									}
 
 									if($APPROVER_2 == $DefEmp_ID)
 									{
 										$canAPP2 	= 1;
-										$chgStat2D 	= "chgStat2(".$val2App.")";
+										$chgStat2D 	= "chgStat2(1)";
 										$isDis2		= "";
 									}
 
@@ -1137,7 +1142,7 @@ else
 												$val1App 		= 0;
 												$boxCol_1 		= "success";
 												$st1class 		= "glyphicon glyphicon-ok";
-												$chgStat1D 		= "";
+												$chgStat1D 		= "chgStat1(0)";
 												$isDis1			= "";
 											endforeach;
 
@@ -1151,11 +1156,17 @@ else
 												$val2App 		= 0;
 												$boxCol_2 		= "success";
 												$st2class 		= "glyphicon glyphicon-ok";
-												$chgStat2D 		= "";
+												$chgStat2D 		= "chgStat2(0)";
 												$isDis2			= "";
 											endforeach;
 										endforeach;
 									// START : Approver yang sudah menyetujui
+
+									if($APPROVER_1 != $DefEmp_ID)
+										$isDis1		= "disabled";
+
+									if($APPROVER_2 != $DefEmp_ID)
+										$isDis2		= "disabled";
 				                ?>
 		                        <div class="form-group">
 		                          	<label for="inputName" class="col-sm-3 control-label">&nbsp;</label>
@@ -1231,7 +1242,7 @@ else
 					                        <div class="form-group">
 					                          	<label for="inputName" class="col-sm-3 control-label"><?php echo $Status ?> </label>
 					                          	<div class="col-sm-9">
-					                                <select name="SPLSTAT1" id="SPLSTAT1" class="form-control select2" disabled >
+					                                <select name="SPLSTAT1" id="SPLSTAT1" class="form-control select2" >
 					                                    <option value="1" <?php if($SPLSTAT == 1) { ?> selected <?php } ?>><?php echo $Active ?></option>
 					                                    <option value="0" <?php if($SPLSTAT == 0) { ?> selected <?php } ?>><?php echo $Inactive ?></option>
 					                                </select>
@@ -1391,18 +1402,27 @@ else
 							<label for="inputName" class="col-sm-3 control-label">&nbsp;</label>
 							<div class="col-sm-9">
 								<?php
-							
-									if($task=='add')
+									if($SPLSTAT == 0)
 									{
-										?>
-											<button class="btn btn-primary" id="btn-save">
-											<i class="fa fa-save"></i></button>&nbsp;
-										<?php
+										if($task=='add')
+										{
+											?>
+												<button class="btn btn-primary" id="btnSave">
+												<i class="fa fa-save"></i></button>&nbsp;
+											<?php
+										}
+										else
+										{
+											?>
+												<button class="btn btn-primary" id="btnSave">
+												<i class="fa fa-save"></i></button>&nbsp;
+											<?php
+										}
 									}
-									else
+									elseif($ISAPPROVE == 1)
 									{
 										?>
-											<button class="btn btn-primary" id="btn-save">
+											<button class="btn btn-primary" id="btnSave">
 											<i class="fa fa-save"></i></button>&nbsp;
 										<?php
 									}

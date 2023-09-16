@@ -323,11 +323,11 @@ else
 																AND B1.PRJCODE = '$PRJCODE' AND B1.IR_STAT NOT IN (5,9)
 																ORDER BY B1.PO_NUM, B1.IR_NUM ASC";*/
 												$getLPM 	= "SELECT SUM(B.ITM_QTY) AS ITM_QTY, B.JOBCODEID, B1.IR_CODE, B1.IR_DATE, B1.PO_NUM,
-												C.TTK_CODE, D.INV_CODE, B.SJ_NUM
+												B1.TTK_CODE, B1.INV_CODE, B.SJ_NUM
 																FROM tbl_ir_detail B
 																INNER JOIN tbl_ir_header B1 ON B1.IR_NUM = B.IR_NUM AND B1.PRJCODE = B.PRJCODE
-																LEFT JOIN tbl_ttk_detail C ON C.TTK_REF1_NUM = B.IR_NUM AND C.PRJCODE = B.PRJCODE
-																LEFT JOIN tbl_pinv_detail D ON D.TTK_NUM = C.TTK_NUM AND D.PRJCODE = C.PRJCODE
+																-- LEFT JOIN tbl_ttk_detail C ON C.TTK_REF1_NUM = B.IR_NUM AND C.PRJCODE = B.PRJCODE
+																-- LEFT JOIN tbl_pinv_detail D ON D.TTK_NUM = C.TTK_NUM AND D.PRJCODE = C.PRJCODE
 																WHERE B1.PO_NUM = '$PO_NUM' AND B.ITM_CODE = '$ITM_CODE' 
 																AND B.JOBCODEID = '$JOBCODEID' AND B.POD_ID = '$PO_ID'
 																AND B1.PRJCODE = '$PRJCODE' AND B1.IR_STAT NOT IN (5,9)

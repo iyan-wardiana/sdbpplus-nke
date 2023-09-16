@@ -208,7 +208,7 @@ endforeach;
                                     <?php
                                         $s_SPL  = "SELECT DISTINCT B.SPLCODE, B.SPLDESC FROM tbl_po_header A
                                                         INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
-                                                    WHERE A.PRJCODE = '$PRJCODE' AND A.PO_CATEG = 0 ORDER BY B.SPLDESC ASC";
+                                                    WHERE A.PRJCODE = '$PRJCODE' ORDER BY B.SPLDESC ASC";
                                         $r_SPL  = $this->db->query($s_SPL)->result();
                                         foreach($r_SPL as $rw_SPL) :
                                             $SPLCODE    = $rw_SPL->SPLCODE;

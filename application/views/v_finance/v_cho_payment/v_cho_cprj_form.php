@@ -143,7 +143,7 @@ else
 
 	$ACC_OPBAL	= 0;
 	$sqlBAL 	= "SELECT Base_OpeningBalance, Base_Debet, Base_Kredit
-					FROM tbl_chartaccount
+					FROM tbl_chartaccount_$PRJCODEVW
 					WHERE Account_Number = '$acc_number' AND PRJCODE = '$PRJCODE'";
 	$resBAL 	= $this->db->query($sqlBAL)->result();
 	foreach($resBAL as $rowBAL):
@@ -619,7 +619,7 @@ else
 						                <div class="form-group">
 						                    <div class="col-sm-12">
 						                        <div class="alert alert-danger alert-dismissible">
-						                            <button type=" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+						                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 						                            <h4><i class="icon fa fa-ban"></i> <?php echo $appAlert1; ?>!</h4>
 						                            <?php echo $appAlert2; ?>
 						                        </div>
@@ -1367,7 +1367,7 @@ else
 
 											$JODBDESC 			= "";
 											$sqlJOBD1			= "SELECT ITM_PRICE, JOBDESC, JOBPARENT
-																	FROM tbl_joblist_detail
+																	FROM tbl_joblist_detail_$PRJCODEVW
 																	WHERE JOBCODEID = '$JOBCODEID'
 																		AND PRJCODE = '$PRJCODE' AND ITM_CODE = '$ITM_CODE' LIMIT 1";
 											$resJOBD1			= $this->db->query($sqlJOBD1)->result();
@@ -1396,7 +1396,7 @@ else
 											$ITM_USED_AM		= 0;
 											$sqlJOBD			= "SELECT ITM_VOLM AS ITM_VOLMBG, ITM_BUDG,
 																		ITM_USED, ITM_USED_AM
-																	FROM tbl_joblist_detail
+																	FROM tbl_joblist_detail_$PRJCODEVW
 																	WHERE JOBCODEID = '$JOBCODEID'
 																		AND PRJCODE = '$PRJCODE' AND ITM_CODE = '$ITM_CODE' LIMIT 1";
 											$resJOBD			= $this->db->query($sqlJOBD)->result();
@@ -1438,7 +1438,7 @@ else
 											$ITM_NAME			= '';
 											if($ITM_CODE != '')
 											{
-												$sqlITM		= "SELECT ITM_NAME FROM tbl_item WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
+												$sqlITM		= "SELECT ITM_NAME FROM tbl_item_$PRJCODEVW WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
 												$resITM 	= $this->db->query($sqlITM)->result();
 												foreach($resITM as $rowITM) :
 													$ITM_NAME 	= $rowITM->ITM_NAME;
@@ -1446,7 +1446,7 @@ else
 											}
 											else
 											{
-												$sqlITM		= "SELECT Account_NameId FROM tbl_chartaccount WHERE Account_Number = '$Acc_Id' AND PRJCODE = '$PRJCODE'";
+												$sqlITM		= "SELECT Account_NameId FROM tbl_chartaccount_$PRJCODEVW WHERE Account_Number = '$Acc_Id' AND PRJCODE = '$PRJCODE'";
 												$resITM 	= $this->db->query($sqlITM)->result();
 												foreach($resITM as $rowITM) :
 													$ITM_NAME 	= $rowITM->Account_NameId;
@@ -2257,9 +2257,8 @@ else
 		{
 			var url         = "<?php echo site_url('lck/appStat')?>";
 			let DOC_DATE 	= $('#datepicker').val();
-			console.log(DOC_DATE);
-			
-				
+			// console.log(DOC_DATE);
+					
 			$.ajax({
 				type: 'POST',
 				url: url,
@@ -2282,7 +2281,7 @@ else
 					let isLockT		= response[0].isLock;	
 					let LockTDate	= response[0].LockDate;	
 					let UserLockT	= response[0].UserLock;
-					console.log("isLockT ="+isLockT+" isLockJ = "+isLockJ+" LockCateg = "+LockCateg);
+					// console.log("isLockT ="+isLockT+" isLockJ = "+isLockJ+" LockCateg = "+LockCateg);
 
 					if(isLockJ == 1)
 					{
@@ -2381,7 +2380,7 @@ else
             data: formData,
             success: function(response)
             {
-            	console.log(response)
+            	// console.log(response)
             	var arrVar 	= response.split('~');
             	var docNum 	= arrVar[0];
             	var docCode	= arrVar[1];
@@ -2761,12 +2760,12 @@ else
 			objTD = objTR.insertCell(objTR.cells.length);
 			objTD.style.textAlign = 'center';
 			objTD.noWrap = true;
-			objTD.innerHTML = '<div id="div_unit_'+intIndex+'"></div><input type="hidden" name="data'+intIndex+'ITM_UNIT" id="ITM_UNIT'+intIndex+'" value="'+ITM_UNIT+'" class="form-control" style="min-width:50px;" readonly><input type="hidden" id="ISLS'+intIndex+'" value="0" class="form-control"><input type="hidden" name="data['+intIndex+'][ITM_UNIT]" id="data'+intIndex+'ITM_UNIT" value="'+ITM_UNIT+'" class="form-control" style="max-width:150px;" >';
+			objTD.innerHTML = '<div id="div_unit_'+intIndex+'"></div><input type="hidden" name="data'+intIndex+'ITM_UNIT" id="ITM_UNIT'+intIndex+'" value="'+ITM_UNIT+'" class="form-control" style="min-width:50px;" readonly><input type="hidden" name="data['+intIndex+'][ITM_UNIT]" id="data'+intIndex+'ITM_UNIT" value="'+ITM_UNIT+'" class="form-control" style="max-width:150px;" >';
 		
 		// Volume
 			objTD = objTR.insertCell(objTR.cells.length);
 			objTD.style.textAlign = 'right';
-			objTD.innerHTML = '<input type="text" class="form-control" style="text-align:right;min-width:80px" name="ITM_VOLM'+intIndex+'" id="ITM_VOLM'+intIndex+'" value="'+ITM_VOLM+'" placeholder="Volume" onBlur="chgVolume(this,'+intIndex+')" onKeyPress="return isIntOnlyNew(event);"><input type="hidden" name="data['+intIndex+'][ITM_VOLM]" id="data'+intIndex+'ITM_VOLM" value="'+ITM_VOLM+'" class="form-control" style="max-width:150px;"><input type="hidden" name="data'+intIndex+'ITM_REM" id="data'+intIndex+'ITM_REM" value="0" class="form-control" style="max-width:150px;" ><input type="hidden" name="data'+intIndex+'ITM_REMAMN" id="data'+intIndex+'ITM_REMAMN" value="0" class="form-control" style="max-width:150px;" >'; 
+			objTD.innerHTML = '<input type="text" class="form-control" style="text-align:right;min-width:80px" name="ITM_VOLM'+intIndex+'" id="ITM_VOLM'+intIndex+'" value="'+ITM_VOLM+'" placeholder="Volume" onBlur="chgVolume(this,'+intIndex+')" onKeyPress="return isIntOnlyNew(event);"><input type="hidden" name="data['+intIndex+'][ITM_VOLM]" id="data'+intIndex+'ITM_VOLM" value="'+ITM_VOLM+'" class="form-control" style="max-width:150px;"><input type="hidden" name="data'+intIndex+'ITM_REM" id="data'+intIndex+'ITM_REM" value="0" class="form-control" style="max-width:150px;" ><input type="hidden" name="data'+intIndex+'ITM_REMAMN" id="data'+intIndex+'ITM_REMAMN" value="0" class="form-control" style="max-width:150px;" ><input type="hidden" id="ISLS'+intIndex+'" value="0" class="form-control">'; 
 		
 		// Price
 			objTD = objTR.insertCell(objTR.cells.length);
@@ -2927,7 +2926,7 @@ else
 		}
 		else
 		{
-			console.log('cc')
+			// console.log('cc')
 			var url			= "<?php echo $secGetPPn; ?>";
 			$.ajax({
 				type: 'POST',
@@ -3080,14 +3079,13 @@ else
 		var ITMUNIT			= document.getElementById('data'+row+'ITM_UNIT').value;
 		var ISLS			= document.getElementById('ISLS'+row).value;
 		var ITM_UNIT 		= ITMUNIT.toUpperCase();
-
 		if(ISLS > 0)
 		{
 			var TOTPRC		= parseFloat(ITM_VOLM) * parseFloat(ITM_PRICE);
 
 			if(TOTPRC > ITM_REMAMN)
 			{
-				var ITM_REMVOLV	= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(ITM_REMVOL)), decFormat));
+				var ITM_REMVOLV	= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(ITM_REMAMN)), decFormat));
 
 				swal('<?php echo $alert15; ?>'+ITM_REMVOLV,
 				{
@@ -3905,7 +3903,7 @@ else
 
 		let frm = document.getElementById('frm');
 		frm.addEventListener('submit', (e) => {
-			console.log(e)
+			// console.log(e)
 			document.getElementById('btnSave').style.display 	= 'none';
 			document.getElementById('btnBack').style.display 	= 'none';
 		});

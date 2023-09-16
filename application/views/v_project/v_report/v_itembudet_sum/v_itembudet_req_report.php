@@ -255,7 +255,7 @@
 							$GTOT_REMREAL_VAL	= 0; 		// GRAND TOTAL ITEM REQUEEST PERIODE PER GROUP
 
 							if($ITM_CODE == 1)
-								$qryITM 	= "OR ITM_CODE IN (SELECT ITM_CODE FROM tbl_item_481022 WHERE ITM_NAME LIKE '%lembur%')";
+								$qryITM 	= "";
 							else
 								$qryITM 	= "AND A.ITM_CODE = '$ITM_CODE'";
 
@@ -297,10 +297,7 @@
 								$getJobD 	= "SELECT A.PRJCODE, A.ITM_GROUP, A.ITM_CODE, A.ITM_UNIT, A.JOBDESC,
 												SUM(A.ITM_VOLM) AS ITM_VOL_BG, A.ITM_PRICE, A.ITM_LASTP, SUM(A.ITM_BUDG) AS ITM_VAL_BG,
 												A.IS_LEVEL, A.ISLASTH, A.ISLAST, A.WBSD_STAT
-												-- , B.ITM_NAME
 												FROM tbl_joblist_detail_$PRJCODEVW A
-												-- LEFT JOIN tbl_item_$PRJCODEVW B ON B.ITM_CODE = A.ITM_CODE 
-												-- AND B.ITM_GROUP = A.ITM_GROUP AND B.PRJCODE = A.PRJCODE
 												WHERE A.ITM_CODE != '' AND A.ITM_GROUP = '$IG_Code' AND A.ISLAST = 1 $qryITM
 												GROUP BY A.ITM_CODE";
 								$resJobD 	= $this->db->query($getJobD);
@@ -756,7 +753,7 @@
 										?>
 											
 											<tr style="background:#CCCCCC; font-weight: bold;">
-												<td nowrap colspan="5" style="text-align:center;border-bottom-width:2px; border-bottom-color:#000; border-left-width:2px; border-left-color:#000; border-right-width:2px; border-right-color:#000; border-top-width:2px; border-top-color:#000;">TOTAL</td>
+												<td nowrap colspan="5" style="text-align:center;border-bottom-width:2px; border-bottom-color:#000; border-left-width:2px; border-left-color:#000; border-right-width:2px; border-right-color:#000; border-top-width:2px; border-top-color:#000;">TOTAL <?=$IG_Name?></td>
 												<!-- BUDGET AWAL --->
 													<td nowrap style="text-align:right;border-bottom-width:2px; border-bottom-color:#000; border-left-width:2px; border-left-color:#000; border-top-width:2px; border-top-color:#000;"><?php echo number_format(0, 2); ?></td>
 													<!-- <td nowrap style="text-align:right;"><?php echo number_format($ITM_LASTP, 2); ?></td> -->

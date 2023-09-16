@@ -135,7 +135,7 @@ if($task == 'add')
 		$WO_VALPPH 	= 0;
 		$WO_VALUET	= 0;
 		$sqlWOH		= "SELECT WO_CODE, WO_CATEG, WO_DATE, WO_STARTD, WO_ENDD, JOBCODEID, SPLCODE, WO_NOTE, WO_DPPER, WO_DPVAL,
-							WO_RETP, WO_RETVAL, (WO_VALUE - WO_TCAMN) AS WO_VALUE, WO_VALPPN, WO_VALPPH
+							WO_RETP, WO_RETVAL, WO_VALUE, WO_VALPPN, WO_VALPPH
 						FROM tbl_wo_header
 						WHERE WO_NUM = '$WO_NUMX' AND PRJCODE = '$PRJCODE' AND WO_STAT = 3";
 		$resWOH 	= $this->db->query($sqlWOH)->result();
@@ -182,7 +182,7 @@ if($task == 'add')
 		// CARI SISA OPNAME UNTUK MENGHITUNG PENGEMBALIAN DP : TOTWO_AMN, TOTWO_VOL, TOTOPN_AMN, TOTOPN_VOL, REMOPN_AMN = OPNH_AMOUNT
 			$TOTWO_AMN	= 0;
 			$TOTWO_VOL	= 0;
-			$sqlTOT_WO	= "SELECT SUM((A.WO_VOLM - A.WO_CVOL) * A.ITM_PRICE) AS TOTWO_AMN, SUM(A.WO_VOLM - A.WO_CVOL) AS TOTWO_VOL
+			$sqlTOT_WO	= "SELECT SUM(A.WO_VOLM * A.ITM_PRICE) AS TOTWO_AMN, SUM(A.WO_VOLM) AS TOTWO_VOL
 							FROM tbl_wo_detail A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
 								AND B.PRJCODE = '$PRJCODE'
@@ -337,7 +337,7 @@ else
 	$WO_VALPPN	= 0;
 	$WO_VALUET	= 0;
 	$WO_CATEG 	= 'U';
-	$sqlWOH		= "SELECT WO_CODE, WO_CATEG, WO_DATE, WO_STARTD, WO_ENDD, JOBCODEID, SPLCODE, WO_NOTE, WO_DPPER, WO_DPVAL, (WO_VALUE - WO_TCAMN) AS WO_VALUE, WO_VALPPN, WO_VALPPH
+	$sqlWOH		= "SELECT WO_CODE, WO_CATEG, WO_DATE, WO_STARTD, WO_ENDD, JOBCODEID, SPLCODE, WO_NOTE, WO_DPPER, WO_DPVAL, WO_VALUE, WO_VALPPN, WO_VALPPH
 					FROM tbl_wo_header
 					WHERE WO_NUM = '$WO_NUMX' AND PRJCODE = '$PRJCODE'";
 	$resWOH 	= $this->db->query($sqlWOH)->result();
@@ -397,7 +397,7 @@ else
 	// CARI SISA OPNAME UNTUK MENGHITUNG PENGEMBALIAN DP : TOTWO_AMN, TOTWO_VOL, TOTOPN_AMN, TOTOPN_VOL, REMOPN_AMN = OPNH_AMOUNT
 		$TOTWO_AMN	= 0;
 		$TOTWO_VOL	= 0;
-		$sqlTOT_WO	= "SELECT SUM((A.WO_VOLM - A.WO_CVOL) * A.ITM_PRICE) AS TOTWO_AMN, SUM(A.WO_VOLM - A.WO_CVOL) AS TOTWO_VOL
+		$sqlTOT_WO	= "SELECT SUM(A.WO_VOLM * A.ITM_PRICE) AS TOTWO_AMN, SUM(A.WO_VOLM) AS TOTWO_VOL
 						FROM tbl_wo_detail A
 						INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
 							AND B.PRJCODE = '$PRJCODE'
@@ -417,7 +417,7 @@ else
 							AND B.PRJCODE = '$PRJCODE'
 						WHERE B.WO_NUM = '$WO_NUMX'
 							AND B.OPNH_TYPE = 0
-							AND A.PRJCODE = '$PRJCODE' AND B.OPNH_STAT NOT IN (5,9) AND A.OPNH_NUM != '$OPNH_NUM'";
+							AND A.PRJCODE = '$PRJCODE' AND B.OPNH_STAT = '3' AND A.OPNH_NUM != '$OPNH_NUM'";
 		$resTOT_OPN		= $this->db->query($sqlTOT_OPN)->result();
 		foreach($resTOT_OPN as $rowTOT_OPN) :
 			$TOTOPN_AMN	= $rowTOT_OPN->TOTOPN_AMN;
@@ -1151,11 +1151,85 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 				                        </label>
 				                    </div>
 									<!-- OPNH_RETNO -->
-									<label for="inputName" class="col-sm-2 control-label"><?php echo "No.Retensi"; ?></label>
+									<?php
+										$OPNH_RETNOV 		= strtoupper(substr(md5($OPNH_RETNO),-6));
+										if(trim($OPNH_RETNO) == '')
+											$OPNH_RETNOV 	= "";
+									?>
+									<label for="inputName" class="col-sm-2 control-label"><?php echo "No. Retensi"; ?></label>
 				                    <div class="col-sm-4">
-				                        <input type="text" class="form-control" style="text-align:left" id="OPNH_RETNO" name="OPNH_RETNO" size="5" placeholder="No. Retensi" value="<?php echo $OPNH_RETNO; ?>" <?php if($OPNH_RETPERC == 0) echo "disabled"; ?> />
+				                    	<div class="input-group">
+						                  	<div class="input-group-addon">
+						                    	<i class="fa fa-eye-slash" style="cursor: pointer" onclick="showNum()"></i>
+						                  	</div>
+						                  	<input type="text" class="form-control" style="text-align:left" id="OPNH_RETNO" name="OPNH_RETNO" size="5" placeholder="No. Retensi" value="<?php echo $OPNH_RETNOV; ?>" <?php if($OPNH_RETPERC == 0) echo "disabled"; ?> />
+						                </div>
 				                    </div>
 				                </div>
+
+				                <script>
+				                	function showNum()
+				                	{
+							            swal(
+							            {
+							                text: 'Masukan kata kunci Anda ... !',
+							            	content: {
+												element: "input",
+												attributes: {
+													placeholder: "kata kunci",
+													type: "password",
+												},
+											},
+							                type: "password",
+							                button: 
+							                {
+							                    text: "OK",
+							                    closeModal: false,
+							                }
+							            })
+							            .then(pKey => {
+							            	var docnum	= "<?=$OPNH_NUM?>";
+							                var urlPass = "<?php echo site_url('__l1y/chkPirvKey') ?>";
+							                collData    = docnum+'~'+pKey;
+							                if(pKey == '')
+							                {
+					                        	swal('Anda belum memasukan kata kunci apapun', 
+												{
+													icon: "error",
+												});
+							                }
+							                else
+							                {
+								                $.ajax({
+								                    type: 'POST',
+								                    url: urlPass,
+								                    data: "collData="+collData,
+								                    success: function(isRespon)
+								                    {
+								                    	myarr 	= isRespon.split("~");
+								                        isR 	= myarr[0];
+								                        Info 	= myarr[1];
+
+								                    	if(isR == 0)
+								                    	{
+								                        	swal(Info, 
+															{
+																icon: "warning",
+															});
+								                    	}
+								                        else
+								                        {
+								                        	swal(Info, 
+															{
+																icon: "success",
+															});
+								                        }
+								                    }
+								                });
+								            }
+								        });
+				                	}
+				                </script>
 
 				                <!-- OPNH_DATESP, OPNH_DATE -->
 				            	<div class="form-group">
@@ -1673,8 +1747,8 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 										elseif($task == 'add' && $WO_NUMX != '')
 										{
 											$sqlDETWO	= "SELECT A.WO_ID, A.WO_NUM, A.PRJCODE, A.JOBCODEDET, A.JOBCODEID, A.ITM_CODE, A.ITM_UNIT,
-																(((A.WO_VOLM - A.WO_CVOL) - A.OPN_VOLM) / 100) AS OPND_PERC, (A.WO_VOLM - A.WO_CVOL) AS OPND_VOLM,
-																A.ITM_PRICE AS OPND_ITMPRICE, (A.WO_TOTAL - A.WO_CAMN) AS OPND_ITMTOTAL, A.WO_DESC AS OPND_DESC,
+																((A.WO_VOLM - A.OPN_VOLM) / 100) AS OPND_PERC, A.WO_VOLM AS OPND_VOLM,
+																A.ITM_PRICE AS OPND_ITMPRICE, A.WO_TOTAL AS OPND_ITMTOTAL, A.WO_DESC AS OPND_DESC,
 																A.TAXCODE1, A.TAXPERC1, A.TAXPRICE1, A.TAXCODE2, A.TAXPERC2, A.TAXPRICE2
 															FROM tbl_wo_detail A
 																INNER JOIN tbl_joblist_detail_$PRJCODEVW B ON A.JOBCODEID = B.JOBCODEID
@@ -1936,6 +2010,7 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 													$ItmCol2	= '';
 													$ttl 		= '';
 													$divDesc 	= '';
+													$ACC_IDVw 	= '';
 													if($ACC_ID_UM == '')
 													{
 														$disBtn 	= 1;
@@ -1949,7 +2024,7 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 														$ItmCol1	= '<br><span class="label label-danger" style="font-size:12px; font-style: italic;">';
 														$ItmCol2	= '</span>';
 														$ttl 		= 'Belum disetting kode akun penggunaan';
-														$divDesc 	= "<i class='fa fa-info'></i>&nbsp;&nbsp;".$alertAcc."&nbsp;$ACC_IDVw";
+														$divDesc 	= "<i class='fa fa-info'></i>&nbsp;&nbsp;".$alertAcc;
 														$isDisabled = 1;
 													}
 
@@ -2175,7 +2250,7 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 														  		<p class='text-muted' style='margin-left: 20px'>
 														  			<?=$ITM_NAME."<br>"?>
 														  			<?=$JOBCODEID." : ".$JOBHDESC?>
-														  			<?php echo "$ItmCol1$divDesc$ItmCol2"; ?>
+														  			<?php echo "$ItmCol1$divDesc$ItmCol2$ACC_IDVw"; ?>
 														  		</p>
 														  	</div>
 													  	</div>
@@ -3313,10 +3388,11 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 
 			// START : KHUSUS 540022
 				PRJCODE			= "<?php echo $PRJCODE; ?>";
-				/*if(PRJCODE == '539022')
+				/*if(PRJCODE == '537022')
 				{
 					MAX_OPN_VOL	= parseFloat(TOT_OPNVOL);
 					MAX_OPN_VAL	= parseFloat(TOT_OPNVAL);
+                    console.log("PRJCODE:"+PRJCODE+" => MAX_OPN_VAL= "+MAX_OPN_VAL);
 				}*/
 			// END : KHUSUS 540022
 
@@ -3451,7 +3527,7 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 
 			// START : KHUSUS 540022
 				PRJCODE			= "<?php echo $PRJCODE; ?>";
-				/*if(PRJCODE == '539022')
+				/*if(PRJCODE == '537022')
 				{
 					MAX_OPN_VOL	= parseFloat(TOT_OPNVOL);
 					MAX_OPN_VAL	= parseFloat(TOT_OPNVAL);

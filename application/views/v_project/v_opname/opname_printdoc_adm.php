@@ -4,8 +4,8 @@
     $OPNH_DATE    = $default['OPNH_DATE'];  
     $OPNH_DATESP  = $default['OPNH_DATESP']; 
     $OPNH_DATEEP  = $default['OPNH_DATEEP']; 
-    $OPNH_NOTE    = $default['OPNH_NOTE'];  
     $OPNH_TYPE    = $default['OPNH_TYPE'];  
+    $OPNH_NOTE    = $default['OPNH_NOTE'];  
     $OPNH_STAT    = $default['OPNH_STAT'];  
     $WO_NUM       = $default['WO_NUM'];         
     $WO_CODE      = $default['WO_CODE'];    
@@ -28,7 +28,8 @@
     $FPA_NUM      = $default['FPA_NUM'];    
     $FPA_CODE     = $default['FPA_CODE'];   
     $WO_QUOT      = $default['WO_QUOT'];    
-    $WO_NEGO      = $default['WO_NEGO'];
+    $WO_NEGO      = $default['WO_NEGO']; 
+    $OPNH_TYPE    = $default['OPNH_TYPE'];
 
     // get SPK Kategori
         $get_WOCATEG    = "SELECT VendCat_Name FROM tbl_vendcat WHERE VendCat_Code = '$WO_CATEG'";
@@ -96,6 +97,19 @@
         $endY   = date('Y', strtotime($OPNH_DATEEP));
         $day1   = strtotime($OPNH_DATEEP) - strtotime($OPNH_DATESP);
         $day    = floor($day1/(60 * 60 * 24));
+
+    // get OPN - RET
+        if($OPNH_TYPE == 1)
+        {
+            $s_getRET   = "SELECT OPNH_CODE FROM tbl_opn_header WHERE OPNH_NUM = '$OPNH_NUM' AND OPNH_TYPE = 1 AND OPNH_STAT NOT IN (5,9)";
+            $r_getRET   = $this->db->query($s_getRET);
+            if($r_getRET->num_rows() > 0)
+            {
+                foreach($r_getRET->result() as $rw_getRET):
+                    $OPNH_CODE = $rw_getRET->OPNH_CODE;
+                endforeach;
+            }
+        }
 
     // Get Prgrs Opname
         $TOT_SPKVAL = 0;
@@ -674,12 +688,23 @@
                         </tr>
                     </table>
                 </div>
+                <?php
+                    $TTD1   = "";
+                    $TTD2   = "";
+                    $TTD3   = "";
+                    if($WO_CATEG == 'A')
+                    {
+                        $TTD1   = "KA. MEKANIK";
+                        $TTD2   = "KA. DIV.";
+                        $TTD3   = "KA. DEP";
+                    }
+                ?>
                 <div class="asign-detail">
                     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-right: hidden;">
                         <tr>
-                            <td style="font-weight: bold;">ENGINEERING (QS)</td>
-                            <td style="font-weight: bold;">SITE MANAGER (SM) / KOORD. MEP PROYEK</td>
-                            <td style="font-weight: bold;">PROJECT MANAGER</td>
+                            <td style="font-weight: bold;">ENGINEERING (QS) /<br><?=$TTD1?></td>
+                            <td style="font-weight: bold; text-align: left; padding-left: 2px;">SITE MANAGER (SM) / KOORD. MEP PROYEK / <?=$TTD2?> / ...........</td>
+                            <td style="font-weight: bold; text-align: left; padding-left: 2px;">PROJECT MANAGER / <?=$TTD3?> / <br>...........</td>
                             <td style="font-weight: bold;">Mgr. Subkon/ Mgr. ME/ Mgr. Opr/ Ka. Cabang (untuk nilai ≥ 100jt)</td>
                             <td style="font-weight: bold;">MANDOR / SUB / PEMASOK *) <br>JAB.:</td>
                         </tr>

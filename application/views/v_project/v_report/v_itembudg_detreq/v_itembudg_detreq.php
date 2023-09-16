@@ -598,7 +598,7 @@ $(function () {
                 console.log(data);
                 let lnData  = data.length;
                 let dataOpt = '';
-                // if(lnData != 0) dataOpt = '<option value=""></option>';
+                if(lnData != 0) dataOpt = '<option value=""></option>';
                 if(lnData != 0) dataOpt = '<option value="1">Semua</option>';
                 for(let i=0; i<lnData; i++) {
                     let JOBLEV      = data[i].IS_LEVEL;

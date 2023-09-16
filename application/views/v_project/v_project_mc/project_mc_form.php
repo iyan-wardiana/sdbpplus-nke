@@ -1091,8 +1091,8 @@ $resOWN	= $this->db->query($sqlOWN)->result();
 				                <div class="form-group">
 				                	<label for="inputName" class="col-sm-3 control-label"><?php echo $UploadDoc; ?></label>
 				                	<div class="col-sm-9">
-				                		<input type="file" class="form-control" name="MC_DOC[]" id="MC_DOC" accept="application/pdf" multiple>
-				                		<span class="text-muted" style="font-size: 9pt; font-style: italic;">Format File: PDF</span>
+				                		<input type="file" class="form-control" name="MC_DOC[]" id="MC_DOC" accept=".pdf" multiple>
+										<span class="text-muted" style="font-size: 9pt; font-style: italic;">Format File: PDF</span>
 				                	</div>
 				                </div>
 				            	<div class="form-group">

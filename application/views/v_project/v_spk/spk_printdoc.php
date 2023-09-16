@@ -861,6 +861,7 @@ endforeach;
                                     $COMPIL_01  = $APP_01." ".$APPD_01;
                                     $POSIT_01   = $rw_01->POSS_NAME;
                                 endforeach;
+                                $POSIT_01       = ""; // HOLD
 
                             // Approver 02
                                 $APPD_02    = "";
@@ -882,6 +883,7 @@ endforeach;
                                     $COMPIL_02  = $APP_02." ".$APPD_02;
                                     $POSIT_02   = $rw_02->POSS_NAME;
                                 endforeach;
+                                $POSIT_02       = ""; // HOLD
 
                             // Approver 03
                                 $APPD_03    = "";
@@ -903,6 +905,7 @@ endforeach;
                                     $COMPIL_03  = $APP_03." ".$APPD_03;
                                     $POSIT_03   = $rw_03->POSS_NAME;
                                 endforeach;
+                                $POSIT_03       = ""; // HOLD
 
                             // Approver 04
                                 $APPD_04    = "";
@@ -924,6 +927,7 @@ endforeach;
                                     $COMPIL_04  = $APP_04." ".$APPD_04;
                                     $POSIT_04   = $rw_04->POSS_NAME;
                                 endforeach;
+                                $POSIT_04       = ""; // HOLD
 
                             // Approver 05
                                 $APPD_05    = "";
@@ -945,6 +949,7 @@ endforeach;
                                     $COMPIL_05  = $APP_05." ".$APPD_05;
                                     $POSIT_05   = $rw_05->POSS_NAME;
                                 endforeach;
+                                $POSIT_05       = ""; // HOLD
 
                             if($PRJHO == 'NKE')         // PROYEK
                             {

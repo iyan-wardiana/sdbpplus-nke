@@ -492,7 +492,7 @@
 						</tr>
 						<?php
 							$this->db->select('A.PR_ID, A.PR_NUM, A.ITM_CODE, A.PR_VOLM, A.ITM_UNIT, A.JOBCODEID, 
-											   A.JOBPARDESC, A.PR_DESC, A.PR_SPEC, B.PR_RECEIPTD, B.SPLCODE, C.ITM_NAME');
+											   A.JOBPARDESC, A.PR_DESC, B.PR_RECEIPTD, B.SPLCODE, C.ITM_NAME');
 							$this->db->from('tbl_pr_detail A');
 							$this->db->join('tbl_pr_header B','B.PR_NUM = A.PR_NUM AND B.PRJCODE = A.PRJCODE','INNER');
 							$this->db->join('tbl_item C','C.ITM_CODE = A.ITM_CODE AND C.PRJCODE = A.PRJCODE','INNER');
@@ -506,7 +506,6 @@
 									$PR_ID 			= $rPR->PR_ID;
 									$PR_NUM 		= $rPR->PR_NUM;
 									$PR_DESC 		= $rPR->PR_DESC;
-									$PR_SPEC 		= $rPR->PR_SPEC;
 									$ITM_CODE 		= $rPR->ITM_CODE;
 									$ITM_NAME 		= $rPR->ITM_NAME;
 									$PR_VOLM 		= $rPR->PR_VOLM;
@@ -518,8 +517,8 @@
 
 									?>
 										<tr class="content-padding">
-											<td><?php echo $PR_DESC; ?></td>
-											<td style="text-align: left;"><?php echo $PR_SPEC; ?></td>
+											<td><?php echo $ITM_NAME; ?></td>
+											<td style="text-align: left;"><?php echo $PR_DESC; ?></td>
 											<td style="text-align: right"><?php echo number_format($PR_VOLM,2); ?></td>
 											<td style="text-align: left;"><?php echo terbilang($PR_VOLM); ?></td>
 											<td style="text-align: center;"><?php echo $ITM_UNIT; ?></td>

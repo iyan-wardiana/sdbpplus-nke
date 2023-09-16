@@ -403,7 +403,7 @@ class M_budget extends CI_Model
 					INNER JOIN tbl_project B ON A.PRJCODE_HO = B.PRJCODE 
 				WHERE A.PRJCODE = '$PRJCODE' $QRY LIMIT 1";*/
 		
-		$sql = "SELECT A.PRJNAME, A.PRJNAME AS BUDGNAME FROM tbl_project A
+		$sql = "SELECT A.PRJNAME, A.PRJNAME AS BUDGNAME, A.PRJDATE FROM tbl_project A
 				WHERE A.PRJCODE = '$PRJCODE' $QRY LIMIT 1";
 		return $this->db->query($sql);
 	}
@@ -807,6 +807,51 @@ class M_budget extends CI_Model
 	function addPRJAcc($insAcc)
 	{
 		$this->db->insert("tbl_project_acc", $insAcc);
+	}
+	
+	function get_AllDataHISTAMDC($PRJCODE, $search) // GOOD
+	{
+		$sql = "tbl_amd_file A
+				WHERE A.AMDF_PRJCODE = '$PRJCODE'
+					AND (A.AMDF_DESC LIKE '%$search%' ESCAPE '!' OR A.AMDF_FN LIKE '%$search%' ESCAPE '!')";
+		return $this->db->count_all($sql);
+	}
+	
+	function get_AllDataHISTAMDL($PRJCODE, $search, $length, $start, $order, $dir) // GOOD
+	{
+		if($length == -1)
+		{
+			if($order !=null)
+			{
+				$sql = "SELECT A.* FROM tbl_amd_file A
+						WHERE A.AMDF_PRJCODE = '$PRJCODE'
+							AND (A.AMDF_DESC LIKE '%$search%' ESCAPE '!' OR A.AMDF_FN LIKE '%$search%' ESCAPE '!') ORDER BY $order $dir";
+			}
+			else
+			{
+				$sql = "SELECT A.* FROM tbl_amd_file A
+						WHERE A.AMDF_PRJCODE = '$PRJCODE'
+							AND (A.AMDF_DESC LIKE '%$search%' ESCAPE '!' OR A.AMDF_FN LIKE '%$search%' ESCAPE '!')";
+			}
+			return $this->db->query($sql);
+		}
+		else
+		{
+			if($order !=null)
+			{
+				$sql = "SELECT A.* FROM tbl_amd_file A
+						WHERE A.AMDF_PRJCODE = '$PRJCODE'
+							AND (A.AMDF_DESC LIKE '%$search%' ESCAPE '!' OR A.AMDF_FN LIKE '%$search%' ESCAPE '!') ORDER BY $order $dir
+						LIMIT $start, $length";
+			}
+			else
+			{
+				$sql = "SELECT A.* FROM tbl_amd_file A
+						WHERE A.AMDF_PRJCODE = '$PRJCODE'
+							AND (A.AMDF_DESC LIKE '%$search%' ESCAPE '!' OR A.AMDF_FN LIKE '%$search%' ESCAPE '!') LIMIT $start, $length";
+			}
+			return $this->db->query($sql);
+		}
 	}
 }
 ?>

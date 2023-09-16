@@ -299,6 +299,7 @@ class C_mc180c2c extends CI_Controller
 				$date2 			= new DateTime($MC_ENDDATE);
 
 				$MC_DATEV		= strftime('%d %B %Y', strtotime($MC_DATE));
+				$MC_STARTDV		= strftime('%d %B %Y', strtotime($MC_STARTD));
 				$MC_ENDDATEV	= strftime('%d %B %Y', strtotime($MC_ENDDATE));
 
 				$isDis 			= "";
@@ -459,6 +460,12 @@ class C_mc180c2c extends CI_Controller
 
 				$output['data'][]	= array("<div style='white-space:nowrap'>
 											  	<strong>".$MC_CODE."</strong>
+											  	<div><strong><i class='fa fa-calendar margin-r-5'></i> ".$Date." </strong></div>
+										  		<div>
+											  		<p class='text-muted' style='margin-left: 18px'>
+											  			".$MC_DATEV."
+											  		</p>
+											  	</div>
 											  	<div><strong><i class='fa fa-flag-o margin-r-5'></i> ".$ManualCode." </strong></div>
 										  		<div>
 											  		<p class='text-muted' style='margin-left: 20px'>
@@ -468,10 +475,10 @@ class C_mc180c2c extends CI_Controller
 										  	</div>",
 										  	"<div style='white-space:nowrap'><button type='button' class='btn bg-".$numCol." btn-flat margin'>".$MC_STEP."</button><br>".number_format($MC_PROGAPP,4)." %</div>",
 										  	"<div>
-											  	<strong><i class='fa fa-calendar margin-r-5'></i> ".$Date." </strong>
+											  	<strong><i class='fa fa-calendar margin-r-5'></i> Periode MC </strong>
 										  		<div>
 											  		<p class='text-muted' style='margin-left: 18px'>
-											  			".$MC_DATEV." - ".$MC_ENDDATEV."
+											  			".$MC_STARTDV." - ".$MC_ENDDATEV."
 											  		</p>
 											  	</div>
 											  	<strong><i class='fa fa-pencil margin-r-5'></i> ".$Description." </strong>
@@ -611,12 +618,83 @@ class C_mc180c2c extends CI_Controller
 			$MC_STAT		= $this->input->post('MC_STAT');
 
 			// ============================= Start Upload File ========================================== //
-			$this->load->library('upload');
+			/*$this->load->library('upload');
 		    $this->upload->initialize(["upload_path" => "assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document",
 									   "allowed_types" => "pdf",
 									   // "max_size" => 1024,
 									   "overwrite" => false
-		  	]);
+		  	]);*/
+
+		  	// ============================= Start Upload File ========================================== //
+				$fileUpload	= null;
+				$files 		= $_FILES;
+				$count 		= count($_FILES['MC_DOC']['name']);
+
+				if (!file_exists("assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE")) {
+					mkdir("assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE", 0777, true);
+				}
+				
+				$config['upload_path'] 		= "assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE";
+				$config['allowed_types'] 	= "jpg|jpeg|png|gif|pdf";
+				$config['max_size'] 		= 0; // Unlimited
+				$config['overwrite'] 		= false;
+				
+				for($i = 0; $i < $count; $i++) {
+					if(!empty($_FILES['MC_DOC']['name'][$i])) {
+
+						$_FILES['MC_DOC']['name']     = $files['MC_DOC']['name'][$i];
+						$_FILES['MC_DOC']['type']     = $files['MC_DOC']['type'][$i];
+						$_FILES['MC_DOC']['tmp_name'] = $files['MC_DOC']['tmp_name'][$i];
+						$_FILES['MC_DOC']['error']    = $files['MC_DOC']['error'][$i];
+						$_FILES['MC_DOC']['size']     = $files['MC_DOC']['size'][$i];
+
+						$this->load->library('upload', $config);
+
+						if($this->upload->do_upload('MC_DOC'))
+						{
+							// $data[] 		= $this->upload->data();
+							$upl_data 		= $this->upload->data();
+							$fileName 		= $upl_data['file_name'];
+							$srvURL 		= $_SERVER['SERVER_ADDR'];
+							// $fileName 	= $file['file_name'];
+							$source		= "assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE/$fileName";
+	
+							if($srvURL == '10.0.0.144')
+							{
+								$this->load->library('ftp');
+				
+								$config['hostname'] = 'sdbpplus.nke.co.id';
+								$config['username'] = 'sdbpplus@sdbpplus.nke.co.id';
+								$config['password'] = 'NKE@dmin2021';
+								$config['debug']    = TRUE;
+								
+								$this->ftp->connect($config);
+								
+								$destination = "/assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE/$fileName";
+	
+								if($this->ftp->list_files("./assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE/") == FALSE) 
+								{
+									$this->ftp->mkdir("./assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE/", 0777);
+								}
+								
+								$this->ftp->upload($source, ".".$destination);
+								
+								$this->ftp->close();
+							}
+	
+							$UPL_NUM 	= "UPL".date('YmdHis');
+							$UPL_DATE 	= date('Y-m-d');
+							$uplFile 	= ["UPL_NUM" => $UPL_NUM, "REF_NUM" => $MC_CODE, "REF_CODE" => $MC_MANNO,
+										"PRJCODE" => $PRJCODE, "UPL_DATE" => $UPL_DATE, 
+										"UPL_FILENAME" => $upl_data['file_name'], "UPL_FILESIZE" => $upl_data['file_size'],
+										"UPL_FILETYPE" => $upl_data['file_type'], "UPL_FILEPATH" => $upl_data['file_path'], 
+										"UPL_CREATER" => $DefEmp_ID, "UPL_CREATED" => date('Y-m-d H:i:s')];
+							$this->m_updash->uplDOC_TRX($uplFile);
+						}					
+					}
+				}
+			
+			// ============================= End Upload File ========================================== //
 		    
 		  	/*if ($this->upload->do_multi_upload('MC_DOC'))
 			{
@@ -938,12 +1016,83 @@ class C_mc180c2c extends CI_Controller
 			$MC_STAT		= $this->input->post('MC_STAT');
 
 			// ============================= Start Upload File ========================================== //
-			$this->load->library('upload');
+			/*$this->load->library('upload');
 		    $this->upload->initialize(["upload_path" => "assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document",
 									   "allowed_types" => "pdf",
 									   // "max_size" => 1024,
 									   "overwrite" => false
-		  	]);
+		  	]);*/
+
+		  	// ============================= Start Upload File ========================================== //
+				$fileUpload	= null;
+				$files 		= $_FILES;
+				$count 		= count($_FILES['MC_DOC']['name']);
+
+				if (!file_exists("assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE")) {
+					mkdir("assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE", 0777, true);
+				}
+				
+				$config['upload_path'] 		= "assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE";
+				$config['allowed_types'] 	= "jpg|jpeg|png|gif|pdf";
+				$config['max_size'] 		= 0; // Unlimited
+				$config['overwrite'] 		= false;
+				
+				for($i = 0; $i < $count; $i++) {
+					if(!empty($_FILES['MC_DOC']['name'][$i])) {
+
+						$_FILES['MC_DOC']['name']     = $files['MC_DOC']['name'][$i];
+						$_FILES['MC_DOC']['type']     = $files['MC_DOC']['type'][$i];
+						$_FILES['MC_DOC']['tmp_name'] = $files['MC_DOC']['tmp_name'][$i];
+						$_FILES['MC_DOC']['error']    = $files['MC_DOC']['error'][$i];
+						$_FILES['MC_DOC']['size']     = $files['MC_DOC']['size'][$i];
+
+						$this->load->library('upload', $config);
+
+						if($this->upload->do_upload('MC_DOC'))
+						{
+							// $data[] 		= $this->upload->data();
+							$upl_data 		= $this->upload->data();
+							$fileName 		= $upl_data['file_name'];
+							$srvURL 		= $_SERVER['SERVER_ADDR'];
+							// $fileName 	= $file['file_name'];
+							$source		= "assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE/$fileName";
+	
+							if($srvURL == '10.0.0.144')
+							{
+								$this->load->library('ftp');
+				
+								$config['hostname'] = 'sdbpplus.nke.co.id';
+								$config['username'] = 'sdbpplus@sdbpplus.nke.co.id';
+								$config['password'] = 'NKE@dmin2021';
+								$config['debug']    = TRUE;
+								
+								$this->ftp->connect($config);
+								
+								$destination = "/assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE/$fileName";
+	
+								if($this->ftp->list_files("./assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE/") == FALSE) 
+								{
+									$this->ftp->mkdir("./assets/AdminLTE-2.0.5/doc_center/uploads/MC_Document/$PRJCODE/", 0777);
+								}
+								
+								$this->ftp->upload($source, ".".$destination);
+								
+								$this->ftp->close();
+							}
+	
+							$UPL_NUM 	= "UPL".date('YmdHis');
+							$UPL_DATE 	= date('Y-m-d');
+							$uplFile 	= ["UPL_NUM" => $UPL_NUM, "REF_NUM" => $MC_CODE, "REF_CODE" => $MC_MANNO,
+										"PRJCODE" => $PRJCODE, "UPL_DATE" => $UPL_DATE, 
+										"UPL_FILENAME" => $upl_data['file_name'], "UPL_FILESIZE" => $upl_data['file_size'],
+										"UPL_FILETYPE" => $upl_data['file_type'], "UPL_FILEPATH" => $upl_data['file_path'], 
+										"UPL_CREATER" => $DefEmp_ID, "UPL_CREATED" => date('Y-m-d H:i:s')];
+							$this->m_updash->uplDOC_TRX($uplFile);
+						}					
+					}
+				}
+			
+			// ============================= End Upload File ========================================== //
 
 		  	/*if ($this->upload->do_multi_upload('MC_DOC'))
 			{

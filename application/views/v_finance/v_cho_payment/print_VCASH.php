@@ -271,6 +271,12 @@ $moneyFormat = new moneyFormat();
 </head>
 <body class="page A4">
     <section class="page sheet custom">
+        <div id="Layer1">
+            <a href="#" onClick="Layer1.style.visibility='hidden'; self.print(); self.close();" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Print</a>
+            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; display: none;">
+            <i class="fa fa-download"></i> Generate PDF
+            </button>
+        </div>
         <div class="cont">
             <div class="box-header">
                 <div class="box-column-logo">
@@ -445,12 +451,6 @@ $moneyFormat = new moneyFormat();
                 </table>
             </div>
         </div>
-        <div id="Layer1">
-            <a href="#" onClick="Layer1.style.visibility='hidden'; self.print(); self.close();" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Print</a>
-            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; display: none;">
-            <i class="fa fa-download"></i> Generate PDF
-            </button>
-        </div>
     </section>
     <section class="page sheet custom">
         <div class="cont">
@@ -608,52 +608,55 @@ $moneyFormat = new moneyFormat();
                                             <?php
                                         }
 
-                                        $Acc_Id         = '';
-                                        $this->db->select("TAXLA_DESC, TAXLA_LINKIN");
-                                        $getAccPPH = $this->db->get_where("tbl_tax_la", ["TAXLA_NUM" => $PPH_Code]);
-                                        if($getAccPPH->num_rows() > 0)
+                                        if($PPH_Amount != 0)
                                         {
-                                            foreach ($getAccPPH->result() as $rPPH):
-                                                $TAXLA_DESC     = $rPPH->TAXLA_DESC;
-                                                $TAXLA_LINKIN   = $rPPH->TAXLA_LINKIN;
-                                            endforeach;
-                                        }
+                                            $Acc_Id         = '';
+                                            $this->db->select("TAXLA_DESC, TAXLA_LINKIN");
+                                            $getAccPPH = $this->db->get_where("tbl_tax_la", ["TAXLA_NUM" => $PPH_Code]);
+                                            if($getAccPPH->num_rows() > 0)
+                                            {
+                                                foreach ($getAccPPH->result() as $rPPH):
+                                                    $TAXLA_DESC     = $rPPH->TAXLA_DESC;
+                                                    $Acc_Id         = $rPPH->TAXLA_LINKIN;
+                                                endforeach;
+                                            }
 
-                                        // PPh Final
-                                        $s_taxfin   = "tbl_chartaccount WHERE PRJCODE = '$PRJCODE' AND Account_Number = '$TAXLA_LINKIN'";
-                                        $taxfin     = $this->db->count_all($s_taxfin);
+                                            // PPh Final
+                                            $s_taxfin   = "tbl_chartaccount WHERE PRJCODE = '$PRJCODE' AND Account_Number = '$Acc_Id'";
+                                            $taxfin     = $this->db->count_all($s_taxfin);
 
-                                        if($PPH_Amount != 0 && $taxfin != 1)
-                                        {
-                                            $no = $no + 1;
-                                            // get PPN 
-                                            $JournalDesc    = '';
-                                            $JournalDesc    = $TAXLA_DESC;
-                                            $Acc_Id         = $TAXLA_LINKIN;
-                                            $ITM_CODE       = '';
-                                            $Base_Debet     = 0;
-                                            $Base_Kredit    = $PPH_Amount;
+                                            if($taxfin != 1)
+                                            {
+                                                $no = $no + 1;
+                                                // get PPN 
+                                                $JournalDesc    = '';
+                                                $JournalDesc    = $TAXLA_DESC;
+                                                $Acc_Id         = $Acc_Id;
+                                                $ITM_CODE       = '';
+                                                $Base_Debet     = 0;
+                                                $Base_Kredit    = $PPH_Amount;
 
-                                            
-                                            ?>
-                                                <tr>
-                                                    <td style="text-align: center;"><?php echo $no; ?></td>
-                                                    <td><?php echo $JournalDesc; ?></td>
-                                                    <td style="text-align: center;"><?php echo $PRJCODE; ?></td>
-                                                    <td style="text-align: center;"><?php echo $Acc_Id; ?></td>
-                                                    <td style="text-align: center;">
-                                                        <?php if($Journal_DK == 'D') echo $ITM_CODE; ?>
-                                                    </td>
-                                                    <td style="text-align: right;">
-                                                        <?php echo number_format($Base_Debet, 2); ?>
-                                                    </td>
-                                                    <td style="text-align: right;">
-                                                        <?php 
-                                                            echo number_format($Base_Kredit, 2);
-                                                        ?>
-                                                    </td>
-                                                </tr>
-                                            <?php
+                                                
+                                                ?>
+                                                    <tr>
+                                                        <td style="text-align: center;"><?php echo $no; ?></td>
+                                                        <td><?php echo $JournalDesc; ?></td>
+                                                        <td style="text-align: center;"><?php echo $PRJCODE; ?></td>
+                                                        <td style="text-align: center;"><?php echo $Acc_Id; ?></td>
+                                                        <td style="text-align: center;">
+                                                            <?php if($Journal_DK == 'D') echo $ITM_CODE; ?>
+                                                        </td>
+                                                        <td style="text-align: right;">
+                                                            <?php echo number_format($Base_Debet, 2); ?>
+                                                        </td>
+                                                        <td style="text-align: right;">
+                                                            <?php 
+                                                                echo number_format($Base_Kredit, 2);
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php
+                                            }
                                         }
                                 endforeach;
                                 ?>

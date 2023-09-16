@@ -86,7 +86,6 @@
     		if($TranslCode == 'Summary')$Summary = $LangTransl;
     		if($TranslCode == 'Detail')$Detail = $LangTransl;
     		if($TranslCode == 'ItemName')$ItemName = $LangTransl;
-    		if($TranslCode == 'Category')$Category = $LangTransl;
     	endforeach;
     	
     	if($LangID == 'IND')
@@ -158,19 +157,6 @@
 									      endforeach;
 									  	}
 								  	?>
-								</select>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="inputName" class="col-sm-2 control-label"><?php echo $Category; ?></label>
-							<div class="col-sm-10">
-								<select name="AMD_CATEG" id="AMD_CATEG" class="form-control select2">
-								  	<option value=""> ALL </option>
-								  	<option value="SI">A : Site Instruction - SI</option>
-									<option value="SINJ">A : Site Instruction - SI New Job</option>
-									<option value="NB">B : Not Budgeting - NB</option>
-									<option value="OB">C : Over Budget - OB</option>
-									<option value="OTH">D : Lain-lain</option>
 								</select>
 							</div>
 						</div>

@@ -162,6 +162,11 @@ $repDay 		= date('Y-m-d');
             text-align: center;
 			background-color: rgba(72,78,73,.2) !important;
         }
+		#Layer1 {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+		}
 	</style>
 	
 	<?php
@@ -182,6 +187,12 @@ $repDay 		= date('Y-m-d');
 
 <body class="page A4">
     <section class="page sheet custom">
+		<div id="Layer1">
+            <a href="#" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Print</a>
+            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; display: none;">
+            <i class="fa fa-download"></i> Generate PDF
+            </button>
+        </div>
 		<div class="cont">
 			<div class="box-header">
                 <div class="box-column-logo">
@@ -390,6 +401,10 @@ $repDay 		= date('Y-m-d');
 <script>
 	$(function(){
 		// window.print();
+		$('#Layer1 > a').on('click', function(){
+			$(this).css("visibility", "hidden");
+			window.print();
+		});
 		document.onkeydown = (event) => {
 			console.log(event);
 			if (event.ctrlKey) {

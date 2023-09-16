@@ -5,6 +5,7 @@
  * File Name    = v_task_request_form.php
  * Location     = -
 */
+date_default_timezone_set("Asia/Jakarta");
 
 $this->load->view('template/head');
 
@@ -374,7 +375,7 @@ $urlLock        = site_url('Auth/lockSystem/?id='.$this->url_encryption_helper->
                                                                             $sqlC3          = "tbl_menu WHERE parent_code = '$menu_code3'";
                                                                             $ressqlC3       = $this->db->count_all($sqlC3);
                                                                         ?>
-                                                                            <option value="<?php echo $menu_code3;?>" <?php if($menu_code3 == $TASK_MENU) { ?>selected<?php } if($ressqlC3>0) {?> disabled <?php } ?>><?php echo "$level_menuD3$menu_name3";?></option>
+                                                                            <option value="<?php echo $menu_code3;?>" <?php if($menu_code3 == $TASK_MENU) { ?>selected<?php } ?>><?php echo "$level_menuD3$menu_name3";?></option>
                                                                         <?php
                                                                         endforeach;
                                                                     }

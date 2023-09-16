@@ -324,6 +324,7 @@ class C_o180d0bpnm extends CI_Controller
 				$WO_CODE		= $dataI['WO_CODE'];
 				$OPNH_CREATER	= $dataI['OPNH_CREATER'];
 				$OPNH_ISCLOSE	= $dataI['OPNH_ISCLOSE'];
+				$OPNH_TYPE		= $dataI['OPNH_TYPE'];
 				$JOBCODEID		= $dataI['JOBCODEID'];
 
 				// GET isLock in Journal
@@ -392,8 +393,9 @@ class C_o180d0bpnm extends CI_Controller
 					$WO_CATEGD	= "Mandor";
 				
 				$CollID			= "$PRJCODE~$OPNH_NUM";
+				$CollIDPrnt		= "$PRJCODE~$OPNH_NUM~$OPNH_TYPE";
 				$secUpd			= site_url('c_project/c_o180d0bpnm/update/?id='.$this->url_encryption_helper->encode_url($CollID));
-				$secPrint		= site_url('c_project/c_o180d0bpnm/pr1n7d0c_b4/?id='.$this->url_encryption_helper->encode_url($OPNH_NUM));
+				$secPrint		= site_url('c_project/c_o180d0bpnm/pr1n7d0c_b4/?id='.$this->url_encryption_helper->encode_url($CollIDPrnt));
 				$secPrint3		= site_url('c_project/c_o180d0bpnm/pr1n7d0c_b43/?id='.$this->url_encryption_helper->encode_url($OPNH_NUM));
 				$secDel_OPN 	= base_url().'index.php/c_project/c_o180d0bpnm/trash_OPN/?id='.$OPNH_NUM;
 				$secVoid 		= base_url().'index.php/__l1y/voidDoc_OPN/?id=';
@@ -611,6 +613,7 @@ class C_o180d0bpnm extends CI_Controller
 				$WO_CODE		= $dataI['WO_CODE'];
 				$OPNH_CREATER	= $dataI['OPNH_CREATER'];
 				$OPNH_ISCLOSE	= $dataI['OPNH_ISCLOSE'];
+				$OPNH_TYPE		= $dataI['OPNH_TYPE'];
 				$JOBCODEID		= $dataI['JOBCODEID'];
 
 				// GET isLock in Journal
@@ -679,8 +682,9 @@ class C_o180d0bpnm extends CI_Controller
 					$WO_CATEGD	= "Mandor";
 				
 				$CollID			= "$PRJCODE~$OPNH_NUM";
+				$CollIDPrnt		= "$PRJCODE~$OPNH_NUM~$OPNH_TYPE";
 				$secUpd			= site_url('c_project/c_o180d0bpnm/update/?id='.$this->url_encryption_helper->encode_url($CollID));
-				$secPrint		= site_url('c_project/c_o180d0bpnm/pr1n7d0c_b4/?id='.$this->url_encryption_helper->encode_url($OPNH_NUM));
+				$secPrint		= site_url('c_project/c_o180d0bpnm/pr1n7d0c_b4/?id='.$this->url_encryption_helper->encode_url($CollIDPrnt));
 				$secPrint3		= site_url('c_project/c_o180d0bpnm/pr1n7d0c_b43/?id='.$this->url_encryption_helper->encode_url($OPNH_NUM));
 				$secDel_OPN 	= base_url().'index.php/c_project/c_o180d0bpnm/trash_OPN/?id='.$OPNH_NUM;
 				$secVoid 		= base_url().'index.php/__l1y/voidDoc_OPN/?id=';
@@ -2009,77 +2013,6 @@ class C_o180d0bpnm extends CI_Controller
 				$Patt_Number	= $this->m_updash->updDocNo($paramStat);
 			// END : MEMBUAT LIST NUMBER / tbl_doclist			
 
-			// ============================= Start Upload File ========================================== //
-				$fileUpload	= null;
-				$files 		= $_FILES;
-				$count 		= count($_FILES['userfile']['name']);
-
-				if (!file_exists("assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE")) {
-					mkdir("assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE", 0777, true);
-				}
-				
-				$config['upload_path'] 		= "assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE";
-				$config['allowed_types'] 	= "jpg|jpeg|png|gif|pdf";
-				// $config['max_size'] 		= 0; // Unlimited
-				$config['overwrite'] 		= false;
-				
-				for($i = 0; $i < $count; $i++) {
-					if(!empty($_FILES['userfile']['name'][$i])) {
-
-						$_FILES['userfile']['name']     = $files['userfile']['name'][$i];
-						$_FILES['userfile']['type']     = $files['userfile']['type'][$i];
-						$_FILES['userfile']['tmp_name'] = $files['userfile']['tmp_name'][$i];
-						$_FILES['userfile']['error']    = $files['userfile']['error'][$i];
-						$_FILES['userfile']['size']     = $files['userfile']['size'][$i];
-
-						$this->load->library('upload', $config);
-
-						if($this->upload->do_upload('userfile'))
-						{
-							// $data[] 		= $this->upload->data();
-							$upl_data 		= $this->upload->data();
-							$fileName 		= $upl_data['file_name'];
-							$srvURL 		= $_SERVER['SERVER_ADDR'];
-							// $fileName 	= $file['file_name'];
-							$source		= "assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE/$fileName";
-	
-							if($srvURL == '10.0.0.144')
-							{
-								$this->load->library('ftp');
-				
-								$config['hostname'] = 'sdbpplus.nke.co.id';
-								$config['username'] = 'sdbpplus@sdbpplus.nke.co.id';
-								$config['password'] = 'NKE@dmin2021';
-								$config['debug']    = TRUE;
-								
-								$this->ftp->connect($config);
-								
-								$destination = "/assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE/$fileName";
-	
-								if($this->ftp->list_files("./assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE/") == FALSE) 
-								{
-									$this->ftp->mkdir("./assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE/", 0777);
-								}
-								
-								$this->ftp->upload($source, ".".$destination);
-								
-								$this->ftp->close();
-							}
-	
-							$UPL_NUM 	= "UPL".date('YmdHis');
-							$UPL_DATE 	= date('Y-m-d');
-							$uplFile 	= ["UPL_NUM" => $UPL_NUM, "REF_NUM" => $OPNH_NUM, "REF_CODE" => $OPNH_CODE,
-										"PRJCODE" => $PRJCODE, "UPL_DATE" => $UPL_DATE, 
-										"UPL_FILENAME" => $upl_data['file_name'], "UPL_FILESIZE" => $upl_data['file_size'],
-										"UPL_FILETYPE" => $upl_data['file_type'], "UPL_FILEPATH" => $upl_data['file_path'], 
-										"UPL_CREATER" => $DefEmp_ID, "UPL_CREATED" => date('Y-m-d H:i:s')];
-							$this->m_opname->uplDOC_TRX($uplFile);
-						}
-					}
-				}
-			
-			// ============================= End Upload File ========================================== //
-			
 			if($OPNH_STAT == 9)
 			{
 				// SUDAH ADA DI CONTROLLER __l1y.php
@@ -2168,6 +2101,78 @@ class C_o180d0bpnm extends CI_Controller
 				// UPDATE DETAIL
 					$this->m_opname->updateDet($OPNH_NUM, $PRJCODE, $OPNH_DATE);
 			}
+
+			// ============================= Start Upload File ========================================== //
+				$fileUpload	= null;
+				$files 		= $_FILES;
+				$count 		= count($_FILES['userfile']['name']);
+
+				if (!file_exists("assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE")) {
+					mkdir("assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE", 0777, true);
+				}
+				
+				$config['upload_path'] 		= "assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE";
+				$config['allowed_types'] 	= "jpg|jpeg|png|gif|pdf";
+				// $config['max_size'] 		= 0; // Unlimited
+				$config['overwrite'] 		= false;
+				
+				for($i = 0; $i < $count; $i++) {
+					if(!empty($_FILES['userfile']['name'][$i])) {
+
+						$_FILES['userfile']['name']     = $files['userfile']['name'][$i];
+						$_FILES['userfile']['type']     = $files['userfile']['type'][$i];
+						$_FILES['userfile']['tmp_name'] = $files['userfile']['tmp_name'][$i];
+						$_FILES['userfile']['error']    = $files['userfile']['error'][$i];
+						$_FILES['userfile']['size']     = $files['userfile']['size'][$i];
+
+						$this->load->library('upload', $config);
+
+						if($this->upload->do_upload('userfile'))
+						{
+							// $data[] 		= $this->upload->data();
+							$upl_data 		= $this->upload->data();
+							$fileName 		= $upl_data['file_name'];
+							$srvURL 		= $_SERVER['SERVER_ADDR'];
+							// $fileName 	= $file['file_name'];
+							$source		= "assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE/$fileName";
+
+							if($srvURL == '10.0.0.144')
+							{
+								$this->load->library('ftp');
+				
+								$config['hostname'] = 'sdbpplus.nke.co.id';
+								$config['username'] = 'sdbpplus@sdbpplus.nke.co.id';
+								$config['password'] = 'NKE@dmin2021';
+								$config['debug']    = TRUE;
+								
+								$this->ftp->connect($config);
+								
+								$destination = "/assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE/$fileName";
+
+								if($this->ftp->list_files("./assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE/") == FALSE) 
+								{
+									$this->ftp->mkdir("./assets/AdminLTE-2.0.5/doc_center/uploads/OPN_Document/$PRJCODE/", 0777);
+								}
+								
+								$this->ftp->upload($source, ".".$destination);
+								
+								$this->ftp->close();
+							}
+
+							$UPL_NUM 	= "UPL".date('YmdHis');
+							$UPL_DATE 	= date('Y-m-d');
+							$uplFile 	= ["UPL_NUM" => $UPL_NUM, "REF_NUM" => $OPNH_NUM, "REF_CODE" => $OPNH_CODE,
+										"PRJCODE" => $PRJCODE, "UPL_DATE" => $UPL_DATE, 
+										"UPL_FILENAME" => $upl_data['file_name'], "UPL_FILESIZE" => $upl_data['file_size'],
+										"UPL_FILETYPE" => $upl_data['file_type'], "UPL_FILEPATH" => $upl_data['file_path'], 
+										"UPL_CREATER" => $DefEmp_ID, "UPL_CREATED" => date('Y-m-d H:i:s')];
+							$this->m_opname->uplDOC_TRX($uplFile);
+						}
+					}
+				}
+			
+			// ============================= End Upload File ========================================== //
+		
 			
 			// START : UPDATE TO TRANS-COUNT
 				$this->load->model('m_updash/m_updash', '', TRUE);
@@ -2976,7 +2981,6 @@ class C_o180d0bpnm extends CI_Controller
 							$PERSL_EMPID 	= $SPLCODE;
 							$SPLCODE 		= $SPLCODE;
 							$SPLDESC	 	= $this->db->get_where("tbl_supplier", ["SPLCODE" => $SPLCODE])->row("SPLDESC");
-							$SPLDESC 		= $this->db->escape_str($SPLDESC);
 							
 							$parameters = array('JournalH_Code' 	=> $JournalH_Code,
 												'JournalType'		=> $JournalType,
@@ -3019,8 +3023,8 @@ class C_o180d0bpnm extends CI_Controller
 								$TAXCODE2 		= $d['TAXCODE2'];
 								$TAXPRICE2 		= $d['TAXPRICE2'];
 								$ITM_GROUP 		= $d['ITM_GROUP'];
-								$OPND_DESC		= $this->db->escape_str($d['OPND_DESC']);
-								$Notes 			= $this->db->escape_str($d['OPND_DESC']);
+								$OPND_DESC		= htmlentities($d['OPND_DESC'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
+								$Notes 			= htmlentities($d['OPND_DESC'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 								$OPNVAL			= $ITM_QTY * $ITM_PRICE;
 								$TOTALD			= $TOTALD + $OPNVAL;
 
@@ -3612,9 +3616,14 @@ class C_o180d0bpnm extends CI_Controller
 			$data['comp_add']	= $therow->comp_add;
 		endforeach;
 		$DefEmp_ID 	= $this->session->userdata['Emp_ID'];
-		
-		$OPNH_NUM	= $_GET['id'];
-		$OPNH_NUM	= $this->url_encryption_helper->decode_url($OPNH_NUM);
+
+		$OPNHNUM	= $_GET['id'];
+		$OPNHNUM	= $this->url_encryption_helper->decode_url($OPNHNUM);
+
+		$collData	= explode("~", $OPNHNUM);
+		$PRJCODE	= $collData[0];
+		$OPNH_NUM	= $collData[1];
+		$OPNH_TYPE	= $collData[2];
 		
 		if ($this->session->userdata('login') == TRUE)
 		{			
@@ -3658,6 +3667,7 @@ class C_o180d0bpnm extends CI_Controller
 			$data['default']['Patt_Month'] 	= $getwodata->Patt_Month;
 			$data['default']['Patt_Date'] 	= $getwodata->Patt_Date;
 			$data['default']['Patt_Number']	= $getwodata->Patt_Number;
+			$data['default']['OPNH_TYPE']	= $OPNH_TYPE;
 
 			$data['countopndet'] = $this->m_opname->count_OPNDET_by_number($OPNH_NUM);
 	      	$data['vopndet']   = $this->m_opname->get_OPNDET_by_number($OPNH_NUM);

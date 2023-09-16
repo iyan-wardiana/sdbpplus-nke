@@ -2177,7 +2177,7 @@ class M_purchase_req extends CI_Model
 	function get_AllDataITMALLC($PRJCODE, $ITMCAT, $search, $length, $start) // GOOD
 	{
 		if($ITMCAT == 'O')
-			$QRY01 	= "ITM_GROUP IN ('O') AND";
+			$QRY01 	= "ITM_GROUP IN ('O','R') AND";
 		elseif($ITMCAT == 'M')
 			$QRY01 	= "ITM_GROUP IN ('M','T') AND";
 		elseif($ITMCAT == 'T')
@@ -2215,7 +2215,7 @@ class M_purchase_req extends CI_Model
 	function get_AllDataITMALLL($PRJCODE, $ITMCAT, $search, $length, $start, $order, $dir) // GOOD
 	{
 		if($ITMCAT == 'O')
-			$QRY01 	= "ITM_GROUP IN ('O') AND";
+			$QRY01 	= "ITM_GROUP IN ('O','R') AND";
 		elseif($ITMCAT == 'M')
 			$QRY01 	= "ITM_GROUP IN ('M','T') AND";
 		elseif($ITMCAT == 'T')

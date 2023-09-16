@@ -174,7 +174,11 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 		$RAPT_STAT 		= 0;
 		$PRJADD 		= "-";
 		$PRJ_ISLOCK 	= 0;
-		$sql 			= "SELECT PRJNAME, PRJPERIOD, PRJ_IMGNAME, PRJCOST, PRJRAPT, RAPP_STAT, RAPT_STAT, PRJADD, PRJ_LOCK_STAT FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
+		$RAPT_EDATE 	= date('Y-m-d');
+		$RAPP_EDATE 	= date('Y-m-d');
+		$PRJSTAT 		= 0;
+		$sql 			= "SELECT PRJNAME, PRJPERIOD, PRJ_IMGNAME, PRJCOST, PRJRAPT, RAPP_STAT, RAPT_STAT, PRJADD, PRJ_LOCK_STAT, RAPT_EDATE, RAPP_EDATE, PRJSTAT
+								FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
 		$result 		= $this->db->query($sql)->result();
 		foreach($result as $row) :
 			$PRJNAME 	= $row->PRJNAME;
@@ -186,6 +190,9 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 			$RAPT_STAT 	= $row->RAPT_STAT;
 			$PRJADD 	= $row->PRJADD;
 			$PRJ_ISLOCK	= $row->PRJ_LOCK_STAT;
+			$RAPT_EDATE = $row->RAPT_EDATE;
+			$RAPP_EDATE = $row->RAPP_EDATE;
+			$PRJSTAT 	= $row->PRJSTAT;
 		endforeach;
 		if($RAPT_STAT == 0)
 			$RAPP_STAT 	= 0;
@@ -394,6 +401,48 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 							$REM_RAPPERCRQ 	= $REM_RAPREQ / $TOT_RAPP * 100;
 							$REM_RAPPERC 	= $REM_RAP / $TOT_RAPP * 100;
 						}
+
+						// START : LOCK PROCEDURE
+							$dtRAPT   	= date('Y-m-d', strtotime($RAPT_EDATE));
+							$dtRAPP   	= date('Y-m-d', strtotime($RAPP_EDATE));
+							$dtN 		= date('Y-m-d');
+							$dtNOW 		= new DateTime($dtN);
+							$dtRAPTE	= new DateTime($dtRAPT);
+							$dtRAPPE	= new DateTime($dtRAPP);
+							$remRAPT	= $dtNOW->diff($dtRAPTE)->days + 1;
+							$remRAPP	= $dtNOW->diff($dtRAPPE)->days + 1;
+
+							$remRAPTD 	= $remRAPT." hari";
+							$remRAPPD 	= $remRAPP." hari";
+							$LOCRAPTKD 	= "";
+							$LOCRAPPKD 	= "";
+							if($dtN > $dtRAPT && $RAPT_STAT == 0 && $PRJSTAT == 1)			    // LOCK RAPT 16 DAYS AFTER BOQ
+							{
+								$remRAPTD 	= "- ".$remRAPT." hari";
+								$RAPT_STAT 	= 1;
+								$LOCRAPTKD 	= "Locked by System.";
+							}
+							elseif($dtRAPT < $dtN && $RAPT_STAT == 1 && $PRJSTAT == 1)			// LOCK RAPT 16 DAYS AFTER BOQ
+							{
+								$remRAPTD 	= "Selesai";
+								$RAPT_STAT 	= 1;
+							}
+                            
+							if($dtN > $dtRAPP && $RAPP_STAT == 0 && $PRJSTAT == 1)		        // LOCK RAPP 60 DAYS AFTER RAPT
+							{
+								$remRAPPD 	= "- ".$remRAPP." hari";
+								$RAPP_STAT 	= 1;
+								$LOCRAPPKD 	= "Locked by System.";
+							}
+							elseif($dtRAPP < $dtN && $RAPP_STAT == 1 && $PRJSTAT == 1)			// LOCK RAPT 16 DAYS AFTER BOQ
+							{
+								$remRAPPD 	= "Selesai";
+								$RAPP_STAT 	= 1;
+							}
+							
+							if($dtRAPP >= $dtN)
+							    $RAPP_STAT 	= 0;
+						// END : LOCK PROCEDURE
 				?>
 		        <div class="col-md-3">
 		          	<div class="info-box bg-blue">
@@ -424,7 +473,7 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 			              	<span class="info-box-text">
 			              		RAPT
 				                <div class="pull-right">
-									<div id="divLock3" <?php if($RAPT_STAT == 0) { ?> style="display: none;" <?php } ?>>
+									<div id="divLock3" <?php if($RAPT_STAT == 0) { ?> style="display: none;" <?php } ?> title="<?=$LOCRAPTKD?>">
 										<span data-toggle="modal" data-target="#mdl_LOCKRAPT" style="cursor: pointer;" style="display: none;"><i class="fa fa-lock"></i></span>
 									</div>
 								</div>
@@ -448,7 +497,7 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 			              	<span class="info-box-text">
 			              		RAPP
 				                <div class="pull-right">
-									<div id="divLock2" <?php if($RAPP_STAT == 0) { ?> style="display: none;" <?php } ?>>
+									<div id="divLock2" <?php if($RAPP_STAT == 0) { ?> style="display: none;" <?php } ?> title="<?=$LOCRAPPKD?>">
 										<span data-toggle="modal" data-target="#mdl_LOCKRAPP" style="cursor: pointer;" style="display: none;"><i class="fa fa-lock"></i></span>
 									</div>
 								</div>
@@ -631,6 +680,13 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 	                		echo '<button class="btn btn-success" onClick="ShwSyncJLDTRX()" title="Sync. Transaksi ke Pekerjaan"><i class="glyphicon glyphicon-list-alt"></i></button>&nbsp;';
 	                		echo '<button class="btn btn-success" onClick="ShwSyncDASHTRX()" title="Sync. Transaksi ke Dashboard"><i class="glyphicon glyphicon-dashboard"></i></button>&nbsp;';
 							//echo '<button class="btn btn-warning" title="Tambahkan Pekerjaan" data-toggle="modal" data-target="#mdl_addJH"><i class="fa fa-copy" id="mdlAddJH"></i></button>&nbsp;';
+	                    }
+	                    elseif($DefEmp_ID == 'R08110000940' || $DefEmp_ID == '230700005654')
+	                    {
+	                		echo '<button class="btn btn-success" onClick="ShwSyncJLDTRX()" title="Sync. Transaksi ke Pekerjaan"><i class="glyphicon glyphicon-list-alt"></i></button>&nbsp;';
+	                    	echo anchor("$secAddURL",'<button class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i></button>&nbsp;');
+                    		echo anchor("$secAddURL",'<button class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i></button>&nbsp;');
+                        	echo anchor("$secUpl",'<button class="btn btn-warning" title="'.$Upload.'"><i class="glyphicon glyphicon-import"></i></button>&nbsp;');
 	                    }
 	                    else if($ISDELETE == 1)
 	                    {
@@ -1332,6 +1388,12 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 																	</li>
 																</ul>
 															</div>
+															<div class="col-md-12">
+																<div class="box-body box-profile">
+																	Batas Penguncian RAPT pada <?=date('d/m/Y', strtotime($RAPT_EDATE))?><br>
+																	Waktu tersisa : <?=$remRAPTD?>
+																</div>
+															</div>
 														</div>
 													</div>
 	                                      		</div>
@@ -1497,6 +1559,12 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 																		<a class="pull-right"><?=$DEVDESC_5?></a>
 																	</li>
 																</ul>
+															</div>
+															<div class="col-md-12">
+																<div class="box-body box-profile">
+																	Batas Penguncian RAPP pada <?=date('d/m/Y', strtotime($RAPP_EDATE))?><br>
+																	Waktu tersisa : <?=$remRAPPD?>
+																</div>
 															</div>
 														</div>
 													</div>
@@ -2094,7 +2162,7 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
                     echo "<font size='1'><i>$act_lnk</i></font>";
             ?>
 		</section>
-		<iframe id="myiFrame" src="<?php echo base_url('__l1y/impCOA' ) ?>" style="width: 100%;"></iframe>
+		<iframe id="myiFrame" src="<?php echo base_url('__l1y/impCOA' ) ?>" style="width: 100%; display: none;"></iframe>
 			
 		<!-- <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script> 
 		<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -2890,6 +2958,56 @@ $PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 				$("#myiFrame")[0].contentWindow.PRJCODE.value 		= PRJCODE;
 				$("#myiFrame")[0].contentWindow.IMP_CODEX.value 	= 'RESETRABH';
 				$("#myiFrame")[0].contentWindow.IMP_TYPE.value 		= 'RESETRABH';
+				$("#myiFrame")[0].contentWindow.DESCRIPT.value 		= JOBID;
+				butSubm.submit();
+
+		        /*$.ajax({
+		            type: 'POST',
+		            url: url,
+		            data: {collID: collID},
+		            success: function(response)
+		            {
+		            	document.getElementById('loading_1').style.display = 'none';
+		            	swal(response, 
+						{
+							icon: "success",
+						});
+		            }
+		        });*/
+            } 
+            else 
+            {
+                /*swal("<?php echo $canReset; ?>", 
+				{
+					icon: "error",
+				});*/
+            }
+        });
+	}
+	
+	function syncJobRAPP(row)
+	{
+		PRJCODE 	= "<?php echo $PRJCODE; ?>";
+	    swal({
+            text: "<?php echo $sureReset; ?>",
+            icon: "warning",
+            buttons: ["No", "Yes"],
+        })
+        .then((willDelete) => 
+        {
+            if (willDelete) 
+            {
+            	var JOBID 	= document.getElementById('JOBID'+row).value;
+
+				document.getElementById('idprogbar').style.display = '';
+			    document.getElementById("progressbarXX").innerHTML="<div class='cssProgress-bar cssProgress-primary cssProgress-active' style='width: 100%; text-align:center; font-weight:bold;'><span style='text-align:center; font-weight:bold'>Preparing ...</span></div>";
+				document.getElementById('loading_1').style.display = '';
+            	var collID	= PRJCODE;
+
+				var butSubm = $("#myiFrame")[0].contentWindow.sample_form;
+				$("#myiFrame")[0].contentWindow.PRJCODE.value 		= PRJCODE;
+				$("#myiFrame")[0].contentWindow.IMP_CODEX.value 	= 'RESETRAPP';
+				$("#myiFrame")[0].contentWindow.IMP_TYPE.value 		= 'RESETRAPP';
 				$("#myiFrame")[0].contentWindow.DESCRIPT.value 		= JOBID;
 				butSubm.submit();
 

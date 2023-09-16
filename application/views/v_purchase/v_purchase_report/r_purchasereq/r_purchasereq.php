@@ -30,17 +30,6 @@ $Start_DateD 	= date('d');
 $Start_Date 	= "$Start_DateM/$Start_DateD/$Start_DateY";	
 $End_Date 		= "$Start_DateM/$Start_DateD/$Start_DateY";
 
-$getDTRX      = "SELECT DATEDIFF(NOW(),PR_DATE) AS DateTRX 
-				FROM tbl_pr_header ORDER BY PR_DATE ASC LIMIT 1";
-$resDTRX      = $this->db->query($getDTRX);
-$DateTRX      = '';
-if($resDTRX->num_rows() > 0)
-{
-	foreach($resDTRX->result() as $rDTRX):
-		$DateTRX    = $rDTRX->DateTRX;
-	endforeach;
-}
-
 $DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 
 $getproject 	= "SELECT A.PRJCODE, A.PRJNAME FROM tbl_project A
@@ -151,8 +140,7 @@ if(isset($_POST['vPeriodx']))
                             <label for="inputName" class="col-sm-2 control-label"><?php echo $ProjectName ?></label>
                             <div class="col-sm-10">
                             	<select name="PRJCODE" id="PRJCODE" class="form-control select2" data-placeholder="&nbsp;&nbsp;&nbsp;<?php echo $ProjectName; ?>">
-                                	<!-- <option value="All"> Semua</option> -->
-                                	<option value=""></option>
+                                	<option value="All"> Semua</option>
         							<?php
                                         $sqlPRJ = "SELECT PRJCODE, PRJNAME
         											FROM tbl_project 
@@ -178,15 +166,8 @@ if(isset($_POST['vPeriodx']))
                             	<div class="input-group date">
                                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                                   <input type="hidden" name="End_Date" class="form-control pull-left" id="datepicker" value="<?php echo $End_Date; ?>" size="10" style="width:150px" >
-                                  <input type="text" name="datePeriod" class="form-control" id="daterange-btn" style="width:180px">
+                                  <input type="text" name="datePeriod" class="form-control" id="reservation" style="width:180px">
                               </div>
-                            </div>
-                        </div>
-						<div class="form-group">
-                            <label for="inputName" class="col-sm-2 control-label"><?php echo "Nomor SPP" ?></label>
-                            <div class="col-sm-10">
-                            	<select name="PR_NUM" id="PR_NUM" class="form-control select2">
-                                </select>
                             </div>
                         </div>
                     	<div class="form-group" style="display: none;">
@@ -245,7 +226,6 @@ if(isset($_POST['vPeriodx']))
 
 <script>
 	$(function () {
-		let DateTRX  = <?php echo $DateTRX; ?>;
 		//Initialize Select2 Elements
 		$(".select2").select2();
 
@@ -262,27 +242,22 @@ if(isset($_POST['vPeriodx']))
 		$('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
 		//Date range as a button
 		$('#daterange-btn').daterangepicker(
-            {
-                locale: {
-                    format: 'DD/MM/YYYY'
-                },
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    // 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                    'Last Transaction': [moment().subtract(DateTRX, 'days').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                    'All Periode': [moment().subtract(DateTRX, 'days').startOf('month'), moment()]
-                },
-                startDate: moment().subtract(29, 'days'),
-                endDate: moment()
-            },
-            function (start, end) {
-              $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-            }
-        );
+		    {
+		      ranges: {
+		        'Today': [moment(), moment()],
+		        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+		        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+		        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+		        'This Month': [moment().startOf('month'), moment().endOf('month')],
+		        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+		      },
+		      startDate: moment().subtract(29, 'days'),
+		      endDate: moment()
+		    },
+		    function (start, end) {
+		      $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+		    }
+		);
 
 		//Date picker
 		$('#datepicker').datepicker({
@@ -334,49 +309,6 @@ if(isset($_POST['vPeriodx']))
 		$(".timepicker").timepicker({
 		  showInputs: false
 		});
-
-		$('#PRJCODE').on('change', function(e) {
-			getData_PR();
-		});
-
-		$('#daterange-btn').on('change', function(e) {
-			getData_PR();
-		});
-
-		getData_PR = function() {
-			let PRJCODE	= $('#PRJCODE').val();
-			let period 	= $('#daterange-btn').val();
-			$.ajax({
-				url: "<?php echo site_url('c_purchase/c_purchase_report/getData_PR') ?>",
-				type: "POST",
-				dataType: "JSON",
-				data: {PRJCODE:PRJCODE, period:period},
-				beforeSend: function() {
-					$('#PR_NUM').select2({
-						placeholder: "Please waitting..."
-					});
-				},
-				success: function(result) {
-					console.log(result);
-					let lnData  = result.length;
-					let dataOpt = '';
-	                if(lnData != 0) dataOpt = '<option value=""> --- </option><option value="All"> -- Semua -- </option>';
-	                // if(lnData != 0) dataOpt = '<option value=""> --- </option>';
-
-	                for(let i=0; i<lnData; i++) {
-	                    let PR_NUM    = result[i].PR_NUM;
-	                    let PR_CODE   = result[i].PR_CODE;
-						dataOpt 	+= '<option value="'+PR_NUM+'">'+PR_CODE+'</option>';
-					}
-
-					$('#PR_NUM').html(dataOpt);
-
-					$('#PR_NUM').select2({
-						placeholder: " -- "
-					});
-				}
-			});
-		}
 	});
 </script>
 <script>

@@ -501,11 +501,11 @@
             $APPROVER_5 = '';   
             $disableAll = 1;
             $DOCAPP_TYPE= 1;
-            $sqlCAPP    = "tbl_docstepapp WHERE MENU_CODE = '$MenuCode' AND PRJCODE = '$PRJCODE'";
+            $sqlCAPP    = "tbl_docstepapp WHERE MENU_CODE = '$MenuApp' AND PRJCODE = '$PRJCODE'";
             $resCAPP    = $this->db->count_all($sqlCAPP);
             if($resCAPP > 0)
             {
-                $sqlAPP = "SELECT * FROM tbl_docstepapp WHERE MENU_CODE = '$MenuCode'
+                $sqlAPP = "SELECT * FROM tbl_docstepapp WHERE MENU_CODE = '$MenuApp'
                             AND PRJCODE IN (SELECT proj_Code FROM tbl_employee_proj WHERE Emp_ID = '$DefEmp_ID' AND proj_Code = '$PRJCODE')";
                 $resAPP = $this->db->query($sqlAPP)->result();
                 foreach($resAPP as $rowAPP) :
@@ -599,7 +599,7 @@
                 $disableAll = 0;
             
                 // CHECK AUTH APPROVE TYPE
-                $sqlAPPT    = "SELECT DOCAPP_TYPE FROM tbl_docstepapp WHERE MENU_CODE = '$MenuCode'
+                $sqlAPPT    = "SELECT DOCAPP_TYPE FROM tbl_docstepapp WHERE MENU_CODE = '$MenuApp'
                                 AND PRJCODE IN (SELECT proj_Code FROM tbl_employee_proj WHERE Emp_ID = '$DefEmp_ID' AND proj_Code = '$PRJCODE')";
                 $resAPPT    = $this->db->query($sqlAPP)->result();
                 foreach($resAPPT as $rowAPPT) :
@@ -607,7 +607,7 @@
                 endforeach;
             }
             
-            $sqlSTEPAPP = "tbl_docstepapp_det WHERE MENU_CODE = '$MenuCode' AND APPROVER_1 = '$DefEmp_ID'
+            $sqlSTEPAPP = "tbl_docstepapp_det WHERE MENU_CODE = '$MenuApp' AND APPROVER_1 = '$DefEmp_ID'
                             AND PRJCODE IN (SELECT proj_Code FROM tbl_employee_proj WHERE Emp_ID = '$DefEmp_ID' AND proj_Code = '$PRJCODE')";
             $resSTEPAPP = $this->db->count_all($sqlSTEPAPP);
             if($resSTEPAPP > 0)
@@ -615,7 +615,7 @@
                 $canApprove = 1;
                 $APPLIMIT_1 = 0;
                 
-                $sqlAPP = "SELECT APPLIMIT_1, APP_STEP, MAX_STEP FROM tbl_docstepapp_det WHERE MENU_CODE = '$MenuCode'
+                $sqlAPP = "SELECT APPLIMIT_1, APP_STEP, MAX_STEP FROM tbl_docstepapp_det WHERE MENU_CODE = '$MenuApp'
                             AND APPROVER_1 = '$DefEmp_ID' AND PRJCODE IN (SELECT proj_Code FROM tbl_employee_proj WHERE Emp_ID = '$DefEmp_ID' AND proj_Code = '$PRJCODE')";
                 $resAPP = $this->db->query($sqlAPP)->result();
                 foreach($resAPP as $rowAPP) :
@@ -1452,6 +1452,7 @@
                                         <th style="text-align:center">Total</th>
                                     </tr>
                                     <?php
+                                        $disBtn     = 0;
                                         if($task == 'add' && $WO_NUMX == '')
                                         {
                                             $sqlDETC    = "tbl_wo_detail A

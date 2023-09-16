@@ -66,10 +66,10 @@
 	            width: 600mm;
 	            /*min-height: 296mm;*/
 	            padding-left: 1cm;
-	            padding-right: 1cm;
-	            padding-top: 1cm;
-	            padding-bottom: 1cm;
-	            margin: 0.5cm auto;
+	            padding-right: 2cm;
+	            padding-top: 0.5cm;
+	            padding-bottom: 2cm;
+	            margin: 1cm 2cm 2cm 1cm;
 	            border: 1px #D3D3D3 solid;
 	            border-radius: 5px;
 	            background: white;
@@ -87,7 +87,7 @@
 
 	            @page{size: landscape;}
 	            .page {
-	                margin: 0cm 2cm 1cm 0;
+	                margin: 0cm 2cm 2cm 0;
 	                border: initial;
 	                border-radius: initial;
 	                width: initial;
@@ -402,17 +402,17 @@
 										$GTIR_VOLM      = $GTIR_VOLM + $IR_VOLM;
 										$GTIR_AMOUNT    = $GTIR_AMOUNT + $IR_AMOUNT;
 	
-										if($DefEmp_ID == 'D15040004221')
-										{
-											$TOT_REQ    = $VC_AMOUNT + $SPK_AMOUNT;
-											if($TOT_REQ > $ITM_BUDG2) $CELL_WARBUDG2 = "background-color:rgba(245,238,29,0.3);";
+										// if($DefEmp_ID == 'D15040004221')
+										// {
+										// 	$TOT_REQ    = $VC_AMOUNT + $SPK_AMOUNT;
+										// 	if($TOT_REQ > $ITM_BUDG2) $CELL_WARBUDG2 = "background-color:rgba(245,238,29,0.3);";
 	
-											if($OPN_VOLM > $SPK_VOLM) $CELL_WAROPNVOL = "background-color:rgba(255,0,0,0.3);";
-											if($OPN_AMOUNT > $SPK_AMOUNT) $CELL_WAROPNVAL = "background-color:rgba(255,0,0,0.3);";
+										// 	if($OPN_VOLM > $SPK_VOLM) $CELL_WAROPNVOL = "background-color:rgba(255,0,0,0.3);";
+										// 	if($OPN_AMOUNT > $SPK_AMOUNT) $CELL_WAROPNVAL = "background-color:rgba(255,0,0,0.3);";
 	
-											if($IR_VOLM > $PO_VOLM) $CELL_WARIRVOL = "background-color:rgba(255,0,0,0.3);";
-											if($IR_AMOUNT > $PO_AMOUNT) $CELL_WARIRVAL = "background-color:rgba(255,0,0,0.3);";
-										}
+										// 	if($IR_VOLM > $PO_VOLM) $CELL_WARIRVOL = "background-color:rgba(255,0,0,0.3);";
+										// 	if($IR_AMOUNT > $PO_AMOUNT) $CELL_WARIRVAL = "background-color:rgba(255,0,0,0.3);";
+										// }
 									}
 									else
 									{

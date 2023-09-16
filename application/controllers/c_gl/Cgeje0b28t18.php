@@ -74,7 +74,7 @@ class Cgeje0b28t18 extends CI_Controller
 			}
 		
 			//$sqlISHO 		= "SELECT PRJCODE, PRJCODE_HO FROM tbl_project_budg WHERE PRJCODE = '$PRJCODE' AND PRJSTAT = 1";
-			$sqlISHO 		= "SELECT PRJCODE, PRJCODE_HO FROM tbl_project_budg WHERE PRJCODE = '$PRJCODE'";
+			$sqlISHO 		= "SELECT PRJCODE, PRJCODE_HO FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
 			$resISHO		= $this->db->query($sqlISHO)->result();
 			foreach($resISHO as $rowISHO):
 				$this->data['PRJCODE']		= $rowISHO->PRJCODE;

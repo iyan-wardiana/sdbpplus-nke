@@ -805,7 +805,8 @@ class C_br180c2cd0d extends CI_Controller
 			$BR_RECTYPE	= $splitCode[0];
 			$BR_PAYFROM	= $splitCode[1];
 			$PRJCODE	= $splitCode[2];
-			
+
+			$data['PRJCODE'] 	= $PRJCODE;
 			$data['title'] 		= $appName;
 			
 			$data['BR_RECTYPE'] = $BR_RECTYPE;	

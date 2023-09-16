@@ -5,6 +5,7 @@
  * File Name	= write_mail.php
  * Location		= -
 */
+date_default_timezone_set("Asia/Jakarta");
 
 $this->load->view('template/head');
 
@@ -191,6 +192,7 @@ if(isset($_POST['submit']))
 		{
 			$AS_MPHONE1 = "6285722980308";
 			$AS_MPHONE2 = "6282116474710";
+			/* ------------------------------- pickyassist.com -----------------------------------
 			$JSON_DATA = '{"token":"1f0e316f043fce1b5a52242463d88ae08a8aafe1","priority ":0,"application":"2","sleep":0,"globalmessage":"","globalmedia":"","data":[{"number":"'.$AS_MPHONE1.'","message":"Bapak/Ibu *_'.$AS_EMPNAME.'_*, Anda mendapatkan respon dari *'.$AS_SENDER.'* Task Request No. '.$TASKD_PARENT.' : _'.$TASKD_TITLE.'_ \n Isi Pesan : _*'.$TASK_CONT.'*_ \n\n Terimakasih. \n *_NKE Smart System_*"}]}';
 
 
@@ -230,10 +232,84 @@ if(isset($_POST['submit']))
 
 		    //--API RESPONSE--
 		    //print_r( json_decode($result,true) );
+			--------------------------------------- pickyassist.com -------------------------- */
+
+			/* ------------------------------ Maxhat.id -------------------------------------- */
+				// $url 		= "https://user.maxchat.id/nke-official-center/api/messages?direct=true";
+				// migrasi akun tgl. 15-08-2023
+				$url 		= "https://core.maxchat.id/nke-official-center/api/messages";
+				$token 		= "Pzdt3uJuftCaXivWuxn3Tt";
+
+				// $JSON_DATA	= array("to" => $AS_MPHONE1, "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*");
+				$JSON_DATA	= array("to" => $AS_MPHONE1, "type" => "text", "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*", "useTyping" => false);
+				$curl 		= curl_init();
+
+				curl_setopt_array($curl, array(
+					CURLOPT_URL => $url,
+					CURLOPT_SSL_VERIFYHOST => false,
+					CURLOPT_SSL_VERIFYPEER => false,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_ENCODING => "",
+					CURLOPT_MAXREDIRS => 10,
+					CURLOPT_TIMEOUT => 30,
+					CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+					CURLOPT_CUSTOMREQUEST => "POST",
+					CURLOPT_POSTFIELDS => json_encode($JSON_DATA),
+					CURLOPT_HTTPHEADER => array(
+						"Authorization: Bearer " . $token,
+						"Content-Type: application/json",
+						"cache-control: no-cache"
+					),
+				));
+
+				$response = curl_exec($curl);
+				$err = curl_error($curl);
+
+				curl_close($curl);
+
+				// if ($err) {
+				// 	echo "cURL Error #:" . $err;
+				// } else {
+				// 	echo $response;
+				// }
+
+				$JSON_DATA	= array("to" => $AS_MPHONE2, "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*");
+				$curl 		= curl_init();
+
+				curl_setopt_array($curl, array(
+					CURLOPT_URL => $url,
+					CURLOPT_SSL_VERIFYHOST => false,
+					CURLOPT_SSL_VERIFYPEER => false,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_ENCODING => "",
+					CURLOPT_MAXREDIRS => 10,
+					CURLOPT_TIMEOUT => 30,
+					CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+					CURLOPT_CUSTOMREQUEST => "POST",
+					CURLOPT_POSTFIELDS => json_encode($JSON_DATA),
+					CURLOPT_HTTPHEADER => array(
+						"Authorization: Bearer " . $token,
+						"Content-Type: application/json",
+						"cache-control: no-cache"
+					),
+				));
+
+				$response = curl_exec($curl);
+				$err = curl_error($curl);
+
+				curl_close($curl);
+
+				// if ($err) {
+				// 	echo "cURL Error #:" . $err;
+				// } else {
+				// 	echo $response;
+				// }
+			/*-------------------------------- Maxhat.id ---------------------------------- */
 		}
 		else
 		{
 			/*$JSON_DATA = '{"token":"1f0e316f043fce1b5a52242463d88ae08a8aafe1","priority ":0,"application":"2","sleep":0,"globalmessage":"","globalmedia":"","data":[{"number":"'.$AS_EMPNAME.'","message":"Bapak/Ibu *_'.$AS_EMPNAME.'_*, Anda mendapatkan respon dari *'.$AS_SENDER.'* Task Request No. '.$TASKD_PARENT.' : _'.$TASKD_TITLE.'_ \n Isi Pesan : _*'.$TASK_CONT.'*_ \n\n Terimakasih. \n *_NKE Smart System_*"}]}';*/
+			/* ------------------------------- pickyassist.com -----------------------------------
 			$JSON_DATA = '{"token":"1f0e316f043fce1b5a52242463d88ae08a8aafe1","priority ":0,"application":"2","sleep":0,"globalmessage":"","globalmedia":"","data":[{"number":"'.$AS_MPHONE.'","message":"Bapak/Ibu *_'.$AS_EMPNAME.'_*, Anda mendapatkan respon dari *'.$AS_SENDER.'* Task Request No. '.$TASKD_PARENT.' : _'.$TASKD_TITLE.'_ \n Isi Pesan : _*'.$TASK_CONT.'*_ \n\n Terimakasih. \n *_NKE Smart System_*"}]}';
 
 		    //--CURL FUNCTION TO CALL THE API--
@@ -252,6 +328,47 @@ if(isset($_POST['submit']))
 
 		    //--API RESPONSE--
 		    //print_r( json_decode($result,true) );
+			--------------------------------------- pickyassist.com -------------------------- */
+
+			/* ------------------------------ Maxhat.id -------------------------------------- */
+			// $url 		= "https://user.maxchat.id/nke-official-center/api/messages?direct=true";
+			// migrasi akun tgl. 15-08-2023
+			$url 		= "https://core.maxchat.id/nke-official-center/api/messages";
+			$token 		= "Pzdt3uJuftCaXivWuxn3Tt";
+
+			// $JSON_DATA	= array("to" => $AS_MPHONE, "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*");
+			$JSON_DATA	= array("to" => $AS_MPHONE, "type" => "text", "text" => "Bapak/Ibu *_".$AS_EMPNAME."_*, Anda mendapatkan pesan dari *$AS_SENDER* Task Request No. $TASKD_PARENT : _".$TASK_TITLE."_ \n Isi Pesan : _*$TASK_CONT*_ \n\n Terimakasih. \n *_NKE Smart System_*", "useTyping" => false);
+			$curl 		= curl_init();
+
+			curl_setopt_array($curl, array(
+				CURLOPT_URL => $url,
+				CURLOPT_SSL_VERIFYHOST => false,
+				CURLOPT_SSL_VERIFYPEER => false,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_ENCODING => "",
+				CURLOPT_MAXREDIRS => 10,
+				CURLOPT_TIMEOUT => 30,
+				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				CURLOPT_CUSTOMREQUEST => "POST",
+				CURLOPT_POSTFIELDS => json_encode($JSON_DATA),
+				CURLOPT_HTTPHEADER => array(
+					"Authorization: Bearer " . $token,
+					"Content-Type: application/json",
+					"cache-control: no-cache"
+				),
+			));
+
+			$response = curl_exec($curl);
+			$err = curl_error($curl);
+
+			curl_close($curl);
+
+			// if ($err) {
+			// 	echo "cURL Error #:" . $err;
+			// } else {
+			// 	echo $response;
+			// }
+		/*-------------------------------- Maxhat.id ---------------------------------- */
 		}
 	// END : ALERT WA PROCEDURE
 	

@@ -239,7 +239,6 @@ class C_purchase_report extends CI_Controller
 			$data['PRJCODECOL'] 	= "$PRJCODE1";;	
 			$data['StartDate'] 		= $StartDate;
 			$data['EndDate'] 		= $EndDate;
-			$data['PR_NUM'] 		= $this->input->post('PR_NUM');
 			$viewProj 				= 0;
 			$data['viewProj'] 		= $viewProj;
 			//$data['VMonth'] 		= $this->input->post('VMonth');		// Month
@@ -253,20 +252,6 @@ class C_purchase_report extends CI_Controller
 		{
 			redirect('__l1y');
 		}
-	}
-
-	function getData_PR()
-	{
-		$POST 			= $this->input->post();
-		$PRJCODE 		= $POST['PRJCODE'];
-		$period 		= $POST['period'];
-		$datePeriod2	= explode(" - ", $period);
-		$Start_Date		= date('Y-m-d', strtotime($datePeriod2[0]));
-		$End_Date		= date('Y-m-d', strtotime($datePeriod2[1]));
-		$s_01 			= "SELECT PR_NUM, PR_CODE FROM tbl_pr_header WHERE PRJCODE = '$PRJCODE' AND PR_DATE BETWEEN '$Start_Date' AND '$End_Date'";
-		$r_01 			= $this->db->query($s_01);
-		$data 			= $r_01->result();
-		echo json_encode($data);
 	}
 	
     function r_purchaseorder()

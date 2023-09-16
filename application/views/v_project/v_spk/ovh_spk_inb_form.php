@@ -1122,10 +1122,10 @@ $Patt_Number= $default['Patt_Number'];
 		                                				A.TAXPERC1, A.TAXPRICE1, A.TAXCODE2, A.TAXPERC2, A.TAXPRICE2, A.WO_TOTAL2, A.OPN_VOLM, A.OPN_AMOUNT,
 		                                				B.ITM_VOLM, A.ITM_PRICE, B.ITM_LASTP, B.ITM_BUDG, B.JOBDESC, B.JOBPARENT,
 														AMD_VOL, AMD_VOL_R, AMD_VAL, AMD_VAL_R, AMDM_VOL, AMDM_VAL,
-														(PR_VOL - PR_CVOL + WO_VOL - PO_CVOL + VCASH_VOL + VLK_VOL + PPD_VOL) AS TREQ_VOL,
-														(PO_VAL - PO_CVAL + WO_VAL - WO_CVAL + VCASH_VAL + VLK_VAL + PPD_VAL) AS TREQ_VAL,
-														(PR_VOL_R + WO_VOL_R + VCASH_VOL_R + VLK_VOL_R + PPD_VOL_R) AS TREQ_VOL_R,
-														(PO_VAL_R + WO_VAL_R + VCASH_VAL_R + VLK_VAL_R + PPD_VAL_R) AS TREQ_VAL_R
+														(B.PR_VOL - B.PR_CVOL + B.WO_VOL - B.WO_CVOL + B.VCASH_VOL + B.VLK_VOL + B.PPD_VOL) AS TREQ_VOL,
+														(B.PO_VAL - B.PO_CVAL + B.WO_VAL - B.WO_CVAL + B.VCASH_VAL + B.VLK_VAL + B.PPD_VAL) AS TREQ_VAL,
+														(B.PR_VOL_R + B.WO_VOL_R + B.VCASH_VOL_R + B.VLK_VOL_R + B.PPD_VOL_R) AS TREQ_VOL_R,
+														(B.PO_VAL_R + B.WO_VAL_R + B.VCASH_VAL_R + B.VLK_VAL_R + B.PPD_VAL_R) AS TREQ_VAL_R
 		                                			FROM tbl_wo_detail A
 		                                				INNER JOIN tbl_joblist_detail_$PRJCODEVW B ON A.JOBCODEID = B.JOBCODEID AND A.PRJCODE = B.PRJCODE
 													WHERE A.WO_NUM = '$WO_NUM' AND A.PRJCODE = '$PRJCODE'";
@@ -1395,7 +1395,7 @@ $Patt_Number= $default['Patt_Number'];
 			                                        ?>
 			                                    </td>
 											  	<td nowrap style="text-align:center; vertical-align: middle;">
-												  <?php echo $ITM_UNIT; ?>
+												  <?php echo $ITM_UNIT2; ?>
 			                                    	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_UNIT]" id="data<?php echo $currentRow; ?>ITM_UNIT" value="<?php echo $ITM_UNIT; ?>" class="form-control" style="max-width:300px;" >
 			                                    <!-- Item Unit Type -- ITM_UNIT --></td>
 											  	<td nowrap style="text-align:right; vertical-align: middle;">
@@ -2294,7 +2294,7 @@ $Patt_Number= $default['Patt_Number'];
 			}
 		}
 
-		// document.getElementById('btnAppr').style.display = 'none';
+		document.getElementById('btnAppr').style.display = 'none';
 
 		let frm = document.getElementById('frm');
 		frm.addEventListener('submit', (e) => {

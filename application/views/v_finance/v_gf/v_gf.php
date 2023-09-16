@@ -119,10 +119,10 @@ $appBody    = $this->session->userdata['appBody'];
                                 <th style="text-align: center; vertical-align: middle;" width="3%" nowrap>No</th>
                                 <th style="text-align: center; vertical-align: middle;" width="10%"><?php echo $Code; ?></th>
                                 <th style="text-align: center; vertical-align: middle;" width="20%" nowrap>Nama Jaminan</th>
-                                <th style="text-align: center; vertical-align: middle;" width="10%" nowrap>Periode</th>
                                 <th style="text-align: center; vertical-align: middle;" width="20%" nowrap>Badan Penjamin</th>
                                 <th style="text-align: center; vertical-align: middle;" width="10%" nowrap>Nilai Jaminan</th>
                                 <th style="text-align: center; vertical-align: middle;" width="25%">Proyek</th>
+                                <th style="text-align: center; vertical-align: middle;" width="10%" nowrap>Status Dok.</th>
                                 <th style="text-align: center; vertical-align: middle;" width="2%">&nbsp;</th>
                             </tr>
                             </thead>
@@ -143,7 +143,11 @@ $appBody    = $this->session->userdata['appBody'];
                                         $GF_NILAI_JAMINAN   = $row->GF_NILAI_JAMINAN;
                                         $GF_FILENAME        = $row->GF_FILENAME;
                                         $PRJCODE            = $row->PRJCODE;
-                                        $SPLCODE	        = $row->SPLCODE;
+                                        $SPLCODE            = $row->SPLCODE;
+                                        $GF_STATDOC	        = $row->GF_STATDOC;
+                                        $GF_STATUS	        = $row->GF_STATUS;
+                                        $STATDESC	        = $row->STATDESC;
+                                        $STATCOL	        = $row->STATCOL;
 
                                         $PRJNAME            = "-";
                                         $s_PRJ              = "SELECT PRJNAME FROM tbl_project WHERE PRJCODE = '$PRJCODE' LIMIT 1";
@@ -151,6 +155,32 @@ $appBody    = $this->session->userdata['appBody'];
                                         foreach($r_PRJ->result() as $rw_PRJ):
                                             $PRJNAME        = $rw_PRJ->PRJNAME;
                                         endforeach;
+                                        
+                                        if($GF_STATDOC == 1)
+                                        {
+                                            $DOCSTATCOL       = "success";
+                                            $DOCSTATDESC      = "On Going";
+                                        }
+                                        elseif($GF_STATDOC == 2)
+                                        {
+                                            $DOCSTATCOL       = "info";
+                                            $DOCSTATDESC      = "Closed";
+                                        }
+                                        elseif($GF_STATDOC == 3)
+                                        {
+                                            $DOCSTATCOL       = "warning";
+                                            $DOCSTATDESC      = "Extended";
+                                        }
+                                        elseif($GF_STATDOC == 4)
+                                        {
+                                            $DOCSTATCOL       = "danger";
+                                            $DOCSTATDESC      = "Expired";
+                                        }
+                                        else
+                                        {
+                                            $DOCSTATCOL       = "";
+                                            $DOCSTATDESC      = "";
+                                        }
 
                                         $SPLDESC            = "-";
                                         $s_SPL              = "SELECT SPLDESC FROM tbl_supplier WHERE SPLCODE = '$SPLCODE' LIMIT 1";
@@ -160,6 +190,13 @@ $appBody    = $this->session->userdata['appBody'];
                                         endforeach;
                 												
                                         $secUpd	= site_url('c_finance/c_grntf1l3/update/?id='.$this->url_encryption_helper->encode_url($GF_NUM));
+
+                                        $dokPer         =   "<div style='white-space:nowrap'>
+                                                                <strong>".$GF_CODE."</strong>
+                                                            </div>
+                                                            <div style='white-space:nowrap'>
+                                                                <i class='fa fa-calendar margin-r-5'></i><i> ".date('d/m/Y', strtotime($GF_DATES))." - ".date('d/m/Y', strtotime($GF_DATEE))."</i>
+                                                            </div>";
 
                                         $prjDesc        =   "<div style='white-space:nowrap'>
                                                                 <strong><i class='fa fa-building margin-r-5'></i> ".$PRJCODE." : ".$PRJNAME."</strong>
@@ -177,12 +214,15 @@ $appBody    = $this->session->userdata['appBody'];
                                         }
                                         ?>
                                             <td style="text-align:center" nowrap> <?php echo $noUrut; ?>.</td>
-                                            <td style="text-align: center;"><strong><?php echo $GF_CODE;?></strong></td>
+                                            <td><?php echo $dokPer;?></td>
                                             <td><?php echo $GF_NAME; ?></td>
-                                            <td style="text-align: center;" nowrap><?php echo date('d/m/Y', strtotime($GF_DATES))." - ".date('d/m/Y', strtotime($GF_DATEE)); ?></td>
                                             <td><?php echo $GF_PENJAMIN; ?></td>
                                             <td style="text-align: right;"><?php echo number_format($GF_NILAI_JAMINAN,2); ?></td>
                                             <td><?php echo $prjDesc; ?></td>
+                                            <td style="text-align: center;" nowrap>
+                                                <div><span class="label label-<?=$STATCOL?>" style="font-size:12px"><?=$STATDESC?></span></div>
+                                                <div><span class="label label-<?=$DOCSTATCOL?>" style="font-size:12px"><?=$DOCSTATDESC?></span></div>
+                                            </td>
                                             <td width="2%" nowrap>
                                                 <a href="<?php echo $secUpd; ?>" class="btn btn-warning btn-xs" title="Update">
                                                     <i class="glyphicon glyphicon-pencil"></i>

@@ -169,6 +169,7 @@ else
 	$TTK_CATEG 				= $default['TTK_CATEG'];
 	$PRJCODE 				= $default['PRJCODE'];
 	$SPLCODE 				= $default['SPLCODE'];
+	$SPLCODE1 				= $default['SPLCODE'];
 	$TTK_STAT 				= $default['TTK_STAT'];
 	$Patt_Number 			= $default['Patt_Number'];
 	$lastPattNumb			= $Patt_Number;
@@ -856,7 +857,7 @@ if($r_INVC->num_rows() > 1)
 			                    <div class="form-group">
 			                      	<label for="inputName" class="col-sm-3 control-label"><?php echo $SupplierName; ?></label>
 			                      	<div class="col-sm-9">
-			                      		<?php if($TTK_STAT != 1): ?> 
+										<?php if($TTK_STAT != 1): ?> 
 				                      		<input type="hidden" name="SPLCODE" id="SPLCODE" value="<?php echo $SPLCODE1; ?>" />
 				                        	<select name="SPLCODE1" id="SPLCODE1" class="form-control select2" disabled>
 				                                <option value=""> --- </option>
@@ -867,7 +868,7 @@ if($r_INVC->num_rows() > 1)
 														$SPLCODE 	= $row->SPLCODE;
 														$SPLDESC 	= $row->SPLDESC;
 				                                    ?>
-				                                        <option value="<?php echo $row->SPLCODE; ?>" <?php if($SPLCODE == $row->SPLCODE) { ?> selected <?php } ?>>
+				                                        <option value="<?php echo $row->SPLCODE; ?>" <?php if($SPLCODE1 == $row->SPLCODE) { ?> selected <?php } ?>>
 				                                    		<?php echo "$SPLDESC ($SPLCODE)"; ?>
 				                                    	</option>
 				                                    <?php
@@ -1001,7 +1002,7 @@ if($r_INVC->num_rows() > 1)
 		                                    <div class="input-group-btn">
 		                                        <button type="button" class="btn btn-primary"><?php echo $Search ?> </button>
 		                                    </div>
-		                                    <input type="text" autocomplete="off" class="form-control" name="TTK_DP_REFCODE" id="TTK_DP_REFCODE" value="<?php echo $TTK_DP_REFCODE; ?>"  data-toggle="modal" data-target="#mdl_addSPK" <?php if($TTK_STAT != 1 && $TTK_STAT != 6) { ?> disabled <?php } ?>>
+		                                    <input type="text" autocomplete="off" class="form-control" name="TTK_DP_REFCODE" id="TTK_DP_REFCODE" value="<?php echo $TTK_DP_REFCODE; ?>"  data-toggle="modal" data-target="#mdl_addSPK" <?php if($TTK_STAT != 1 && $TTK_STAT != 6 && $TTK_STAT != 4) { ?> disabled <?php } ?>>
 		                                    <input type="hidden" class="form-control" name="TTK_DP_REFNUM" id="TTK_DP_REFNUM" style="max-width:200px" value="<?php echo $TTK_DP_REFNUM; ?>" >
 		                                    <input type="hidden" class="form-control" name="TTK_DP_REFTYPE" id="TTK_DP_REFTYPE" style="max-width:200px" value="<?php echo $TTK_DP_REFTYPE; ?>" >
 		                                </div>

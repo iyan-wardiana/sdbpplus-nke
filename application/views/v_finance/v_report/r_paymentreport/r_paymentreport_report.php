@@ -265,6 +265,15 @@ else
                     foreach($resq4a as $rowq4a) :
                         $SPLDESC    = $rowq4a->SPLDESC;
                     endforeach;
+
+                    if($SPLDESC == '')
+                    {
+                        $sqlq4a     = "SELECT (CONCAT(First_Name,' ',Last_Name)) AS SPLDESC FROM tbl_employee WHERE Emp_ID = '$CB_PAYFOR' LIMIT 1";
+                        $resq4a     = $this->db->query($sqlq4a)->result();
+                        foreach($resq4a as $rowq4a) :
+                            $SPLDESC    = $rowq4a->SPLDESC;
+                        endforeach;
+                    }
                     
                     $ACCNAME    = '';
                     $sqlq5a     = "SELECT Account_NameId FROM tbl_chartaccount WHERE Account_Number = '$Acc_ID' LIMIT 1";

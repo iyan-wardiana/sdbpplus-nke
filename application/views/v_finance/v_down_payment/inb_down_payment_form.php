@@ -665,12 +665,14 @@ endforeach;
 		                            <table id="tbl_tax" class="table table-bordered table-striped table-responsive search-table inner" width="100%">
                                         <thead>
                                             <tr>
-												<th width="80" style="text-align:center"><?php echo "Tgl. Faktur Pajak"; ?></th>
-												<th width="150" style="text-align:center" nowrap><?php echo "No. Seri Pajak"; ?></th>
+		                                        <th width="10" style="text-align:center">&nbsp;</th>
+		                                        <th width="150" style="text-align:center" nowrap><?php echo "No. Kwitansi"; ?></th>
 												<th width="80" style="text-align:center"><?php echo "Tgl. Kwitansi"; ?></th>
-												<th width="150" style="text-align:center" nowrap><?php echo $splInvNo; ?></th>
-												<th width="100" style="text-align:center" nowrap><?php echo $AmountReceipt; ?></th>
-												<th width="100" style="text-align:center" nowrap><?php echo $PPNValue; ?></th>
+		                                        <th width="100" style="text-align:center" nowrap><?php echo "Nilai Kwitansi"; ?></th>
+		                                        <th width="150" style="text-align:center" nowrap><?php echo "No. Seri Pajak"; ?></th>
+		                                        <th width="80" style="text-align:center"><?php echo "Tgl. Faktur Pajak"; ?></th>
+		                                        <th width="100" style="text-align:center" nowrap><?php echo $AmountReceipt; ?></th>
+		                                        <th width="100" style="text-align:center" nowrap><?php echo $PPNValue; ?></th>
 						                  	</tr>
                                         </thead>
                                         <tbody>
@@ -1238,8 +1240,8 @@ endforeach;
 	        "type": "POST",
 			//"lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
 			"lengthMenu": [[10, 25, 50, 100, 200], [10, 25, 50, 100, 200]],
-			"columnDefs": [	{ targets: [0,1,2,3], className: 'dt-body-center' },
-							{ targets: [4,5], className: 'dt-body-right' }
+			"columnDefs": [	{ targets: [0,2,5], className: 'dt-body-center' },
+							{ targets: [3,6,7], className: 'dt-body-right' }
 						  ],
 			"language": {
 	            "infoFiltered":"",

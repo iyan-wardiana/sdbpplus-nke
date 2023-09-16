@@ -272,6 +272,43 @@ endforeach;
             }
         });
     }
+    
+    function revDOC(row)
+    {
+        swal({
+            text: "Anda yakin akan merevisi dokumen ini?",
+            icon: "warning",
+            buttons: ["No", "Yes"],
+        })
+        .then((willDelete) => 
+        {
+            if (willDelete) 
+            {
+                var collID  = document.getElementById('urlRev'+row).value;
+                var myarr   = collID.split("~");
+
+                var url     = myarr[0];
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {collID: collID},
+                    success: function(response)
+                    {
+                        swal(response, 
+                        {
+                            icon: "success",
+                        });
+                        $('#example').DataTable().ajax.reload();
+                    }
+                });
+            } 
+            else 
+            {
+                //...
+            }
+        });
+    }
 </script>
 <?php
 	$sqlcss = "SELECT cssjs_lnk FROM tbl_cssjs WHERE cssjs_typ = 'js' AND isAct = 1 AND cssjs_vers IN ('$vers', 'All')";

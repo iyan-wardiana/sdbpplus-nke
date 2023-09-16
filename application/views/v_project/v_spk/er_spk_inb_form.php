@@ -1385,7 +1385,7 @@ $Patt_Number= $default['Patt_Number'];
 			                                        ?>
 			                                    </td>
 											  	<td nowrap style="text-align:center; vertical-align: middle;">
-												  <?php echo $ITM_UNIT; ?>
+												  <?php echo $ITM_UNIT2; ?>
 			                                    	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_UNIT]" id="data<?php echo $currentRow; ?>ITM_UNIT" value="<?php echo $ITM_UNIT; ?>" class="form-control" style="max-width:300px;" >
 			                                    <!-- Item Unit Type -- ITM_UNIT --></td>
 											  	<td nowrap style="text-align:right; vertical-align: middle;">
@@ -2285,14 +2285,16 @@ $Patt_Number= $default['Patt_Number'];
 			}
 		}
 
-		// document.getElementById('btnAppr').style.display = 'none';
+		document.getElementById('btnAppr').style.display = 'none';
+		document.getElementById('btnSave').style.display 	= 'none';
+		document.getElementById('btnBack').style.display 	= 'none';
 
-		let frm = document.getElementById('frm');
-		frm.addEventListener('submit', (e) => {
-			console.log(e)
-			document.getElementById('btnSave').style.display 	= 'none';
-			document.getElementById('btnBack').style.display 	= 'none';
-		});
+		// let frm = document.getElementById('frm');
+		// frm.addEventListener('submit', (e) => {
+		// 	console.log(e)
+		// 	document.getElementById('btnSave').style.display 	= 'none';
+		// 	document.getElementById('btnBack').style.display 	= 'none';
+		// });
 	}
 
 	function viewFile(fileName)

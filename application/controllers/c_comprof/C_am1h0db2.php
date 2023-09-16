@@ -584,6 +584,25 @@ class C_am1h0db2 extends CI_Controller
 				$TRXTIME1		= date('ymdHis');
 				$AMD_NUM		= "$Pattern_Code$PRJCODE-$TRXTIME1";
 			// END - PEMBENTUKAN GENERATE CODE
+
+			if($AMD_CATEG == 'EFS')
+			{
+				$JP_CODE 	= "";
+				$JP_DESC 	= "";
+				$s_ITMEF	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
+		                        WHERE PRJCODE = '$PRJCODE' AND
+		                        	JOBCODEID IN (SELECT A.JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW A
+                                                    INNER JOIN tbl_item_$PRJCODEVW B ON A.ITM_CODE = B.ITM_CODE AND B.PRJCODE = A.PRJCODE
+                                                    WHERE B.PRJCODE = '$PRJCODE' AND B.ITM_KIND = 99)";
+		        $r_ITMEF 	= $this->db->query($s_ITMEF)->result();
+		        foreach($r_ITMEF as $row) :
+		            $JP_CODE 	= $row->JOBCODEID;
+		            $JP_DESC 	= $row->JOBDESC;
+		        endforeach;
+		        $AMD_JOBPAR 	= $JP_CODE;
+		        $AMD_JOBID 		= $JP_CODE;
+		        $AMD_JOBDESC 	= $JP_DESC;
+			}
 			
 			$insertAMD 	= array('AMD_NUM' 		=> $AMD_NUM,
 								'AMD_CODE'		=> $AMD_CODE,
@@ -617,9 +636,11 @@ class C_am1h0db2 extends CI_Controller
 					$d['AMD_CODE']		= $AMD_CODE;
 					$d['AMD_DATE']		= $AMD_DATE;
 					$ITM_CODE 			= $d['ITM_CODE'];
+					$JOBCODEIDH 		= $d['JOBCODEIDH'];
 					$ITM_GROUP 			= "";
 					$ITM_UNIT 			= "";
-					$s_01 				= "SELECT ITM_GROUP, ITM_UNIT FROM tbl_item WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE' LIMIT 1";
+					$s_01 				= "SELECT ITM_GROUP, ITM_UNIT FROM tbl_item_$PRJCODEVW
+											WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE' LIMIT 1";
 					$r_01 				= $this->db->query($s_01)->result();
 					foreach($r_01 as $rw_01):
 						$ITM_GROUP 		= $rw_01->ITM_GROUP;
@@ -643,7 +664,8 @@ class C_am1h0db2 extends CI_Controller
 					$ITM_CODE 			= $ds['ITM_CODE'];
 					$ITM_GROUP 			= "";
 					$ITM_UNIT 			= "";
-					$s_01 				= "SELECT ITM_GROUP, ITM_UNIT FROM tbl_item WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE' LIMIT 1";
+					$s_01 				= "SELECT ITM_GROUP, ITM_UNIT FROM tbl_item_$PRJCODEVW
+											WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE' LIMIT 1";
 					$r_01 				= $this->db->query($s_01)->result();
 					foreach($r_01 as $rw_01):
 						$ITM_GROUP 		= $rw_01->ITM_GROUP;
@@ -655,6 +677,91 @@ class C_am1h0db2 extends CI_Controller
 
 					$this->db->insert('tbl_amd_detail_subs',$ds);
 				}
+			}
+			elseif($AMD_CATEG == 'EFS')
+			{
+				$DOC_CATEG 	= 'AMDEFS';
+
+				foreach($_POST['dataIEFS'] as $d)
+				{
+					$d['AMD_NUM']		= $AMD_NUM;
+					$d['AMD_CODE']		= $AMD_CODE;
+					$d['AMD_DATE']		= $AMD_DATE;
+					$ITM_CODE 			= $d['ITM_CODE'];
+					$ITM_GROUP 			= "";
+					$ITM_UNIT 			= "";
+					$s_01 				= "SELECT ITM_GROUP, ITM_UNIT FROM tbl_item_$PRJCODEVW
+											WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE' LIMIT 1";
+					$r_01 				= $this->db->query($s_01)->result();
+					foreach($r_01 as $rw_01):
+						$ITM_GROUP 		= $rw_01->ITM_GROUP;
+						$ITM_UNIT 		= $rw_01->ITM_UNIT;
+					endforeach;
+
+					$d['PRJCODE']		= $PRJCODE;
+					$d['ITM_GROUP']		= $ITM_GROUP;
+					$d['ITM_UNIT']		= $ITM_UNIT;
+					$d['AMD_CREATER'] 	= $AMD_CREATER;
+
+					$d['AMD_VOLM']		= 0;
+					$d['AMD_PRICE']		= 0;
+					$d['AMD_TOTAL'] 	= 0;
+					$d['AMD_TOTTSF'] 	= 0;
+					
+					$this->db->insert('tbl_amd_detail',$d);
+				}
+
+				foreach($_POST['dataSUB'] as $ds)
+				{
+					$ds['AMD_NUM']		= $AMD_NUM;
+					$ds['AMD_CODE']		= $AMD_CODE;
+					$ds['AMD_DATE']		= $AMD_DATE;
+					$ds['PRJCODE']		= $PRJCODE;
+					$ITM_CODE 			= $ds['ITM_CODE'];
+					$ITM_GROUP 			= "";
+					$ITM_UNIT 			= "";
+					$s_01 				= "SELECT ITM_GROUP, ITM_UNIT FROM tbl_item_$PRJCODEVW
+											WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE' LIMIT 1";
+					$r_01 				= $this->db->query($s_01)->result();
+					foreach($r_01 as $rw_01):
+						$ITM_GROUP 		= $rw_01->ITM_GROUP;
+						$ITM_UNIT 		= $rw_01->ITM_UNIT;
+					endforeach;
+					$ds['ITM_GROUP']	= $ITM_GROUP;
+					$ds['ITM_UNIT']		= $ITM_UNIT;
+					$ds['AMD_CREATER'] 	= $AMD_CREATER;
+
+					$this->db->insert('tbl_amd_detail_subs',$ds);
+				}
+
+				// START : SAVE TO ITEM EFISIENSI
+					$s_01 			= "SELECT DISTINCT JOBCODEIDH FROM tbl_amd_detail_subs
+										WHERE PRJCODE = '$PRJCODE' AND AMD_NUM = '$AMD_NUM' GROUP BY JOBCODEIDH";
+					$r_01 			= $this->db->query($s_01)->result();
+					foreach($r_01 as $rw_01):
+						$JID_H 		= $rw_01->JOBCODEIDH;
+
+						$TEFS_VOL 	= 0;
+						$TEFS_VAL 	= 0;
+						$s_01 		= "SELECT IFNULL(SUM(A.AMD_VOLM),0) AS TEFS_VOL, IFNULL(SUM(A.AMD_TOTAL),0) AS TEFS_VAL
+										FROM tbl_amd_detail_subs A
+										WHERE A.PRJCODE = '$PRJCODE' AND A.AMD_NUM = '$AMD_NUM' AND A.JOBCODEIDH = '$JID_H'";
+						$r_01 			= $this->db->query($s_01)->result();
+						foreach($r_01 as $rw_01):
+							$TEFS_VOL 	= $rw_01->TEFS_VOL;
+							$TEFS_VAL 	= $rw_01->TEFS_VAL;
+						endforeach;
+
+						$AMD_VOLM	= 1;
+						$AMD_PRICE	= $TEFS_VAL;
+						$AMD_TOTAL	= $TEFS_VAL;
+
+						$s_UPD 		= "UPDATE tbl_amd_detail SET AMD_VOLM = 1, ITM_PRICE = $AMD_PRICE,
+											AMD_TOTAL = $AMD_TOTAL, AMD_TOTTSF = $AMD_TOTAL
+										WHERE PRJCODE = '$PRJCODE' AND AMD_NUM = '$AMD_NUM' AND JOBCODEID = '$JOBCODEIDH'";
+						$this->db->query($s_UPD);
+					endforeach;
+				// END : SAVE TO ITEM EFISIENSI
 			}
 			else
 			{
@@ -728,25 +835,18 @@ class C_am1h0db2 extends CI_Controller
 										'TBLNAME'		=> "tbl_amd_header");
 				$this->m_updash->updateStatus($paramStat);
 			// END : UPDATE STATUS
-			
-			// START : UPDATE TO T-TRACK
+
+			// START : ADD DOC HISTORY
+				$this->load->model('m_updash/m_updash', '', TRUE);
 				date_default_timezone_set("Asia/Jakarta");
-				$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
-				$TTR_PRJCODE	= $PRJCODE;
-				$TTR_REFDOC		= $AMD_NUM;
-				$MenuCode 		= 'MN406';
-				$TTR_CATEG		= 'C';
-				
-				$this->load->model('m_updash/m_updash', '', TRUE);				
-				$paramTrack 	= array('TTR_EMPID' 	=> $DefEmp_ID,
-										'TTR_DATE' 		=> date('Y-m-d H:i:s'),
-										'TTR_MNCODE'	=> $MenuCode,
-										'TTR_CATEG'		=> $TTR_CATEG,
-										'TTR_PRJCODE'	=> $TTR_PRJCODE,
-										'TTR_REFDOC'	=> $TTR_REFDOC);
-				$this->m_updash->updateTrack($paramTrack);
-			// END : UPDATE TO T-TRACK
-			
+				$paramTrack 	= array('REF_NUM' 		=> $AMD_NUM,
+										'TBLNAME' 		=> "tbl_amd_header",
+										'FLDCODE'		=> "AMD_CODE",
+										'FLDNAME'		=> "AMD_NUM",
+										'HISTTYPE'		=> "Penambahan ($AMD_STAT)");
+				$this->m_updash->uDocH($paramTrack);
+			// END : ADD DOC HISTORY
+
 			if ($this->db->trans_status() === FALSE)
 			{
 				$this->db->trans_rollback();
@@ -872,6 +972,8 @@ class C_am1h0db2 extends CI_Controller
 			$AMD_TYPE 		= $this->input->post('AMD_TYPE');
 			$AMD_DATE		= date('Y-m-d',strtotime(str_replace('/', '-', $this->input->post('AMD_DATE'))));
 			$AMD_CATEG 		= $this->input->post('AMD_CATEG');
+
+			$PRJCODEVW 		= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 			
 			// ADA PERUBAHAN PROSEDUR. BY REQUEST PAK WAWAN
 			// 1. PILIH ITEM KOMPNEN (SINGLE)
@@ -911,6 +1013,25 @@ class C_am1h0db2 extends CI_Controller
 				$JOBPARENT1	= $rowLEV->JOBPARENT;
 				$JOBLEV		= $rowLEV->JOBLEV;
 			endforeach;
+
+			if($AMD_CATEG == 'EFS')
+			{
+				$JP_CODE 	= "";
+				$JP_DESC 	= "";
+				$s_ITMEF	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
+		                        WHERE PRJCODE = '$PRJCODE' AND
+		                        	JOBCODEID IN (SELECT A.JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW A
+                                                    INNER JOIN tbl_item_$PRJCODEVW B ON A.ITM_CODE = B.ITM_CODE AND B.PRJCODE = A.PRJCODE
+                                                    WHERE B.PRJCODE = '$PRJCODE' AND B.ITM_KIND = 99)";
+		        $r_ITMEF 	= $this->db->query($s_ITMEF)->result();
+		        foreach($r_ITMEF as $row) :
+		            $JP_CODE 	= $row->JOBCODEID;
+		            $JP_DESC 	= $row->JOBDESC;
+		        endforeach;
+		        $AMD_JOBPAR 	= $JP_CODE;
+		        $AMD_JOBID 		= $JP_CODE;
+		        $AMD_JOBDESC 	= $JP_DESC;
+			}
 
 			$updateAMD 	= array('AMD_CODE'		=> $AMD_CODE,
 								'PRJCODE'		=> $PRJCODE,
@@ -953,7 +1074,6 @@ class C_am1h0db2 extends CI_Controller
 					$d['PRJCODE']		= $PRJCODE;
 					$d['ITM_GROUP']		= $ITM_GROUP;
 					$d['ITM_UNIT']		= $ITM_UNIT;
-					$d['AMD_TOTTSF']	= $d['AMD_TOTAL'];
 					$d['AMD_CREATER'] 	= $AMD_CREATER;
 
 					$this->db->insert('tbl_amd_detail',$d);
@@ -981,6 +1101,92 @@ class C_am1h0db2 extends CI_Controller
 					$this->db->insert('tbl_amd_detail_subs',$ds);
 				}
 			}
+			elseif($AMD_CATEG == 'EFS')
+			{
+				$this->m_project_amd->deleteAMDDetSUBS($AMD_NUM);
+				$DOC_CATEG 	= 'AMDEFS';
+
+				foreach($_POST['dataIEFS'] as $d)
+				{
+					$d['AMD_NUM']		= $AMD_NUM;
+					$d['AMD_CODE']		= $AMD_CODE;
+					$d['AMD_DATE']		= $AMD_DATE;
+					$ITM_CODE 			= $d['ITM_CODE'];
+					$ITM_GROUP 			= "";
+					$ITM_UNIT 			= "";
+					$s_01 				= "SELECT ITM_GROUP, ITM_UNIT FROM tbl_item_$PRJCODEVW
+											WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE' LIMIT 1";
+					$r_01 				= $this->db->query($s_01)->result();
+					foreach($r_01 as $rw_01):
+						$ITM_GROUP 		= $rw_01->ITM_GROUP;
+						$ITM_UNIT 		= $rw_01->ITM_UNIT;
+					endforeach;
+
+					$d['PRJCODE']		= $PRJCODE;
+					$d['ITM_GROUP']		= $ITM_GROUP;
+					$d['ITM_UNIT']		= $ITM_UNIT;
+					$d['AMD_CREATER'] 	= $AMD_CREATER;
+
+					$d['AMD_VOLM']		= 0;
+					$d['AMD_PRICE']		= 0;
+					$d['AMD_TOTAL'] 	= 0;
+					$d['AMD_TOTTSF'] 	= 0;
+					
+					$this->db->insert('tbl_amd_detail',$d);
+				}
+
+				foreach($_POST['dataSUB'] as $ds)
+				{
+					$ds['AMD_NUM']		= $AMD_NUM;
+					$ds['AMD_CODE']		= $AMD_CODE;
+					$ds['AMD_DATE']		= $AMD_DATE;
+					$ds['PRJCODE']		= $PRJCODE;
+					$ITM_CODE 			= $ds['ITM_CODE'];
+					$ITM_GROUP 			= "";
+					$ITM_UNIT 			= "";
+					$s_01 				= "SELECT ITM_GROUP, ITM_UNIT FROM tbl_item_$PRJCODEVW
+											WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE' LIMIT 1";
+					$r_01 				= $this->db->query($s_01)->result();
+					foreach($r_01 as $rw_01):
+						$ITM_GROUP 		= $rw_01->ITM_GROUP;
+						$ITM_UNIT 		= $rw_01->ITM_UNIT;
+					endforeach;
+					$ds['ITM_GROUP']	= $ITM_GROUP;
+					$ds['ITM_UNIT']		= $ITM_UNIT;
+					$ds['AMD_CREATER'] 	= $AMD_CREATER;
+
+					$this->db->insert('tbl_amd_detail_subs',$ds);
+				}
+
+				// START : SAVE TO ITEM EFISIENSI
+					$s_01 			= "SELECT DISTINCT JOBCODEIDH FROM tbl_amd_detail_subs
+										WHERE PRJCODE = '$PRJCODE' AND AMD_NUM = '$AMD_NUM' GROUP BY JOBCODEIDH";
+					$r_01 			= $this->db->query($s_01)->result();
+					foreach($r_01 as $rw_01):
+						$JID_H 		= $rw_01->JOBCODEIDH;
+
+						$TEFS_VOL 	= 0;
+						$TEFS_VAL 	= 0;
+						$s_01 		= "SELECT IFNULL(SUM(A.AMD_VOLM),0) AS TEFS_VOL, IFNULL(SUM(A.AMD_TOTAL),0) AS TEFS_VAL
+										FROM tbl_amd_detail_subs A
+										WHERE A.PRJCODE = '$PRJCODE' AND A.AMD_NUM = '$AMD_NUM' AND A.JOBCODEIDH = '$JID_H'";
+						$r_01 			= $this->db->query($s_01)->result();
+						foreach($r_01 as $rw_01):
+							$TEFS_VOL 	= $rw_01->TEFS_VOL;
+							$TEFS_VAL 	= $rw_01->TEFS_VAL;
+						endforeach;
+
+						$AMD_VOLM	= 1;
+						$AMD_PRICE	= $TEFS_VAL;
+						$AMD_TOTAL	= $TEFS_VAL;
+
+						$s_UPD 		= "UPDATE tbl_amd_detail SET AMD_VOLM = 1, ITM_PRICE = $AMD_PRICE,
+											AMD_TOTAL = $AMD_TOTAL, AMD_TOTTSF = $AMD_TOTAL
+										WHERE PRJCODE = '$PRJCODE' AND AMD_NUM = '$AMD_NUM' AND JOBCODEID = '$JID_H'";
+						$this->db->query($s_UPD);
+					endforeach;
+				// END : SAVE TO ITEM EFISIENSI
+			}
 			else
 			{
 				$DOC_CATEG 	= 'AMD';
@@ -996,6 +1202,30 @@ class C_am1h0db2 extends CI_Controller
 						$ITM_GROUP 	= $rw_01->ITM_GROUP;
 						$ITM_UNIT 	= $rw_01->ITM_UNIT;
 					endforeach;
+
+					$s_01 	= "tbl_item_$PRJCODEVW WHERE ITM_CODE = '$ITM_CODE'";
+					$r_01 	= $this->db->count_all($s_01);
+					if($r_01 == 0)
+					{
+						// START : COPY ITEM IFNULL FROM MASTER NKE
+							$s_02 	= "INSERT INTO tbl_item (PRJCODE, PRJCODE_HO, PRJPERIOD, PITM_CODE, ITM_CODE, ITM_CODE_H, ITM_CODE_H5, 
+										ITM_GROUP, ITM_CATEG, ITM_CLASS, ITM_NAME, ITM_TYPE, ITM_UNIT, UMCODE, ITM_CURRENCY, ITM_VOLMBG, 
+										ITM_VOLMBGR, ITM_VOLM, ITM_PRICE, ITM_REMQTY, ITM_TOTALP, ITM_LASTP, ITM_AVGP, 
+										ACC_ID, ACC_ID_UM, ACC_ID_SAL, STATUS, ISMTRL, ISRENT, ISPART, ISFUEL, ISLUBRIC, 
+										ISFASTM, ISWAGE, ISRM, ISWIP, ISFG, ISRIB, ISCOST, NEEDQRC, ITM_KIND, ITM_LR, 
+										CALCTOFG, ISMAJOR, ISCOUNT, ISOUTB, LASTNO, CREATED, CREATER, CREATED_FLAG) 
+										SELECT '$PRJCODE', PRJCODE_HO, '$PRJCODE', PITM_CODE, ITM_CODE, ITM_CODE_H, ITM_CODE_H5, 
+										ITM_GROUP, ITM_CATEG, ITM_CLASS, ITM_NAME, ITM_TYPE, ITM_UNIT, UMCODE, ITM_CURRENCY, ITM_VOLMBG, 
+										ITM_VOLMBGR, ITM_VOLM, ITM_PRICE, ITM_REMQTY, ITM_TOTALP, ITM_LASTP, ITM_AVGP, 
+										ACC_ID, ACC_ID_UM, ACC_ID_SAL, STATUS, ISMTRL, ISRENT, ISPART, ISFUEL, ISLUBRIC, 
+										ISFASTM, ISWAGE, ISRM, ISWIP, ISFG, ISRIB, ISCOST, NEEDQRC, ITM_KIND, ITM_LR, 
+										CALCTOFG, ISMAJOR, ISCOUNT, ISOUTB, LASTNO, CREATED, CREATER, CREATED_FLAG 
+										FROM tbl_item WHERE PRJCODE = 'NKE' AND ITM_CODE = '$ITM_CODE' 
+										AND ITM_CODE NOT IN (SELECT ITM_CODE FROM tbl_item_$PRJCODEVW)";
+							$this->db->query($s_02);
+						// END : COPY ITEM FROM MASTER NKE
+					}
+
 					$d['ITM_GROUP']	= $ITM_GROUP;
 					$d['ITM_UNIT']	= $ITM_UNIT;
 					$d['PRJCODE']	= $PRJCODE;
@@ -1003,7 +1233,7 @@ class C_am1h0db2 extends CI_Controller
 					$this->db->insert('tbl_amd_detail',$d);
 				}
 			}
-
+			
 			if($AMD_STAT == 2)
 			{
 				// START : UPDATE FINANCIAL DASHBOARD
@@ -2027,6 +2257,87 @@ class C_am1h0db2 extends CI_Controller
 									$this->m_project_amd->updateWBSMINUS_OTH($paramWBS);
 							}
 						}
+						elseif($AMD_CATEG == 'EFS') // Other
+						{
+							$TOT_AMDVAL 	= 0;
+							foreach($_POST['dataSUB'] as $ds)
+							{
+								$JOBCODEID	= $ds['JOBCODEID'];				// JOBCODEID YANG DIKURANGI
+								$JOBPARENT	= $ds['JOBPARENT'];
+								$ITM_CODE	= $ds['ITM_CODE'];				// ITEM YANG DIKURANGI
+								$ADD_VOLM	= $ds['AMD_VOLM'];				// VOLUME SAAT INI (SISA YANG BELUM DIGUNAKAN / DIREQUEST)
+								$ADD_PRICE	= $ds['AMD_PRICE'];				// HARGA = NILAI TOTAL (SETELAH - NILAI TRANSFER) / VOLUME SAAT INI
+								$AMD_TOTAL	= $ds['AMD_TOTAL'];				// VOLUME SISA * HARGA TERBARU
+								$AMD_TOTTSF	= $ds['AMD_TOTAL'];				// NILAI YANG DITRANSFER
+								$AMD_CLASS	= $ds['AMD_CLASS'];				// ALWAYS 0
+								$ADD_JOBCOST= $AMD_TOTAL;
+								$TOT_AMDVAL = $TOT_AMDVAL+$AMD_TOTAL;
+
+								$ds['AMD_NUM']	= $AMD_NUM;
+								$ds['PRJCODE']	= $PRJCODE;
+								$ITM_CODE 		= $ds['ITM_CODE'];
+								$ITM_GROUP 		= "";
+								$ITM_UNIT 		= "";
+								$s_01 			= "SELECT ITM_GROUP, ITM_UNIT FROM tbl_item WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE' LIMIT 1";
+								$r_01 			= $this->db->query($s_01)->result();
+								foreach($r_01 as $rw_01):
+									$ITM_GROUP 	= $rw_01->ITM_GROUP;
+									$ITM_UNIT 	= $rw_01->ITM_UNIT;
+								endforeach;
+								$ds['ITM_GROUP']= $ITM_GROUP;
+								$ds['ITM_UNIT']	= $ITM_UNIT;
+
+								// UPDATE TO WBS / JOBLIST AND JOBDEATIL. LAST CHECKED : 21-10-29
+									$paramWBS 	= array('ADD_VOLM' 		=> $ADD_VOLM,
+														'ADD_PRICE'		=> $ADD_PRICE,
+														'ADD_JOBCOST'	=> $ADD_JOBCOST,
+														'AMD_TOTTSF'	=> $AMD_TOTTSF,
+														'JOBPARENT'		=> $JOBPARENT,
+														'JOBCODEID'		=> $JOBCODEID,
+														'ITM_CODE'		=> $ITM_CODE,
+														'AMD_CLASS'		=> $AMD_CLASS,
+														'PRJCODE'		=> $PRJCODE);
+									$this->m_project_amd->updateWBSMINUS_OTH($paramWBS);
+							}
+
+							// START : SAVE TO ITEM EFISIENSI
+								$s_01 			= "SELECT DISTINCT JOBCODEIDH FROM tbl_amd_detail_subs
+													WHERE PRJCODE = '$PRJCODE' AND AMD_NUM = '$AMD_NUM' GROUP BY JOBCODEIDH";
+								$r_01 			= $this->db->query($s_01)->result();
+								foreach($r_01 as $rw_01):
+									$JID_H 		= $rw_01->JOBCODEIDH;
+
+									$TEFS_VOL 	= 0;
+									$TEFS_VAL 	= 0;
+									$s_01 		= "SELECT IFNULL(SUM(A.AMD_VOLM),0) AS TEFS_VOL, IFNULL(SUM(A.AMD_TOTAL),0) AS TEFS_VAL
+													FROM tbl_amd_detail_subs A
+													WHERE A.PRJCODE = '$PRJCODE' AND A.AMD_NUM = '$AMD_NUM' AND A.JOBCODEIDH = '$JID_H'";
+									$r_01 			= $this->db->query($s_01)->result();
+									foreach($r_01 as $rw_01):
+										$TEFS_VOL 	= $rw_01->TEFS_VOL;
+										$TEFS_VAL 	= $rw_01->TEFS_VAL;
+									endforeach;
+
+									$AMD_VOLM	= 1;
+									$AMD_PRICE	= $TEFS_VAL;
+									$AMD_TOTAL	= $TEFS_VAL;
+
+									$s_UPD 		= "UPDATE tbl_amd_detail SET AMD_VOLM = 1, ITM_PRICE = $AMD_PRICE,
+														AMD_TOTAL = $AMD_TOTAL, AMD_TOTTSF = $AMD_TOTAL
+													WHERE PRJCODE = '$PRJCODE' AND AMD_NUM = '$AMD_NUM' AND JOBCODEID = '$JOBCODEIDH'";
+									$this->db->query($s_UPD);
+								endforeach;
+							// END : SAVE TO ITEM EFISIENSI
+
+							foreach($_POST['dataIEFS'] as $d)
+							{
+								$JOBCODEID	= $d['JOBCODEID'];
+
+								$s_UPDJLD 	= "UPDATE tbl_joblist_detail_$PRJCODEVW SET AMD_VOL = 1, AMD_VAL = $TOT_AMDVAL
+												WHERE JOBCODEID = '$JOBCODEID' AND PRJCODE = '$PRJCODE'";
+								$this->db->query($s_UPDJLD);
+							}
+						}
 						
 					// START : UPDATE STATUS
 						$completeName 	= $this->session->userdata['completeName'];
@@ -2078,33 +2389,38 @@ class C_am1h0db2 extends CI_Controller
 											'TBLNAME'		=> "tbl_amd_header");
 					$this->m_updash->updateStatus($paramStat);
 				// END : UPDATE STATUS
+			}
 
-				// START : UPDATE ITEM_LOG
+			// START : ADD DOC HISTORY
+				$this->load->model('m_updash/m_updash', '', TRUE);
+				date_default_timezone_set("Asia/Jakarta");
+				$paramTrack 	= array('REF_NUM' 		=> $AMD_NUM,
+										'TBLNAME' 		=> "tbl_amd_header",
+										'FLDCODE'		=> "AMD_CODE",
+										'FLDNAME'		=> "AMD_NUM",
+										'HISTTYPE'		=> "Update ($AMD_STAT)");
+				$this->m_updash->uDocH($paramTrack);
+			// END : ADD DOC HISTORY
+
+			// START : UPDATE ITEM_LOG
+				if($AMD_FUNC == 'MIN')
+				{
+					$parIL 	= array('DOC_CATEG'		=> "AMD",
+									'DOC_NUM'		=> $AMD_NUM,
+									'DOC_STAT'		=> $AMD_STAT,
+									'PRJCODE'		=> $PRJCODE,
+									'AMD_FUNC'		=> 'MIN');
+					$this->m_updash->updIL($parIL);
+				}
+				else
+				{
 					$parIL 	= array('DOC_CATEG'		=> "AMD",
 									'DOC_NUM'		=> $AMD_NUM,
 									'DOC_STAT'		=> $AMD_STAT,
 									'PRJCODE'		=> $PRJCODE);
 					$this->m_updash->updIL($parIL);
-				// END : UPDATE ITEM_LOG
-			}
-
-			// START : UPDATE TO T-TRACK
-				date_default_timezone_set("Asia/Jakarta");
-				$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
-				$TTR_PRJCODE	= $PRJCODE;
-				$TTR_REFDOC		= $AMD_NUM;
-				$MenuCode 		= 'MN407';
-				$TTR_CATEG		= 'UP-APP';
-				
-				$this->load->model('m_updash/m_updash', '', TRUE);				
-				$paramTrack 	= array('TTR_EMPID' 	=> $DefEmp_ID,
-										'TTR_DATE' 		=> date('Y-m-d H:i:s'),
-										'TTR_MNCODE'	=> $MenuCode,
-										'TTR_CATEG'		=> $TTR_CATEG,
-										'TTR_PRJCODE'	=> $TTR_PRJCODE,
-										'TTR_REFDOC'	=> $TTR_REFDOC);
-				$this->m_updash->updateTrack($paramTrack);
-			// END : UPDATE TO T-TRACK
+				}
+			// END : UPDATE ITEM_LOG
 			
 			if ($this->db->trans_status() === FALSE)
 			{
@@ -2340,6 +2656,8 @@ class C_am1h0db2 extends CI_Controller
 						$spaceLev 	= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 					elseif($JOBLEV == 12)
 						$spaceLev 	= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					else
+						$spaceLev 	= "";
 
 					if($ISLAST_BOQ == 0)
 					{
@@ -2489,6 +2807,8 @@ class C_am1h0db2 extends CI_Controller
 				$IS_LEVEL		= $dataI['IS_LEVEL'];
 				$TABMAX_0 		= ($IS_LEVEL-1) * 10;
 
+				$ITM_UNIT 		= htmlentities($ITM_UNIT, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
+
 				$s_isLS 		= "tbl_unitls WHERE ITM_UNIT = '$ITM_UNIT'";
 				$r_isLS 		= $this->db->count_all($s_isLS);
 
@@ -2551,143 +2871,65 @@ class C_am1h0db2 extends CI_Controller
 					$JSHOWD_8 	= "";
 					$JSHOWD_9 	= "";
 					$JSHOWD_10 	= "";
-					$s_JIDH_1 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
-									WHERE JOBCODEID IN (SELECT JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JCODEH_0')";
+
+					$ISROW 		= 0;
+					$JOBDESC_X 	= "";
+					$JOBARR		= explode('.', $JCODEH_0);
+					$LENJOB		= count(explode('.', $JCODEH_0));
+					for($i = 0; $i < $LENJOB-1; $i++)
+					{
+						if($i==0)
+						{
+							$JSHOWD_1 	= $JOBARR[$i];
+							$s_JIDH_1 	= "SELECT JOBDESC FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JSHOWD_1' LIMIT 1";
+							$r_JIDH_1	= $this->db->query($s_JIDH_1)->result();
+							foreach($r_JIDH_1 as $rw_JIDH_1):
+								$JOBDESC_X	= $rw_JIDH_1->JOBDESC;
+							endforeach;
+						}
+						else
+						{
+							for($j = 0; $j <= $i; $j++)
+							{
+								if($j==0)
+									$JSHOWD_2 	= $JOBARR[$j];
+								else
+									$JSHOWD_2 	= $JSHOWD_2.".".$JOBARR[$j];
+							}
+						}
+						$NEWJOID 	= $JSHOWD_1.$JSHOWD_2;
+						$s_JIDH_1 	= "SELECT JOBDESC FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JSHOWD_2' LIMIT 1";
+						$r_JIDH_1	= $this->db->query($s_JIDH_1)->result();
+						foreach($r_JIDH_1 as $rw_JIDH_1):
+							$JOBDESC_X	= $rw_JIDH_1->JOBDESC;
+						endforeach;
+						$NEW_JOID 	= $NEWJOID;
+						$JSHOWD_1 	= $NEWJOID." : $JOBDESC_X <br>";
+					}
+
+					/*$ISROW 		= 0;
+					$s_JIDH_1 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID LIKE '$JOBLEV1%'";
 					$r_JIDH_1		= $this->db->query($s_JIDH_1)->result();
 					foreach($r_JIDH_1 as $rw_JIDH_1):
+						$ISROW 		= $ISROW+1;
 						$JCODEH_1	= $rw_JIDH_1->JOBCODEID;
 						$JDESCH_1	= strtoupper(wordwrap($rw_JIDH_1->JOBDESC, 60, "<br>", TRUE));
 						$TABMAX_1 	= $TABMAX_0-10;
-						$JSHOWD_1	= "<div style='margin-left: ".$TABMAX_1."px; font-style: italic; white-space:nowrap'>
+						if($ISROW == 1)
+						{
+							$JSHOWD_1	= "<div style='margin-left: ".$TABMAX_1."px; font-style: italic; white-space:nowrap'>
 									  		<label style='white-space:nowrap'>$JCODEH_1 : $JDESCH_1</label>
 									  	</div>";
-						$JCODEH_2 	= "";
-						$JDESCH_2 	= "";
-						$JSHOWD_2 	= "";
-						$s_JIDH_2 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
-										WHERE JOBCODEID IN (SELECT JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JCODEH_1')";
-						$r_JIDH_2		= $this->db->query($s_JIDH_2)->result();
-						foreach($r_JIDH_2 as $rw_JIDH_2):
-							$JCODEH_2	= $rw_JIDH_2->JOBCODEID;
-							$JDESCH_2	= strtoupper(wordwrap($rw_JIDH_2->JOBDESC, 60, "<br>", TRUE));
-							$TABMAX_2 	= $TABMAX_1-10;
-							$JSHOWD_2	= "<div style='margin-left: ".$TABMAX_2."px; font-style: italic; white-space:nowrap'>
-										  		<label style='white-space:nowrap'>$JCODEH_2 : $JDESCH_2</label>
-										  	</div>";
-							$JCODEH_3 	= "";
-							$JDESCH_3 	= "";
-							$JSHOWD_3 	= "";
-							$s_JIDH_3 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
-											WHERE JOBCODEID IN (SELECT JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JCODEH_2')";
-							$r_JIDH_3		= $this->db->query($s_JIDH_3)->result();
-							foreach($r_JIDH_3 as $rw_JIDH_3):
-								$JCODEH_3	= $rw_JIDH_3->JOBCODEID;
-								$JDESCH_3	= strtoupper(wordwrap($rw_JIDH_3->JOBDESC, 60, "<br>", TRUE));
-								$TABMAX_3 	= $TABMAX_2-10;
-								$JSHOWD_3	= "<div style='margin-left: ".$TABMAX_3."px; font-style: italic; white-space:nowrap'>
-											  		<label style='white-space:nowrap'>$JCODEH_3 : $JDESCH_3</label>
-											  	</div>";
-								$JCODEH_4 	= "";
-								$JDESCH_4 	= "";
-								$JSHOWD_4 	= "";
-								$s_JIDH_4 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
-												WHERE JOBCODEID IN (SELECT JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JCODEH_3')";
-								$r_JIDH_4		= $this->db->query($s_JIDH_4)->result();
-								foreach($r_JIDH_4 as $rw_JIDH_4):
-									$JCODEH_4	= $rw_JIDH_4->JOBCODEID;
-									$JDESCH_4	= strtoupper(wordwrap($rw_JIDH_4->JOBDESC, 60, "<br>", TRUE));
-									$TABMAX_4 	= $TABMAX_3-10;
-									$JSHOWD_4	= "<div style='margin-left: ".$TABMAX_4."px; font-style: italic; white-space:nowrap'>
-												  		<label style='white-space:nowrap'>$JCODEH_4 : $JDESCH_4</label>
-												  	</div>";
-									$JCODEH_5 	= "";
-									$JDESCH_5 	= "";
-									$JSHOWD_5 	= "";
-									$s_JIDH_5 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
-													WHERE JOBCODEID IN (SELECT JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JCODEH_4')";
-									$r_JIDH_5		= $this->db->query($s_JIDH_5)->result();
-									foreach($r_JIDH_5 as $rw_JIDH_5):
-										$JCODEH_5	= $rw_JIDH_5->JOBCODEID;
-										$JDESCH_5	= strtoupper(wordwrap($rw_JIDH_5->JOBDESC, 60, "<br>", TRUE));
-										$TABMAX_5 	= $TABMAX_4-10;
-										$JSHOWD_5	= "<div style='margin-left: ".$TABMAX_5."px; font-style: italic; white-space:nowrap'>
-													  		<label style='white-space:nowrap'>$JCODEH_5 : $JDESCH_5</label>
-													  	</div>";
-										$JCODEH_6 	= "";
-										$JDESCH_6 	= "";
-										$JSHOWD_6 	= "";
-										$s_JIDH_6 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
-														WHERE JOBCODEID IN (SELECT JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JCODEH_5')";
-										$r_JIDH_6		= $this->db->query($s_JIDH_6)->result();
-										foreach($r_JIDH_6 as $rw_JIDH_6):
-											$JCODEH_6	= $rw_JIDH_6->JOBCODEID;
-											$JDESCH_6	= strtoupper(wordwrap($rw_JIDH_6->JOBDESC, 60, "<br>", TRUE));
-											$TABMAX_6 	= $TABMAX_5-10;
-											$JSHOWD_6	= "<div style='margin-left: ".$TABMAX_6."px; font-style: italic; white-space:nowrap'>
-														  		<label style='white-space:nowrap'>$JCODEH_6 : $JDESCH_6</label>
-														  	</div>";
-											$JCODEH_7 	= "";
-											$JDESCH_7 	= "";
-											$JSHOWD_7 	= "";
-											$s_JIDH_7 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
-															WHERE JOBCODEID IN (SELECT JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JCODEH_6')";
-											$r_JIDH_7		= $this->db->query($s_JIDH_7)->result();
-											foreach($r_JIDH_7 as $rw_JIDH_7):
-												$JCODEH_7	= $rw_JIDH_7->JOBCODEID;
-												$JDESCH_7	= strtoupper(wordwrap($rw_JIDH_7->JOBDESC, 60, "<br>", TRUE));
-												$TABMAX_7 	= $TABMAX_6-10;
-												$JSHOWD_7	= "<div style='margin-left: ".$TABMAX_7."px; font-style: italic; white-space:nowrap'>
-															  		<label style='white-space:nowrap'>$JCODEH_7 : $JDESCH_7</label>
-															  	</div>";
-												$JCODEH_8 	= "";
-												$JDESCH_8 	= "";
-												$JSHOWD_8 	= "";
-												$s_JIDH_8 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
-																WHERE JOBCODEID IN (SELECT JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JCODEH_7')";
-												$r_JIDH_8		= $this->db->query($s_JIDH_8)->result();
-												foreach($r_JIDH_8 as $rw_JIDH_8):
-													$JCODEH_8	= $rw_JIDH_8->JOBCODEID;
-													$JDESCH_8	= strtoupper(wordwrap($rw_JIDH_8->JOBDESC, 60, "<br>", TRUE));
-													$TABMAX_8 	= $TABMAX_7-10;
-													$JSHOWD_8	= "<div style='margin-left: ".$TABMAX_8."px; font-style: italic; white-space:nowrap'>
-																  		<label style='white-space:nowrap'>$JCODEH_8 : $JDESCH_8</label>
-																  	</div>";
-													$JCODEH_9 	= "";
-													$JDESCH_9 	= "";
-													$JSHOWD_9 	= "";
-													$s_JIDH_9 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
-																	WHERE JOBCODEID IN (SELECT JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JCODEH_8')";
-													$r_JIDH_9		= $this->db->query($s_JIDH_9)->result();
-													foreach($r_JIDH_9 as $rw_JIDH_9):
-														$JCODEH_9	= $rw_JIDH_9->JOBCODEID;
-														$JDESCH_9	= strtoupper(wordwrap($rw_JIDH_9->JOBDESC, 60, "<br>", TRUE));
-														$TABMAX_9 	= $TABMAX_8-10;
-														$JSHOWD_9	= "<div style='margin-left: ".$TABMAX_9."px; font-style: italic; white-space:nowrap'>
-																	  		<label style='white-space:nowrap'>$JCODEH_9 : $JDESCH_9</label>
-																	  	</div>";
-														$JCODEH_10 	= "";
-														$JDESCH_10 	= "";
-														$JSHOWD_10 	= "";
-														$s_JIDH_10 	= "SELECT JOBCODEID, JOBDESC FROM tbl_joblist_detail_$PRJCODEVW
-																		WHERE JOBCODEID IN (SELECT JOBPARENT FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID = '$JCODEH_9')";
-														$r_JIDH_10		= $this->db->query($s_JIDH_10)->result();
-														foreach($r_JIDH_10 as $rw_JIDH_10):
-															$JCODEH_10	= $rw_JIDH_10->JOBCODEID;
-															$JDESCH_10	= strtoupper(wordwrap($rw_JIDH_10->JOBDESC, 60, "<br>", TRUE));
-															$TABMAX_10 	= $TABMAX_9-10;
-															$JSHOWD_10	= "<div style='margin-left: ".$TABMAX_10."px; font-style: italic; white-space:nowrap'>
-																		  		<label style='white-space:nowrap'>$JCODEH_10 : $JDESCH_10</label>
-																		  	</div>";
-														endforeach;
-													endforeach;
-												endforeach;
-											endforeach;
-										endforeach;
-									endforeach;
-								endforeach;
-							endforeach;
-						endforeach;
-					endforeach;
+						}
+						else
+						{
+							$JSHOWD_1	= $JSHOWD_1."<div style='margin-left: ".$TABMAX_1."px; font-style: italic; white-space:nowrap'>
+									  		<label style='white-space:nowrap'>$JCODEH_1 : $JDESCH_1</label>
+									  	</div>";
+						}
+						if($JCODEH_0 == $JCODEH_1)
+							break;
+					endforeach;*/
 
 				if($ISLAST_BOQ == 0)
 				{
@@ -2702,7 +2944,7 @@ class C_am1h0db2 extends CI_Controller
 
 				$output['data'][] 	= array("$chkBox",
 											"<div><span ".$fntBld.">".$JobView."</span></div>",
-											"$JSHOWD_10$JSHOWD_9$JSHOWD_8$JSHOWD_7$JSHOWD_6$JSHOWD_5$JSHOWD_4$JSHOWD_3$JSHOWD_2$JSHOWD_1");
+											"<b>$JSHOWD_1</b>");
 
 				$noU			= $noU + 1;
 			}
@@ -2849,7 +3091,7 @@ class C_am1h0db2 extends CI_Controller
 				$s_ITM 		= "SELECT ITM_NAME FROM tbl_item_$PRJCODEVW WHERE ITM_CODE = '$ITM_CODE' AND PRJCODE = '$PRJCODE'";
 				$r_ITM		= $this->db->query($s_ITM)->result();
 				foreach($r_ITM as $rw_ITM):
-					$ITM_NAME	= $rw_ITM->ITM_NAME;
+					$ITM_NAME	= htmlspecialchars($rw_ITM->ITM_NAME, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 				endforeach;
 
 				// SHOW PARENT JOB
@@ -3014,7 +3256,7 @@ class C_am1h0db2 extends CI_Controller
 				else
 				{
 					/*$chkBox	= "<input type='checkbox' name='chk3' value='".$JOBID_SEL."|".$JOBCODEID."|".$JOBPARENT."|".$JDESCH_1."|".$ITM_UNIT."|".$nwJID."|".$ITM_REMVOL."|".$ITM_PRICE."|".$ITM_CODEH."' onClick='pickThis3(this);'/>";*/
-					$JOBPARENTD 	= $JDESCH_1;
+					$JOBPARENTD 	= htmlspecialchars($JDESCH_1, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 					$chkBox			= "<input type='checkbox' name='chk3' value='".$JOBID_SEL."|".$JOBCODEID."|".$JOBPARENT."|".$JOBPARENTD."|".$ITM_CODE."|".$ITM_NAME."|".$ITM_UNIT."|".$ITM_REMVOL."|".$ITM_REMVAL."|".$ITM_PRICE."|".$r_isLS."' onClick='pickThis3(this);'/>";
 					$fntBld 		= " style='font-weight:bold;'";
 				}
@@ -3823,6 +4065,7 @@ class C_am1h0db2 extends CI_Controller
 			}
 			$data['PRJCODE']	= $PRJCODE;
 			$data["MenuCode"] 	= 'MN037';
+			$data['secUpl'] 	= site_url('c_comprof/c_am1h0db2/uplAmdPek/?id='.$this->url_encryption_helper->encode_url($PRJCODE));
 			$data['backURL'] 	= site_url('c_comprof/c_am1h0db2/?id='.$this->url_encryption_helper->encode_url($PRJCODE));
 						
 			// START : UPDATE TO T-TRACK
@@ -4293,6 +4536,8 @@ class C_am1h0db2 extends CI_Controller
 			$AMD_CATEG 		= $this->input->post('AMD_CATEG');
 			$JOBCODEID		= $this->input->post('JOBCODEID');
 
+			$PRJCODEVW 		= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
+
 			// ADA PERUBAHAN PROSEDUR. BY REQUEST PAK WAWAN
 			// 1. PILIH ITEM KOMPNEN (SINGLE)
 			// 2. PILIH PEKERJAN (MULTIPLE)
@@ -4426,6 +4671,30 @@ class C_am1h0db2 extends CI_Controller
 						$ITM_GROUP 	= $rw_01->ITM_GROUP;
 						$ITM_UNIT 	= $rw_01->ITM_UNIT;
 					endforeach;
+
+					$s_01 	= "tbl_item_$PRJCODEVW WHERE ITM_CODE = '$ITM_CODE'";
+					$r_01 	= $this->db->count_all($s_01);
+					if($r_01 == 0)
+					{
+						// START : COPY ITEM IFNULL FROM MASTER NKE
+							$s_02 	= "INSERT INTO tbl_item (PRJCODE, PRJCODE_HO, PRJPERIOD, PITM_CODE, ITM_CODE, ITM_CODE_H, ITM_CODE_H5, 
+										ITM_GROUP, ITM_CATEG, ITM_CLASS, ITM_NAME, ITM_TYPE, ITM_UNIT, UMCODE, ITM_CURRENCY, ITM_VOLMBG, 
+										ITM_VOLMBGR, ITM_VOLM, ITM_PRICE, ITM_REMQTY, ITM_TOTALP, ITM_LASTP, ITM_AVGP, 
+										ACC_ID, ACC_ID_UM, ACC_ID_SAL, STATUS, ISMTRL, ISRENT, ISPART, ISFUEL, ISLUBRIC, 
+										ISFASTM, ISWAGE, ISRM, ISWIP, ISFG, ISRIB, ISCOST, NEEDQRC, ITM_KIND, ITM_LR, 
+										CALCTOFG, ISMAJOR, ISCOUNT, ISOUTB, LASTNO, CREATED, CREATER, CREATED_FLAG) 
+										SELECT '$PRJCODE', PRJCODE_HO, '$PRJCODE', PITM_CODE, ITM_CODE, ITM_CODE_H, ITM_CODE_H5, 
+										ITM_GROUP, ITM_CATEG, ITM_CLASS, ITM_NAME, ITM_TYPE, ITM_UNIT, UMCODE, ITM_CURRENCY, ITM_VOLMBG, 
+										ITM_VOLMBGR, ITM_VOLM, ITM_PRICE, ITM_REMQTY, ITM_TOTALP, ITM_LASTP, ITM_AVGP, 
+										ACC_ID, ACC_ID_UM, ACC_ID_SAL, STATUS, ISMTRL, ISRENT, ISPART, ISFUEL, ISLUBRIC, 
+										ISFASTM, ISWAGE, ISRM, ISWIP, ISFG, ISRIB, ISCOST, NEEDQRC, ITM_KIND, ITM_LR, 
+										CALCTOFG, ISMAJOR, ISCOUNT, ISOUTB, LASTNO, CREATED, CREATER, CREATED_FLAG 
+										FROM tbl_item WHERE PRJCODE = 'NKE' AND ITM_CODE = '$ITM_CODE' 
+										AND ITM_CODE NOT IN (SELECT ITM_CODE FROM tbl_item_$PRJCODEVW)";
+							$this->db->query($s_02);
+						// END : COPY ITEM FROM MASTER NKE
+					}
+
 					$d['JOBPARENT']	= $JOBCODEID;
 					$d['ITM_GROUP']	= $ITM_GROUP;
 					$d['ITM_UNIT']	= $ITM_UNIT;
@@ -4604,6 +4873,8 @@ class C_am1h0db2 extends CI_Controller
 			$AMD_DATE		= date('Y-m-d',strtotime(str_replace('/', '-', $this->input->post('AMD_DATE'))));
 			$AMD_CATEG 		= $this->input->post('AMD_CATEG');
 			$JOBCODEID		= $this->input->post('JOBCODEID');
+
+			$PRJCODEVW 		= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 			
 			// ADA PERUBAHAN PROSEDUR. BY REQUEST PAK WAWAN
 			// 1. PILIH ITEM KOMPNEN (SINGLE)
@@ -4723,6 +4994,30 @@ class C_am1h0db2 extends CI_Controller
 						$ITM_GROUP 	= $rw_01->ITM_GROUP;
 						$ITM_UNIT 	= $rw_01->ITM_UNIT;
 					endforeach;
+
+					$s_01 	= "tbl_item_$PRJCODEVW WHERE ITM_CODE = '$ITM_CODE'";
+					$r_01 	= $this->db->count_all($s_01);
+					if($r_01 == 0)
+					{
+						// START : COPY ITEM IFNULL FROM MASTER NKE
+							$s_02 	= "INSERT INTO tbl_item (PRJCODE, PRJCODE_HO, PRJPERIOD, PITM_CODE, ITM_CODE, ITM_CODE_H, ITM_CODE_H5, 
+										ITM_GROUP, ITM_CATEG, ITM_CLASS, ITM_NAME, ITM_TYPE, ITM_UNIT, UMCODE, ITM_CURRENCY, ITM_VOLMBG, 
+										ITM_VOLMBGR, ITM_VOLM, ITM_PRICE, ITM_REMQTY, ITM_TOTALP, ITM_LASTP, ITM_AVGP, 
+										ACC_ID, ACC_ID_UM, ACC_ID_SAL, STATUS, ISMTRL, ISRENT, ISPART, ISFUEL, ISLUBRIC, 
+										ISFASTM, ISWAGE, ISRM, ISWIP, ISFG, ISRIB, ISCOST, NEEDQRC, ITM_KIND, ITM_LR, 
+										CALCTOFG, ISMAJOR, ISCOUNT, ISOUTB, LASTNO, CREATED, CREATER, CREATED_FLAG) 
+										SELECT '$PRJCODE', PRJCODE_HO, '$PRJCODE', PITM_CODE, ITM_CODE, ITM_CODE_H, ITM_CODE_H5, 
+										ITM_GROUP, ITM_CATEG, ITM_CLASS, ITM_NAME, ITM_TYPE, ITM_UNIT, UMCODE, ITM_CURRENCY, ITM_VOLMBG, 
+										ITM_VOLMBGR, ITM_VOLM, ITM_PRICE, ITM_REMQTY, ITM_TOTALP, ITM_LASTP, ITM_AVGP, 
+										ACC_ID, ACC_ID_UM, ACC_ID_SAL, STATUS, ISMTRL, ISRENT, ISPART, ISFUEL, ISLUBRIC, 
+										ISFASTM, ISWAGE, ISRM, ISWIP, ISFG, ISRIB, ISCOST, NEEDQRC, ITM_KIND, ITM_LR, 
+										CALCTOFG, ISMAJOR, ISCOUNT, ISOUTB, LASTNO, CREATED, CREATER, CREATED_FLAG 
+										FROM tbl_item WHERE PRJCODE = 'NKE' AND ITM_CODE = '$ITM_CODE' 
+										AND ITM_CODE NOT IN (SELECT ITM_CODE FROM tbl_item_$PRJCODEVW)";
+							$this->db->query($s_02);
+						// END : COPY ITEM FROM MASTER NKE
+					}
+					
 					$d['ITM_GROUP']	= $ITM_GROUP;
 					$d['ITM_UNIT']	= $ITM_UNIT;
 
@@ -5816,6 +6111,67 @@ class C_am1h0db2 extends CI_Controller
 			
 			$url			= site_url('c_comprof/c_am1h0db2/i1dah80Idx_pek/?id='.$this->url_encryption_helper->encode_url($PRJCODE));
 			redirect($url);
+		}
+		else
+		{
+			redirect('__l1y');
+		}
+	}
+
+	function uplAmdPek($offset=0) // OK
+	{
+		$PRJCODE		= $_GET['id'];
+		$PRJCODE		= $this->url_encryption_helper->decode_url($PRJCODE);
+
+		$PRJCODE_HO		= '';
+		$PRJPERIOD 		= $PRJCODE;
+		$sqlPRJ 		= "SELECT PRJCODE_HO, PRJPERIOD FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
+		$resPRJ 		= $this->db->query($sqlPRJ)->result();
+		foreach($resPRJ as $rowPRJ) :
+			$PRJCODE_HO = $rowPRJ->PRJCODE_HO;
+			$PRJPERIOD 	= $rowPRJ->PRJPERIOD;
+		endforeach;
+
+		$data['backURL'] 	= site_url('c_comprof/c_am1h0db2/?id='.$this->url_encryption_helper->encode_url($PRJCODE));
+
+		if ($this->session->userdata('login') == TRUE)
+		{	
+			$sqlApp 		= "SELECT * FROM tappname";
+			$resultaApp = $this->db->query($sqlApp)->result();
+			foreach($resultaApp as $therow) :
+				$appName = $therow->app_name;		
+			endforeach;
+			
+			// GET MENU DESC
+				$mnCode				= 'MN037';
+				$data["MenuApp"] 	= 'MN037';
+				$data['PRJCODE_HO']	= $this->data['PRJCODE_HO'];
+				$getMN				= $this->m_updash->get_menunm($mnCode)->row();
+				if($this->data['LangID'] == 'IND')
+				{
+					$data["mnName"] 	= $getMN->menu_name_IND;
+					$data['h3_title'] 	= 'Amandemen Pekerjaan';
+				}
+				else
+				{
+					$data["mnName"] 	= $getMN->menu_name_ENG;
+					$data['h3_title'] 	= 'Job Amandemen';
+				}
+			
+			$PRJCODE				= $_GET['id'];
+			$PRJCODE				= $this->url_encryption_helper->decode_url($PRJCODE);
+			$data['PRJCODE'] 		= $PRJCODE;
+			
+			$data['isProcess'] 		= 0;
+			$data['message'] 		= '';
+			$data['PRJCODE']		= $PRJCODE;
+			$data['BOQH_DESC']		= '';
+			$data['isUploaded']		= 0;
+			$data['title'] 			= $appName;
+			$data['title'] 			= $appName;
+			$data['h2_title'] 		= 'History';
+			
+			$this->load->view('v_company/v_project_amd_pek/v_amd_form_boq', $data);
 		}
 		else
 		{

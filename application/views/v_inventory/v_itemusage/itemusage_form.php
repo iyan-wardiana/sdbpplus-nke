@@ -419,6 +419,7 @@ if(isset($_POST['JOBCODEXX']))
 			$alert4		= "Silahkan masukan catatan penggunaan.";
 			$alert5		= "Silahkan tentukan tipe penggunaan.";
 			$alert6		= "Anda belum memilih gudang material.";
+			$alert7		= "Keterangan item tidak boleh kosong.";
 			$alertAcc 	= "Belum diset kode akun penggunaan.";
 		}
 		else
@@ -436,6 +437,7 @@ if(isset($_POST['JOBCODEXX']))
 			$alert4		= "Please input note of material usgae.";
 			$alert5		= "Please select type of item usage.";
 			$alert6		= "You have not select a warehouse.";
+			$alert7		= "Item notes can not empty.";
 			$alertAcc 	= "Not set account material usage.";
 		}
 			
@@ -1387,7 +1389,7 @@ if(isset($_POST['JOBCODEXX']))
 													<input type="hidden" name="ITM_QTY<?php echo $currentRow; ?>" id="ITM_QTY<?php echo $currentRow; ?>" value="<?php echo number_format($ITM_QTY, 2); ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getConvertion(this,<?php echo $currentRow; ?>);" >
 												<?php } ?>
 												<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_QTY]" id="data<?php echo $currentRow; ?>ITM_QTY" value="<?php echo $ITM_QTY; ?>" class="form-control" style="max-width:300px;" >
-												<input type="text" name="data[<?php echo $currentRow; ?>][ITM_PRICE]" id="data<?php echo $currentRow; ?>ITM_PRICE" value="<?php echo $ITM_PRICE; ?>" class="form-control" style="max-width:300px;" >
+												<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_PRICE]" id="data<?php echo $currentRow; ?>ITM_PRICE" value="<?php echo $ITM_PRICE; ?>" class="form-control" style="max-width:300px;" >
 		                                 	</td>
 										  	<td width="4%" style="text-align:center; vertical-align: middle;" nowrap>
 											  <?php echo $ITM_UNIT; ?>
@@ -3216,14 +3218,28 @@ if(isset($_POST['JOBCODEXX']))
 				});
 				return false;
 			}
+			
+			var UM_DESC = parseFloat(document.getElementById('UM_DESC'+i).value);
+			if(UM_DESC == '')
+			{
+				swal('<?php echo $alert7; ?>',
+				{
+					icon:"warning",
+				})
+				.then(function()
+				{
+					document.getElementById('UM_DESC'+i).focus();
+				});
+				return false;
+			}
 		}
 
-		let frm = document.getElementById('frm');
-		frm.addEventListener('submit', (e) => {
-			// console.log(e)
-			document.getElementById('btnSave').style.display 	= 'none';
-			document.getElementById('btnBack').style.display 	= 'none';
-		});
+		document.getElementById('btnSave').style.display 	= 'none';
+		document.getElementById('btnBack').style.display 	= 'none';
+		// let frm = document.getElementById('frm');
+		// frm.addEventListener('submit', (e) => {
+		// 	// console.log(e)
+		// });
 	}
 </script>
 <?php

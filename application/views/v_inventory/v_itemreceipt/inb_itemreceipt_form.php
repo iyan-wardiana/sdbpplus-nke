@@ -244,6 +244,7 @@ $disBtn 	= 0;
 			$docalert1	= 'Peringatan';
 			$docalert4	= "Jurnal bulan $MonthVw $JournalY sudah terkunci, silahkan hubungi departemen terkait.";
 			$alertAcc 	= "Belum diset kode akun penerimaan.";
+			$alertAccUM	= "Akun Penggunaan belum diset.";
 		}
 		else
 		{
@@ -252,6 +253,7 @@ $disBtn 	= 0;
 			$docalert1	= 'Warning';
 			$docalert4	= "journal month $MonthVw $JournalY locked, please contact the relevant department.";
 			$alertAcc 	= "Not set account receipt.";
+			$alertAccUM	= "Not Set used account.";
 		}
 		
 		// START : APPROVE PROCEDURE
@@ -919,8 +921,17 @@ $disBtn 	= 0;
                                         <th width="10%" style="text-align:center"><?php echo $Price; ?> </th>
                                     </tr>
                                     <?php
-									$resultC	= 0;
-									$isDisabled	= 0;
+									$resultC			= 0;
+									$disBtn 			= 0;
+									$isDisabled			= 0;
+									$IR_AMOUNT			= 0;
+									$IR_DISC			= 0;
+									$IR_PPN				= 0;
+									$IR_PPH 			= 0;
+									$IR_AMOUNT_NETT		= 0;
+									$TAXCODE_PPN 		= "";
+									$TAXCODE_PPH		= "";
+									$LPMDesc            = "";
 									
 									$sqlDET		= "SELECT A.IR_ID, A.PRJCODE, A.IR_NUM, A.IR_CODE, A.JOBCODEDET, A.JOBCODEID,
 														A.ACC_ID, A.PO_NUM, A.ITM_CODE, A.ITM_UNIT, A.ITM_UNIT2,
@@ -957,14 +968,6 @@ $disBtn 	= 0;
 									$j		= 0;
 									if($resultC > 0)
 									{
-										$IR_AMOUNT			= 0;
-										$IR_DISC			= 0;
-										$IR_PPN				= 0;
-										$IR_PPH 			= 0;
-										$IR_AMOUNT_NETT		= 0;
-										$TAXCODE_PPN 		= "";
-										$TAXCODE_PPH		= "";
-										$LPMDesc            = "";
 										foreach($result as $row) :
 											$IR_ID 			= $row->IR_ID;
 											$IR_NUM 		= $IR_NUM;
@@ -1126,48 +1129,50 @@ $disBtn 	= 0;
 											$ttl 		= '';
 											$divDesc 	= '';
 
-											if($ITM_CATEG == 'UA' && $ACC_ID_UM == '')
-											{
-												$disBtn 	= 1;
-												$ItmCol1	= '<br><span class="label label-danger" style="font-size:12px; font-style: italic;">';
-												$ItmCol2	= '</span>';
-												$ttl 		= 'Item ongkos angkut ini belum disetting Kode Akun';
-												$divDesc 	= "<i class='fa fa-info'></i>&nbsp;&nbsp;".$alertAcc."";
-												$isDisabled = 1;
-											}
-											elseif($ACC_ID == '' && $ITM_CATEG != 'UA')
-											{
-												$disBtn 	= 1;
-												$ItmCol1	= '<br><span class="label label-danger" style="font-size:12px; font-style: italic;">';
-												$ItmCol2	= '</span>';
-												$ttl 		= 'Belum disetting kode akun penerimaan';
-												$divDesc 	= "<i class='fa fa-info'></i>&nbsp;&nbsp;".$alertAcc."";
-												$isDisabled = 1;
-											}
+											if($ITM_GROUP == 'M' OR $ITM_GROUP == 'T')
+												$IS_M 		= 1;
+											else
+												$IS_M 		= 0;
 
-											if($ITM_GROUP != 'M' && $ITM_GROUP != 'M')
+											if($IS_M == 1 && $ACC_ID == '')
 											{
-												$disBtn 	= 0;
+												$disBtnX 	= 1;
+												$disBtn 	= $disBtn+$disBtnX;
 												$ItmCol1	= '<br><span class="label label-danger" style="font-size:12px; font-style: italic;">';
 												$ItmCol2	= '</span>';
 												$ttl 		= 'Belum disetting kode akun penerimaan';
+												$divDesc 	= "<i class='fa fa-info'></i>&nbsp;&nbsp;".$alertAcc."";
+												$isDisabled = 1;
+											}
+											elseif($IS_M == 0)
+											{
+												$disBtnX 	= 0;
+												$disBtn 	= $disBtn+$disBtnX;
+												$ItmCol1	= '<br><span class="label label-danger" style="font-size:12px; font-style: italic;">';
+												$ItmCol2	= '</span>';
+												$ttl 		= '';
 												$divDesc 	= "<i class='fa fa-info'></i>&nbsp;&nbsp;Penerimaan Overhead";
 												$isDisabled = 0;
-											}
-
-											/*if($ACC_ID_UM == '')
-												$LPMDesc 	= "LPM Overhead : $alertAccUM";
-											else
-												$LPMDesc 	= "LPM Overhead";*/
-
-											if($ITM_GROUP != 'M' && $ITM_GROUP != 'T')
-											{
-												$disBtn 	= 0;
-												$ItmCol1	= '<br><span class="label label-danger" style="font-size:12px; font-style: italic;">';
-												$ItmCol2	= '</span>';
-												$ttl 		= 'Belum disetting kode akun penerimaan';
-												$divDesc 	= "<i class='fa fa-info'></i>&nbsp;&nbsp;$LPMDesc";
-												$isDisabled = 0;
+												if($ITM_CATEG == 'UA' && $ACC_ID_UM == '')
+												{
+													$disBtnX 	= 1;
+													$disBtn 	= $disBtn+$disBtnX;
+													$ItmCol1	= '<br><span class="label label-danger" style="font-size:12px; font-style: italic;">';
+													$ItmCol2	= '</span>';
+													$ttl 		= 'Item ongkos angkut ini belum disetting Kode Akun';
+													$divDesc 	= "<i class='fa fa-info'></i>&nbsp;&nbsp;".$alertAcc."";
+													$isDisabled = 1;
+												}
+												elseif($ACC_ID_UM == '')
+												{
+													$disBtnX 	= 1;
+													$disBtn 	= $disBtn+$disBtnX;
+													$ItmCol1	= '<br><span class="label label-danger" style="font-size:12px; font-style: italic;">';
+													$ItmCol2	= '</span>';
+													$ttl 		= 'Belum disetting kode akun penggunaan';
+													$divDesc 	= "<i class='fa fa-info'></i>&nbsp;&nbsp;Penerimaan Overhead : $alertAccUM";
+													$isDisabled = 1;
+												}
 											}
 
 											$ItmCol0a	= '';
@@ -1200,6 +1205,7 @@ $disBtn 	= 0;
 												echo "<tr>";
 												$j--;
 											}*/
+
 											$currentRow  	= ++$i;
 											?>
 											<tr id="tr_<?php echo $currentRow; ?>" style="background-color: #red">
@@ -1390,7 +1396,7 @@ $disBtn 	= 0;
 									else
 										$btnShow 	= 0;
 
-									if($disBtn == 1)
+									if($disBtn > 0)
 										$btnShow 	= 0;
 								?>
 								<button class="btn btn-primary" id="btnSave" <?php if($btnShow == 0) { ?> style="display: none;" <?php } ?> >
@@ -1524,6 +1530,11 @@ $disBtn 	= 0;
 		        	</div>
 		        </div>
 		    </div>
+        	<?php
+				$act_lnk = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        		if($DefEmp_ID == 'D15040004221')
+                	echo "<font size='1'><i>$act_lnk</i></font>";
+            ?>
 		</section>
 	</body>
 </html>

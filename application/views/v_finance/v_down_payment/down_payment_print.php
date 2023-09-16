@@ -287,26 +287,26 @@ $moneyFormat = new moneyFormat();
             <div class="box-header-detail">
                 <table width="100%" border="0" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td width="100">NO.</td>
+                        <td width="70">NO.</td>
                         <td width="5">:</td>
-                        <td width="450">&nbsp;</td>
-                        <td width="100">PROYEK.</td>
+                        <td width="430">&nbsp;</td>
+                        <td width="70">PROYEK.</td>
                         <td width="5">:</td>
                         <td>&nbsp;<?php echo $PRJCODE; ?></td>
                     </tr>
                     <tr>
-                        <td width="100">DATE</td>
+                        <td width="70">DATE</td>
                         <td width="5">:</td>
-                        <td width="450">&nbsp;<?php echo date('d-m-Y', strtotime($DP_DATE)); ?></td>
-                        <td width="100">TTK NO.</td>
+                        <td width="430">&nbsp;<?php echo date('d-m-Y', strtotime($DP_DATE)); ?></td>
+                        <td width="70">TTK NO.</td>
                         <td width="5">:</td>
                         <td>&nbsp;<?php echo $TTK_CODE; ?></td>
                     </tr>
                     <tr>
-                        <td width="100">PAY TO</td>
+                        <td width="70">PAY TO</td>
                         <td width="5">:</td>
-                        <td width="450">&nbsp;<?php echo "$SPLCODE - $EMP_NAME"; ?></td>
-                        <td width="100">PO NO.</td>
+                        <td width="430">&nbsp;<?php echo "$SPLCODE - $EMP_NAME"; ?></td>
+                        <td width="70">PO NO.</td>
                         <td width="5">:</td>
                         <td>&nbsp;<?php echo $DP_REFCODE; ?></td>
                     </tr>

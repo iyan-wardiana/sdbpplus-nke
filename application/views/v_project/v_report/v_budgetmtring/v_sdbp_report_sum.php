@@ -57,7 +57,7 @@
             foreach($rescss as $rowcss) :
                 $cssjs_lnk1  = $rowcss->cssjs_lnk;
                 ?>
-                    <script src="<?php echo base_url($cssjs_lnk1) ?>"></script>
+                    <script data-cfasync="false" src="<?php echo base_url($cssjs_lnk1) ?>"></script>
                 <?php
             endforeach;
         ?>
@@ -255,7 +255,7 @@
         </div>
 	</body>
 </html>
-<script type="text/javascript">
+<script data-cfasync="false" type="text/javascript">
 	$(document).ready(function()
 	{
 		let PRJCODE 	= '<?php echo $PRJCODE; ?>';

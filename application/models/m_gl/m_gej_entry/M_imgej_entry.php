@@ -462,10 +462,9 @@ class M_imgej_entry extends CI_Model
 	
 	function get_AllDataDetC($JournalH_Code, $search) // GOOD
 	{
-		$sql = "tbl_journaldetail_imp A
-						WHERE A.JournalType = 'IMP-TRX' AND JournalH_Code = '$JournalH_Code'
-							AND (Manual_No LIKE '%$search%' ESCAPE '!' OR Other_Desc LIKE '%$search%' ESCAPE '!'
-							OR JournalH_Date LIKE '%$search%' ESCAPE '!')";
+		$sql 		= "tbl_journaldetail_imp
+						WHERE JournalType = 'IMP-TRX' AND JournalH_Code = '$JournalH_Code'
+							AND (Manual_No LIKE '%$search%' ESCAPE '!' OR Other_Desc LIKE '%$search%' ESCAPE '!')";
 		return $this->db->count_all($sql);
 	}
 	
@@ -475,20 +474,17 @@ class M_imgej_entry extends CI_Model
 		{
 			if($order !=null)
 			{
-				$sql = "SELECT A.*
-						FROM tbl_journaldetail_imp A
-						WHERE A.JournalType = 'IMP-TRX' AND JournalH_Code = '$JournalH_Code'
-							AND (Manual_No LIKE '%$search%' ESCAPE '!' OR Other_Desc LIKE '%$search%' ESCAPE '!'
-							OR JournalH_Date LIKE '%$search%' ESCAPE '!')
-							ORDER BY $order $dir";
+				$sql = "SELECT JournalD_Id, JournalH_Code, Acc_Id, Acc_Name, JournalD_Debet, JournalD_Kredit, Manual_No, Journal_DK, Other_Desc, oth_reason, proj_Code, GEJ_STAT
+						FROM tbl_journaldetail_imp
+						WHERE JournalType = 'IMP-TRX' AND JournalH_Code = '$JournalH_Code'
+							AND (Manual_No LIKE '%$search%' ESCAPE '!' OR Other_Desc LIKE '%$search%' ESCAPE '!') ORDER BY $order $dir";
 			}
 			else
 			{
-				$sql = "SELECT A.*
-						FROM tbl_journaldetail_imp A
-						WHERE A.JournalType = 'IMP-TRX' AND JournalH_Code = '$JournalH_Code'
-							AND (Manual_No LIKE '%$search%' ESCAPE '!' OR Other_Desc LIKE '%$search%' ESCAPE '!'
-							OR JournalH_Date LIKE '%$search%' ESCAPE '!')";
+				$sql = "SELECT JournalD_Id, JournalH_Code, Acc_Id, Acc_Name, JournalD_Debet, JournalD_Kredit, Manual_No, Journal_DK, Other_Desc, oth_reason, proj_Code, GEJ_STAT
+						FROM tbl_journaldetail_imp
+						WHERE JournalType = 'IMP-TRX' AND JournalH_Code = '$JournalH_Code'
+							AND (Manual_No LIKE '%$search%' ESCAPE '!' OR Other_Desc LIKE '%$search%' ESCAPE '!')";
 			}
 			return $this->db->query($sql);
 		}
@@ -496,19 +492,17 @@ class M_imgej_entry extends CI_Model
 		{
 			if($order !=null)
 			{
-				$sql = "SELECT A.*
-						FROM tbl_journaldetail_imp A
-						WHERE A.JournalType = 'IMP-TRX' AND JournalH_Code = '$JournalH_Code'
-							AND (Manual_No LIKE '%$search%' ESCAPE '!' OR Other_Desc LIKE '%$search%' ESCAPE '!'
-							OR JournalH_Date LIKE '%$search%' ESCAPE '!') ORDER BY $order $dir";
+				$sql = "SELECT JournalD_Id, JournalH_Code, Acc_Id, Acc_Name, JournalD_Debet, JournalD_Kredit, Manual_No, Journal_DK, Other_Desc, oth_reason, proj_Code, GEJ_STAT
+						FROM tbl_journaldetail_imp
+						WHERE JournalType = 'IMP-TRX' AND JournalH_Code = '$JournalH_Code'
+							AND (Manual_No LIKE '%$search%' ESCAPE '!' OR Other_Desc LIKE '%$search%' ESCAPE '!') ORDER BY $order $dir";
 			}
 			else
 			{
-				$sql = "SELECT A.*
-						FROM tbl_journaldetail_imp A
-						WHERE A.JournalType = 'IMP-TRX' AND JournalH_Code = '$JournalH_Code'
-							AND (Manual_No LIKE '%$search%' ESCAPE '!' OR Other_Desc LIKE '%$search%' ESCAPE '!'
-							OR JournalH_Date LIKE '%$search%' ESCAPE '!') LIMIT $start, $length";
+				$sql = "SELECT JournalD_Id, JournalH_Code, Acc_Id, Acc_Name, JournalD_Debet, JournalD_Kredit, Manual_No, Journal_DK, Other_Desc, oth_reason, proj_Code, GEJ_STAT
+						FROM tbl_journaldetail_imp
+						WHERE JournalType = 'IMP-TRX' AND JournalH_Code = '$JournalH_Code'
+							AND (Manual_No LIKE '%$search%' ESCAPE '!' OR Other_Desc LIKE '%$search%' ESCAPE '!') LIMIT $start, $length";
 			}
 			return $this->db->query($sql);
 		}

@@ -182,6 +182,7 @@
 	            	$QRY_BP 		= "";
 	            	$QRY_PD 		= "";
 
+					// echo "JRN_TYPE: $JRN_TYPE";
 	            	if($JRN_TYPE == 'VCASH')			// Y
 	            	{
 	            		$JRN_TYPED 	= "Voucher Cash";
@@ -522,6 +523,7 @@
 					elseif($JRN_TYPE == 'OPN')			// Y
 					{
 	            		$JRN_TYPED 	= "Opname";
+						$JRN_DATE 	= "";
 		            	$SHOW_OPN 	= 1;
 		            	$IDX_02 	= 0;
 		            	$IDX_03 	= 0;

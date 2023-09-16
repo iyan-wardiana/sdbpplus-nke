@@ -953,7 +953,7 @@ else
 		                            <div class="col-sm-4">
 		                                <input type="hidden" class="form-control" style="max-width:120px; text-align:right" name="TAXCODE_PPN" id="TAXCODE_PPN" value="<?php echo $TAXCODE_PPN; ?>" >
 		                                <input type="hidden" class="form-control" style="max-width:120px; text-align:right" name="PPN_PERC" id="PPN_PERC" value="<?php echo $PPN_PERC; ?>" >
-		                                <input type="text" class="form-control" style="max-width:120px; text-align:right" name="INV_AMOUNT_PPN" id="INV_AMOUNT_PPN" value="<?php echo $INV_AMOUNT_PPN; ?>" >
+		                                <input type="hidden" class="form-control" style="max-width:120px; text-align:right" name="INV_AMOUNT_PPN" id="INV_AMOUNT_PPN" value="<?php echo $INV_AMOUNT_PPN; ?>" >
 		                                <input type="text" class="form-control" style="text-align:right" name="INV_AMOUNT_PPNX" id="INV_AMOUNT_PPNX" value="<?php echo number_format($INV_AMOUNT_PPN, 2); ?>" onBlur="countAmn_ppn(this)" onKeyPress="return isIntOnlyNew(event);" readonly>
 		                            </div>
 		                        </div>
@@ -1049,12 +1049,13 @@ else
 										        PPH_PERC 		= parseFloat(response);
 												document.getElementById('PPH_PERC').value 	= PPH_PERC;
 
-										        INV_AMOUNT 		= document.getElementById('INV_AMOUNT').value;
-										        INV_AMOUNT_PPN 	= document.getElementById('INV_AMOUNT_PPN').value;
-										        INV_AMOUNT_RET 	= document.getElementById('INV_AMOUNT_RET').value;
-										        INV_AMOUNT_POT 	= document.getElementById('INV_AMOUNT_POT').value;
-												INV_AMOUNT_OTH 	= document.getElementById('INV_AMOUNT_OTH').value;
-										        INV_AMOUNT_DPB 	= document.getElementById('INV_AMOUNT_DPB').value;
+										        INV_AMOUNT 			= document.getElementById('INV_AMOUNT').value;
+										        INV_AMOUNT_PPN 		= document.getElementById('INV_AMOUNT_PPN').value;
+										        INV_AMOUNT_RET 		= document.getElementById('INV_AMOUNT_RET').value;
+										        INV_AMOUNT_POT 		= document.getElementById('INV_AMOUNT_POT').value;
+										        INV_AMOUNT_POTOTH 	= document.getElementById('INV_AMOUNT_POTOTH').value;
+												INV_AMOUNT_OTH 		= document.getElementById('INV_AMOUNT_OTH').value;
+										        INV_AMOUNT_DPB 		= document.getElementById('INV_AMOUNT_DPB').value;
 										        
 										        //GTOTAL_AMN1 	= parseFloat(INV_AMOUNT) + parseFloat(INV_AMOUNT_PPN) - parseFloat(INV_AMOUNT_RET) - parseFloat(INV_AMOUNT_POT) + parseFloat(INV_AMOUNT_OTH) - parseFloat(INV_AMOUNT_DPB);
 										        // GTOTAL_AMN1 	= parseFloat(INV_AMOUNT);
@@ -1066,7 +1067,8 @@ else
 												document.getElementById('INV_AMOUNT_PPHX').value 	= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(PPH_AMN)),2));
 										        
 										        //GTOTAL_AMN 	= parseFloat(GTOTAL_AMN1) - parseFloat(PPH_AMN);
-										        GTOTAL_AMN 		= parseFloat(GTOTAL_AMN1) + parseFloat(INV_AMOUNT_PPN) - parseFloat(INV_AMOUNT_RET) - parseFloat(INV_AMOUNT_POT) + parseFloat(INV_AMOUNT_OTH) - parseFloat(INV_AMOUNT_DPB) - parseFloat(PPH_AMN);
+										        // GTOTAL_AMN 		= parseFloat(GTOTAL_AMN1) + parseFloat(INV_AMOUNT_PPN) - parseFloat(INV_AMOUNT_RET) - parseFloat(INV_AMOUNT_POT) + parseFloat(INV_AMOUNT_OTH) - parseFloat(INV_AMOUNT_DPB) - parseFloat(PPH_AMN);
+										        GTOTAL_AMN 		= parseFloat(GTOTAL_AMN1) + parseFloat(INV_AMOUNT_PPN) - parseFloat(INV_AMOUNT_POT) - parseFloat(INV_AMOUNT_POTOTH) + parseFloat(INV_AMOUNT_OTH) - parseFloat(INV_AMOUNT_DPB) - parseFloat(PPH_AMN);
 												document.getElementById('INV_AMOUNT_TOT').value 	= GTOTAL_AMN;
 												document.getElementById('INV_AMOUNT_TOTX').value 	= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(GTOTAL_AMN)),2));
 								            }
@@ -1808,7 +1810,7 @@ else
 					                                      	</td>
 					                                        <td style="text-align:right; vertical-align: middle;" nowrap> <!-- ITM_AMOUNT_PPN -->
 					                                          	<?php echo number_format($ITM_AMOUNT_PPN, $decFormat); ?>
-					                                          	<input type="text" id="data<?php echo $currentRow; ?>ITM_AMOUNT_PPN" name="data[<?php echo $currentRow; ?>][ITM_AMOUNT_PPN]" value="<?php echo $ITM_AMOUNT_PPN; ?>" class="form-control" style="max-width:300px;">
+					                                          	<input type="hidden" id="data<?php echo $currentRow; ?>ITM_AMOUNT_PPN" name="data[<?php echo $currentRow; ?>][ITM_AMOUNT_PPN]" value="<?php echo $ITM_AMOUNT_PPN; ?>" class="form-control" style="max-width:300px;">
 					                                          	<input type="hidden" id="data<?php echo $currentRow; ?>TAXCODE_PPN" name="data[<?php echo $currentRow; ?>][TAXCODE_PPN]" value="<?php echo $TAXCODE_PPN; ?>" class="form-control" style="max-width:300px;">
 					                                      	</td>
 					                                        <td style="text-align:right; vertical-align: middle;" nowrap> <!-- ITM_AMOUNT_PPH -->
@@ -3507,17 +3509,17 @@ else
 		task 	= document.getElementById('task').value;
 		if(task == 'edit')
 		{
-			if(INV_TOT_PPN == 0)
+			// if(INV_TOT_PPN == 0)
 				INV_TOT_PPN 	= document.getElementById('INV_AMOUNT_PPN').value;
-			if(INV_TOT_PPH == 0)
+			// if(INV_TOT_PPH == 0)
 				INV_TOT_PPH 	= document.getElementById('INV_AMOUNT_PPH').value;
-			if(INV_TOT_DPB == 0)
+			// if(INV_TOT_DPB == 0)
 				INV_TOT_DPB 	= document.getElementById('INV_AMOUNT_DPB').value;
-			if(INV_TOT_RET == 0)
+			// if(INV_TOT_RET == 0)
 				INV_TOT_RET 	= document.getElementById('INV_AMOUNT_RET').value;
-			if(INV_TOT_OTH == 0)
+			// if(INV_TOT_OTH == 0)
 				INV_TOT_OTH 	= document.getElementById('INV_AMOUNT_OTH').value;
-			if(INV_TOT_POT == 0)
+			// if(INV_TOT_POT == 0)
 				INV_TOT_POT 	= document.getElementById('INV_AMOUNT_POT').value;
 
 			//INV_TOT_GTOTAL 	= parseFloat(INV_TOT_AMN) + parseFloat(INV_TOT_PPN) - parseFloat(INV_TOT_PPH) - parseFloat(INV_TOT_DPB) - parseFloat(INV_TOT_RET) - parseFloat(INV_TOT_POT) + parseFloat(INV_TOT_OTH);
@@ -3660,13 +3662,13 @@ else
 				icon: "warning",
 			});
 			return false;
-		}
+		}*/
 
 		INV_PPH			= document.getElementById("INV_PPH").value;
 		INV_AMOUNT_PPH	= document.getElementById("INV_AMOUNT_PPH").value;
 		if(INV_AMOUNT_PPH > 0 && INV_PPH == '')
 		{
-			swal('<?php // echo $alert8; ?>',
+			swal('<?php echo $alert8; ?>',
 			{
 				icon: "warning",
 			});
@@ -3675,12 +3677,12 @@ else
 
 		if(INV_PPH != '' && INV_AMOUNT_PPH == 0)
 		{
-			swal('<?php // echo $alert9; ?>',
+			swal('<?php echo $alert9; ?>',
 			{
 				icon: "warning",
 			});
 			return false;
-		}*/
+		}
 
 		INV_STAT		= document.getElementById("INV_STAT").value;
 		if(INV_STAT == 6)

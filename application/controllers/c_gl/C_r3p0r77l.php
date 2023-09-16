@@ -2216,12 +2216,11 @@ class C_r3p0r77l  extends CI_Controller
 												$vwDOC.$JournalType,
 												"<div style='white-space:nowrap'>".$Acc_Id."</div>",
 												"<strong>$updACC ".$AccNameId."</strong>",
-												"<div>$ITM_CODE</div>",
 												"<div class='text-muted'>
 												".$Other_DescD.$revDesc."
 												</div>",
-											  	"<div style='white-space:nowrap'>".number_format($JournalD_Debet,2)."</div>",
-											  	"<div style='white-space:nowrap'>".number_format($JournalD_Kredit,2)."</div>",
+												"<div style='white-space:nowrap'>".number_format($JournalD_Debet,2)."</div>",
+												"<div style='white-space:nowrap'>".number_format($JournalD_Kredit,2)."</div>",
 												"<div style='white-space:nowrap'>".number_format($balance,2)."</div>",
 												"<div>".$PRJCODE."</div>",
 												"<div>".$Faktur_Code."</div>",
@@ -2231,6 +2230,7 @@ class C_r3p0r77l  extends CI_Controller
 												"<div>".$Kwitansi_No."</div>",
 												"<div>".$TAX_DATE."</div>",
 												"<div>".$TAX_NO."</div>",
+												"<div>$ITM_CODE</div>",
 											  	"<div style='white-space:nowrap'>$empName</div>");
 
 					$JournalH_Code2	= $JournalH_Code;

@@ -1,3 +1,19 @@
+<?php
+/* 
+ * Author		= Dian Hermanto
+ * Create Date	= 22 Maret 2019
+ * File Name	= v_amandemen_report.php
+ * Location		= -
+*/
+
+if($viewType == 1)
+{
+	header("Content-type: application/octet-stream");
+	header("Content-Disposition: attachment; filename=exceldata.xls");
+	header("Pragma: no-cache");
+	header("Expires: 0");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 

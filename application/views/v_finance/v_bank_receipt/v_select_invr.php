@@ -210,6 +210,16 @@ $LangID 	= $this->session->userdata['LangID'];
 							$PINV_DPVALPPn		= round($row->PINV_DPVALPPn, 0);
 							$PINV_AMOUNT 		= round($row->PINV_TOTVAL, 0);
 							$PINV_AMOUNT_PPn	= round($row->PINV_TOTVALPPn, 0);
+
+							$T_PPN 				= 0;
+							$s_PPN 				= "SELECT SUM(PPN_Amount) AS TOT_PPN FROM tbl_journaldetail_pd A
+													WHERE Manual_No = '$PINV_MANNO' AND A.proj_Code = '$PRJCODE'
+													AND A.Journal_DK = 'D' AND A.ISPERSL = 1 AND A.ISPERSL_STEP = 1";
+							$r_PPN 				= $this->db->query($s_PPN)->result();
+							foreach($r_PPN as $rw_PPN):
+								$T_PPN 			= $rw_PPN->TOT_PPN;
+							endforeach;
+
 							if($PINV_AMOUNT_PPn == '')
 								$PINV_AMOUNT_PPn= 0;
 
@@ -227,7 +237,7 @@ $LangID 	= $this->session->userdata['LangID'];
 							$PINV_STEP			= $row->PINV_STEP;
 							$OWN_NAME			= $row->OWN_NAME;
 							$PINV_TOTVAL		= round($row->PINV_TOTVAL, 0);
-							$PINV_PAIDAM		= round($row->PINV_PAIDAM, 0);
+							$PINV_PAIDAM		= round($row->PINV_PAIDAM + $T_PPN, 0);
 							//$GPINV_REMAIN		= round($PINV_TOTVAL - $PINV_PAIDAM, 0);
 
 							// HASIL DISKUSI DGN BU LYTA BHW PPH TIDAK MASUK JURNAL (08 JUNI 2022)

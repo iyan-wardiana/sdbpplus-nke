@@ -27,6 +27,14 @@ $decFormat		= 2;
 $FlagUSER 		= $this->session->userdata['FlagUSER'];
 $DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 
+$PRJHOVW 		= "";
+$sqlHO 			= "SELECT PRJCODE FROM tbl_project WHERE isHO = 1 LIMIT 1";
+$resultHO 		= $this->db->query($sqlHO)->result();
+foreach($resultHO as $rowHO) :
+	$PRJCODEHO	= $rowHO->PRJCODE;
+	$PRJHOVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODEHO));
+endforeach;
+
 $PRJHO 			= "";
 $PRJNAME		= '';
 $PO_RECEIVLOC	= '';
@@ -1104,6 +1112,7 @@ $Patt_Number= $default['Patt_Number'];
 		                            <tr style="background:#CCCCCC">
 		                            </tr>
 		                            <?php
+		                            $disRow 	= 1;
 		                            if($task == 'edit')
 		                            {
 		                                $sqlDET	= "SELECT A.WO_ID, A.WO_NUM, A.WO_CODE, A.WO_DATE, A.JOBCODEDET, A.JOBCODEID, A.ITM_CODE, A.SNCODE, A.ITM_UNIT,
@@ -1111,10 +1120,10 @@ $Patt_Number= $default['Patt_Number'];
 		                                				A.TAXPERC1, A.TAXPRICE1, A.TAXCODE2, A.TAXPERC2, A.TAXPRICE2, A.WO_TOTAL2, A.OPN_VOLM, A.OPN_AMOUNT,
 		                                				B.ITM_VOLM, A.ITM_PRICE, B.ITM_LASTP, B.ITM_BUDG, B.JOBDESC, B.JOBPARENT,
 														AMD_VOL, AMD_VOL_R, AMD_VAL, AMD_VAL_R, AMDM_VOL, AMDM_VAL,
-														(PR_VOL - PR_CVOL + WO_VOL - PO_CVOL + VCASH_VOL + VLK_VOL + PPD_VOL) AS TREQ_VOL,
-														(PO_VAL - PO_CVAL + WO_VAL - WO_CVAL + VCASH_VAL + VLK_VAL + PPD_VAL) AS TREQ_VAL,
-														(PR_VOL_R + WO_VOL_R + VCASH_VOL_R + VLK_VOL_R + PPD_VOL_R) AS TREQ_VOL_R,
-														(PO_VAL_R + WO_VAL_R + VCASH_VAL_R + VLK_VAL_R + PPD_VAL_R) AS TREQ_VAL_R
+														(B.PR_VOL - B.PR_CVOL + B.WO_VOL - B.WO_CVOL + B.VCASH_VOL + B.VLK_VOL + B.PPD_VOL) AS TREQ_VOL,
+														(B.PO_VAL - B.PO_CVAL + B.WO_VAL - B.WO_CVAL + B.VCASH_VAL + B.VLK_VAL + B.PPD_VAL) AS TREQ_VAL,
+														(B.PR_VOL_R + B.WO_VOL_R + B.VCASH_VOL_R + B.VLK_VOL_R + B.PPD_VOL_R) AS TREQ_VOL_R,
+														(B.PO_VAL_R + B.WO_VAL_R + B.VCASH_VAL_R + B.VLK_VAL_R + B.PPD_VAL_R) AS TREQ_VAL_R
 		                                			FROM tbl_wo_detail A
 		                                				INNER JOIN tbl_joblist_detail_$PRJCODEVW B ON A.JOBCODEID = B.JOBCODEID AND A.PRJCODE = B.PRJCODE
 													WHERE A.WO_NUM = '$WO_NUM' AND A.PRJCODE = '$PRJCODE'";
@@ -1153,6 +1162,14 @@ $Patt_Number= $default['Patt_Number'];
 											$TAXPRICE2		= $row->TAXPRICE2;
 											$WO_TOTAL2		= $row->WO_TOTAL2;
 											$OPN_VOLM 		= $row->OPN_VOLM;
+
+											$s_OPN			= "SELECT SUM(OPND_VOLM) AS OPN_VOLM FROM tbl_opn_detail WHERE WO_ID = $WO_ID AND WO_NUM = '$WO_NUM'
+																AND PRJCODE = '$PRJCODE' AND OPNH_STAT NOT IN (5,6)";
+											$r_OPN			= $this->db->query($s_OPN)->result();
+											foreach($r_OPN as $rw_OPN) :
+												$OPN_VOLM	= $rw_OPN->OPN_VOLM;
+											endforeach;
+
 											$REM_VOLWO 		= $WO_VOLM - $WO_CVOL - $OPN_VOLM;
 											$OPN_AMOUNT		= $row->OPN_AMOUNT;
 											$REM_VALWO 		= $WO_TOTAL - $WO_CAMN - $OPN_AMOUNT;
@@ -1194,20 +1211,33 @@ $Patt_Number= $default['Patt_Number'];
 
 											if($ITM_UNIT2 == '') $ITM_UNIT2 = $ITM_UNIT;
 
-											$WO_TOTAL2 		= $WO_TOTAL + $TAXPRICE1 - $TAXPRICE2;
+											$WO_TOTAL2 		= ($WO_TOTAL - $WO_CAMN) + $TAXPRICE1 - $TAXPRICE2;
 
 											$UNITTYPE		= strtoupper($ITM_UNIT);
-											if($UNITTYPE == 'LS' )
+											$s_isLS 		= "tbl_unitls WHERE ITM_UNIT = '$UNITTYPE'";
+											$r_isLS 		= $this->db->count_all($s_isLS);
+												
+											if($r_isLS > 0)
 												$ITM_BUDQTY	= $ITM_BUDG_AMN;
 											else
 												$ITM_BUDQTY = $ITM_BUDG_VOL;
 
 											$JOBDESCH		= "";
-											$sqlJOBDESC		= "SELECT JOBDESC FROM tbl_joblist WHERE JOBCODEID = '$JOBPARENT' AND PRJCODE = '$PRJCODE' LIMIT 1";
+											$sqlJOBDESC		= "SELECT JOBDESC FROM tbl_joblist_$PRJCODEVW WHERE JOBCODEID = '$JOBPARENT' AND PRJCODE = '$PRJCODE' LIMIT 1";
 											$resJOBDESC		= $this->db->query($sqlJOBDESC)->result();
 											foreach($resJOBDESC as $rowJOBDESC) :
 												$JOBDESCH	= $rowJOBDESC->JOBDESC;
 											endforeach;
+
+											// START : CANCEL VOL. PER ITEM
+												$canShwRow 	= "$WO_NUM~$PRJCODE~$ITM_CODE~$ITM_NAME~$JOBDESCH~$WO_VOLM~$WO_CVOL~$OPN_VOLM~$REM_VOLWO~$ITM_UNIT2~$WO_ID";
+												$secDelD 	= base_url().'index.php/__l1y/cancelItem/?id=';
+												$canclRow1 	= "$secDelD~WO~$PRJCODE~$WO_ID~$WO_NUM~$JOBCODEID~$ITM_CODE~$ITM_NAME";
+											// END : CANCEL VOL. PER ITEM
+
+											$BTN_CNCVW		= "";
+											if($WO_STAT == 3)
+												$BTN_CNCVW	= "<a onClick='cancelRow(".$currentRow.")' title='Batalkan Volume WO' class='btn btn-danger btn-xs'><i class='fa fa-repeat'></i></a>";
 
 											// CARI TOTAL WORKED BUDGET APPROVED
 												$TOTH_VOL		= $TREQ_VOL - $WO_VOLM 	+ $WO_CVOL;
@@ -1216,18 +1246,18 @@ $Patt_Number= $default['Patt_Number'];
 												$ITM_STOCK 		= $ITM_REMVOL 	+ $WO_VOLM 	- $WO_CVOL;
 												$ITM_STOCK_AMN 	= $ITM_REMVAL 	+ $WO_TOTAL - $WO_CAMN;
 												
-												if($UNITTYPE == 'LS' )
+												if($r_isLS == 0)
 													$TOT_REQ	= $TOTH_VOL;
 												else
 													$TOT_REQ 	= $TOTH_VAL;
 
-												/*if ($j==1) {
-													echo "<tr class=zebra1>";
-													$j++;
-												} else {
-													echo "<tr class=zebra2>";
-													$j--;
-												}*/
+											/*if ($j==1) {
+												echo "<tr class=zebra1>";
+												$j++;
+											} else {
+												echo "<tr class=zebra2>";
+												$j--;
+											}*/
 											?>
 		                                    <tr id="tr_<?php echo $currentRow; ?>" style="vertical-align: middle;">
 												<td height="25" style="text-align:center; vertical-align: middle;">
@@ -1238,10 +1268,26 @@ $Patt_Number= $default['Patt_Number'];
 															<a href="#" onClick="deleteRow(<?php echo $currentRow; ?>)" title="Delete Document" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></a>
 															<?php
 														}
-														else
-														{
-															echo "$currentRow.";
-														}
+			                                            else
+			                                            {
+			                                                //echo "$currentRow.";
+			                                                if($WO_STAT == 3 && $WO_STAT > 0)
+			                                                {
+			                                                	$secDelD 	= base_url().'index.php/c_project/c_s180d0bpk/cancelItem/?id=';
+																$canclRow 	= "$secDelD~$WO_NUM~$PRJCODE~$ITM_CODE~$ITM_NAME~$JOBDESCH~$WO_VOLM~$OPN_VOLM~$REM_VOLWO~$ITM_UNIT~$WO_ID";
+			                                                	?>
+			                                                		<!-- <input type="hidden" name="urldelD<?php echo $currentRow; ?>" id="urldelD<?php echo $currentRow; ?>" value="<?php echo $canclRow; ?>"> -->
+			                                                		<input type="hidden" name="urldelD<?php echo $currentRow; ?>" id="urldelD<?php echo $currentRow; ?>" value="<?php echo $canShwRow; ?>">
+			                                                		<input type='hidden' name='urlcanD<?php echo $currentRow; ?>' id='urlcanD<?php echo $currentRow; ?>' value='<?=$canclRow1?>'>
+			                                                		<a onClick="cancelRow(<?php echo $currentRow; ?>)" title="Batalkan Volume SPK" class="btn btn-danger btn-xs" style="display: none;"><i class="fa fa-repeat"></i></a>
+			                                                	<?php
+			                                                	echo $BTN_CNCVW;
+			                                                }
+			                                                else
+			                                                {
+			                                                	echo "$currentRow.";
+			                                                }
+			                                            }
 												  	?>
 											    	<input type="hidden" id="chk" name="chk" value="<?php echo $currentRow; ?>" width="10" size="15" readonly class="form-control" style="max-width:350px;text-align:right">
 											    	<input type="hidden" id="data<?php echo $currentRow; ?>WO_NUM" name="data[<?php echo $currentRow; ?>][WO_NUM]" value="<?php echo $WO_NUM;?>" class="form-control">
@@ -1253,9 +1299,10 @@ $Patt_Number= $default['Patt_Number'];
 											  	<td style="text-align:left; min-width:100px; vertical-align: middle;" nowrap>
 													<div>
 												  		<span><?php echo "$JOBCODEID - $ITM_NAME"; ?></span>
+												  		<span class="text-red" style="font-style: italic; font-weight: bold; display: none;">&nbsp;(LastP : <?=number_format($ITM_LASTP,2);?> )</span>
 												  	</div>
 												  	<div style="font-style: italic;">
-												  		<i class="text-muted fa fa-rss"></i>&nbsp;&nbsp;
+												  		<i class="text-muted fa fa-rss"></i>
 												  		<?php
 												  			$JOBDS 	= strlen($JOBDESCH);
 												  			if($JOBDS > 50)
@@ -1290,19 +1337,44 @@ $Patt_Number= $default['Patt_Number'];
 												<?php
 													// PEMBATALAN VOLUME
 			                                            $WO_CVOLV 		= "";
+			                                            $WO_CAMNV 		= "";
 														if($WO_CVOL > 0)
 														{
 															$WO_CVOLV 	= 	"<div style='white-space:nowrap;'>
 																				<span class='text-red' style='white-space:nowrap;'><i class='glyphicon glyphicon-chevron-down'></i>
 																		  		".number_format($WO_CVOL, 2)."</span>
 																		  	</div>";
+
+															$WO_CAMNV 	= 	"<div style='white-space:nowrap;'>
+																				<span class='text-red' style='white-space:nowrap;'><i class='glyphicon glyphicon-chevron-down'></i>
+																				".number_format($WO_CAMN, 2)."</span>
+																			</div>";
 														}
 
-													$disRow 		= 1;
+													// PEMBATALAN VOLUME
+			                                            $OPN_VOLV 		= "";
+			                                            $OPN_VALV 		= "";
+														if($OPN_VOLM > 0)
+														{
+															$OPN_VOLV 	= 	"<div style='white-space:nowrap; font-style: italic' title='Diopname'>
+																				<span class='text-yellow' style='white-space:nowrap;'><i class='fa fa-check-circle'></i>
+																		  		 ".number_format($OPN_VOLM, 2)."</span>
+																		  	</div>";
+														}
+
+														if($OPN_AMOUNT > 0)
+														{
+															$OPN_VALV 	= 	"<div style='white-space:nowrap; font-style: italic' title='Diopname'>
+																				<span class='text-yellow' style='white-space:nowrap;'><i class='fa fa-check-circle'></i>
+																		  		 ".number_format($OPN_AMOUNT, 2)."</span>
+																		  	</div>";
+														}
+
+													/*$disRow 		= 1;
 													if($WO_STAT == 1 || $WO_STAT == 4)
 													{
 														$disRow 	= 0;
-													}
+													}*/
 												?>
 												<td style="text-align:right; vertical-align: middle;"> <!-- Item Bdget -->
 			                                    	<?php echo number_format($ITM_BUDQTY, 2); ?>
@@ -1316,85 +1388,48 @@ $Patt_Number= $default['Patt_Number'];
 			                                        <input type="hidden" class="form-control" style="text-align:right" name="TOT_USEDQTY<?php echo $currentRow; ?>" id="TOT_USEDQTY<?php echo $currentRow; ?>" value="<?php echo $TOT_REQ; ?>" >
 			                                 	</td>
 			                                    <td style="text-align:right; vertical-align: middle;" nowrap> <!-- Item Request Now -- PR_VOLM -->
-			                                        <?php
-														if($ITM_UNIT == 'LS' || $ITM_UNIT == 'LUMP')
-														{
-															if($disRow == 1) 
-															{
-																echo number_format($WO_VOLM, $decFormat);
-																?>
-						                                        	<input type="hidden" name="WO_VOLM<?php echo $currentRow; ?>" id="WO_VOLM<?php echo $currentRow; ?>" value="1.00" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOVol(this,<?php echo $currentRow; ?>);" readonly >
-																	<input type="hidden" name="data[<?php echo $currentRow; ?>][WO_VOLM]" id="data<?php echo $currentRow; ?>WO_VOLM" value="1" class="form-control" style="max-width:300px;" >
-							                                    <?php } else { ?>
-						                                        	<input type="hidden" name="WO_VOLM<?php echo $currentRow; ?>" id="WO_VOLM<?php echo $currentRow; ?>" value="1.00" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOVol(this,<?php echo $currentRow; ?>);" readonly >
-																	<input type="hidden" name="data[<?php echo $currentRow; ?>][WO_VOLM]" id="data<?php echo $currentRow; ?>WO_VOLM" value="1" class="form-control" style="max-width:300px;" >
-							                                    <?php
-							                                }
-														}
-														else
-														{
-															if($disRow == 1) 
-															{
-																echo number_format($WO_VOLM, $decFormat);
-																?>
-						                                        	<input type="hidden" name="WO_VOLM<?php echo $currentRow; ?>" id="WO_VOLM<?php echo $currentRow; ?>" value="<?php echo number_format($ITM_STOCK, 2); ?>" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOVol(this,<?php echo $currentRow; ?>);" >
-																	<input type="hidden" name="data[<?php echo $currentRow; ?>][WO_VOLM]" id="data<?php echo $currentRow; ?>WO_VOLM" value="<?php echo $ITM_STOCK; ?>" class="form-control" style="max-width:300px;" >
-							                                    <?php } else { ?>
-						                                        	<input type="hidden" name="WO_VOLM<?php echo $currentRow; ?>" id="WO_VOLM<?php echo $currentRow; ?>" value="<?php echo number_format($ITM_STOCK, 2); ?>" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOVol(this,<?php echo $currentRow; ?>);" >
-																	<input type="hidden" name="data[<?php echo $currentRow; ?>][WO_VOLM]" id="data<?php echo $currentRow; ?>WO_VOLM" value="<?php echo $ITM_STOCK; ?>" class="form-control" style="max-width:300px;" >
-							                                    <?php
-							                                }
-														}
-			                                        ?>
+			                                        <?php echo number_format($WO_VOLM, $decFormat); ?>
+		                                        	<input type="hidden" name="WO_VOLM<?php echo $currentRow; ?>" id="WO_VOLM<?php echo $currentRow; ?>" value="<?php echo number_format($WO_VOLM, 2); ?>" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOVol(this,<?php echo $currentRow; ?>);" >
+													<input type="hidden" name="data[<?php echo $currentRow; ?>][WO_VOLM]" id="data<?php echo $currentRow; ?>WO_VOLM" value="<?php echo $WO_VOLM; ?>" class="form-control" style="max-width:300px;" >
+		                                      		<?=$OPN_VOLV?>
+		                                      		<?=$WO_CVOLV?>
+													<input type="hidden" name="ITM_REM_VOL<?php echo $currentRow; ?>" id="ITM_REM_VOL<?php echo $currentRow; ?>" value="<?php echo $ITM_STOCK; ?>" class="form-control" style="text-align:right" >
+													<input type="hidden" name="ITM_REM_AMN<?php echo $currentRow; ?>" id="ITM_REM_AMN<?php echo $currentRow; ?>" value="<?php echo $ITM_STOCK_AMN; ?>" class="form-control" style="text-align:right" >
 			                                    </td>
 			                                    <td style="text-align:right; vertical-align: middle;" nowrap>
 			                                        <?php
-														if($ITM_UNIT == 'LS' || $ITM_UNIT == 'LUMP')
+														if($r_isLS > 0)
 														{
-															if($disRow == 1) 
-															{
-																echo number_format($ITM_PRICE, $decFormat);
-																?>
-						                                        	<input type="hidden" name="ITM_PRICE<?php echo $currentRow; ?>" id="ITM_PRICE<?php echo $currentRow; ?>" value="<?php echo number_format($ITM_PRICE, 2); ?>" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOPrice(this,<?php echo $currentRow; ?>);">
-						                                        	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_PRICE]" id="data<?php echo $currentRow; ?>ITM_PRICE" value="<?php echo $ITM_PRICE; ?>" class="form-control" style="min-width:100px; max-width:100px;" >
-						                                        	<input type="hidden" style="text-align:right" name="itemConvertion<?php echo $currentRow; ?>" id="itemConvertion<?php echo $currentRow; ?>" value="<?php echo $itemConvertion; ?>" >
-							                                    <?php } else { ?>
-						                                        	<input type="hidden" name="ITM_PRICE<?php echo $currentRow; ?>" id="ITM_PRICE<?php echo $currentRow; ?>" value="<?php echo number_format($ITM_PRICE, 2); ?>" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOPrice(this,<?php echo $currentRow; ?>);">
-						                                        	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_PRICE]" id="data<?php echo $currentRow; ?>ITM_PRICE" value="<?php echo $ITM_PRICE; ?>" class="form-control" style="min-width:100px; max-width:100px;" >
-						                                        	<input type="hidden" style="text-align:right" name="itemConvertion<?php echo $currentRow; ?>" id="itemConvertion<?php echo $currentRow; ?>" value="<?php echo $itemConvertion; ?>" >
-							                                    <?php
-							                                }
+															echo number_format($ITM_PRICE, $decFormat);
+															?>
+					                                        	<input type="hidden" name="ITM_PRICE<?php echo $currentRow; ?>" id="ITM_PRICE<?php echo $currentRow; ?>" value="<?php echo number_format($ITM_PRICE, 2); ?>" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOPrice(this,<?php echo $currentRow; ?>);">
+					                                        	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_PRICE]" id="data<?php echo $currentRow; ?>ITM_PRICE" value="<?php echo $ITM_PRICE; ?>" class="form-control" style="min-width:100px; max-width:100px;" >
+					                                        	<input type="hidden" style="text-align:right" name="itemConvertion<?php echo $currentRow; ?>" id="itemConvertion<?php echo $currentRow; ?>" value="<?php echo $itemConvertion; ?>" >
+						                                    <?php
 														}
 														else
 														{
-															if($disRow == 1) 
-															{
-																echo number_format($ITM_PRICE, $decFormat);
-																?>
-						                                        	<input type="hidden" name="ITM_PRICE<?php echo $currentRow; ?>" id="ITM_PRICE<?php echo $currentRow; ?>" value="<?php echo number_format($ITM_PRICE, 2); ?>" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOPrice(this,<?php echo $currentRow; ?>);" >
-						                                        	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_PRICE]" id="data<?php echo $currentRow; ?>ITM_PRICE" value="<?php echo $ITM_PRICE; ?>" class="form-control" style="min-width:100px; max-width:100px;" >
-						                                        	<input type="hidden" style="text-align:right" name="itemConvertion<?php echo $currentRow; ?>" id="itemConvertion<?php echo $currentRow; ?>" value="<?php echo $itemConvertion; ?>" >
-							                                    <?php } else { ?>
-						                                        	<input type="hidden" name="ITM_PRICE<?php echo $currentRow; ?>" id="ITM_PRICE<?php echo $currentRow; ?>" value="<?php echo number_format($ITM_PRICE, 2); ?>" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOPrice(this,<?php echo $currentRow; ?>);" >
-						                                        	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_PRICE]" id="data<?php echo $currentRow; ?>ITM_PRICE" value="<?php echo $ITM_PRICE; ?>" class="form-control" style="min-width:100px; max-width:100px;" >
-						                                        	<input type="hidden" style="text-align:right" name="itemConvertion<?php echo $currentRow; ?>" id="itemConvertion<?php echo $currentRow; ?>" value="<?php echo $itemConvertion; ?>" >
-							                                    <?php
-							                                }
+															echo number_format($ITM_PRICE, $decFormat);
+															?>
+					                                        	<input type="hidden" name="ITM_PRICE<?php echo $currentRow; ?>" id="ITM_PRICE<?php echo $currentRow; ?>" value="<?php echo number_format($ITM_PRICE, 2); ?>" class="form-control" style="min-width:100px; max-width:100px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getWOPrice(this,<?php echo $currentRow; ?>);" >
+					                                        	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_PRICE]" id="data<?php echo $currentRow; ?>ITM_PRICE" value="<?php echo $ITM_PRICE; ?>" class="form-control" style="min-width:100px; max-width:100px;" >
+					                                        	<input type="hidden" style="text-align:right" name="itemConvertion<?php echo $currentRow; ?>" id="itemConvertion<?php echo $currentRow; ?>" value="<?php echo $itemConvertion; ?>" >
+						                                    <?php
 														}
 			                                        ?>
 			                                    </td>
 											  	<td nowrap style="text-align:center; vertical-align: middle;">
-												  <?php echo $ITM_UNIT; ?>
-			                                    	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_UNIT]" id="data<?php echo $currentRow; ?>ITM_UNIT" value="<?php echo $ITM_UNIT; ?>" class="form-control" style="max-width:300px;" >
+			                                        <?php echo $ITM_UNIT2; ?>
+												  	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_UNIT2]" id="data<?php echo $currentRow; ?>ITM_UNIT2" value="<?php echo $ITM_UNIT2; ?>" class="form-control" style="text-align:center; width:90px;" >
+												  	<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_UNIT]" id="data<?php echo $currentRow; ?>ITM_UNIT" value="<?php echo $ITM_UNIT; ?>" class="form-control" style="text-align:center; width:90px;" >
+
 			                                    <!-- Item Unit Type -- ITM_UNIT --></td>
 											  	<td nowrap style="text-align:right; vertical-align: middle;">
-			                                     	<?php if($disRow == 1) { ?>
-			                                     		<?php echo number_format($WO_TOTAL, $decFormat); ?>
-			                                    		<input type="hidden" class="form-control" style="min-width:100px; max-width:100px; text-align:right" name="WO_TOTAL<?php echo $currentRow; ?>" id="WO_TOTAL<?php echo $currentRow; ?>" value="<?php print number_format($WO_TOTAL, $decFormat); ?>" size="10" disabled >
-				                                    <?php } else { ?>
-			                                    		<input type="text" class="form-control" style="min-width:100px; max-width:100px; text-align:right" name="WO_TOTAL<?php echo $currentRow; ?>" id="WO_TOTAL<?php echo $currentRow; ?>" value="<?php print number_format($WO_TOTAL, $decFormat); ?>" size="10" disabled >
-				                                    <?php } ?>
-			                                        
+		                                     		<?php echo number_format($WO_TOTAL, $decFormat); ?>
+		                                    		<input type="hidden" class="form-control" style="min-width:100px; max-width:100px; text-align:right" name="WO_TOTAL<?php echo $currentRow; ?>" id="WO_TOTAL<?php echo $currentRow; ?>" value="<?php print number_format($WO_TOTAL, $decFormat); ?>" size="10" disabled >
+
+		                                      		<?=$OPN_VALV?>
+			                                        <?=$WO_CAMNV?>
 			                                        <input type="hidden" name="data[<?php echo $currentRow; ?>][WO_TOTAL]" id="data<?php echo $currentRow; ?>WO_TOTAL" value="<?php echo $WO_TOTAL; ?>" class="form-control" style="max-width:150px; text-align:right" onKeyPress="return isIntOnlyNew(event);" >
 			                                    </td>
 												<td style="text-align:center;display: none;">
@@ -1406,144 +1441,94 @@ $Patt_Number= $default['Patt_Number'];
 													<input type="hidden" name="data[<?php echo $currentRow; ?>][WO_DISCP]" id="data<?php echo $currentRow; ?>WO_DISCP" value="<?php echo $WO_DISCP;?>" class="form-control" style="max-width:300px;" >
 			                                    </td>
 											  	<td nowrap style="text-align:right; vertical-align: middle;">
-			                                     	<?php if($disRow == 1) { ?>
-			                                     		<?php echo number_format($TAXPRICE1, $decFormat); ?>
-				                                        <select name="data[<?php echo $currentRow; ?>][TAXCODE1]" id="TAXCODE1<?php echo $currentRow; ?>" class="form-control" style="max-width:150px; display: none;" onChange="getWOPPN(this.value,<?php echo $currentRow; ?>);">
-				                                        	<option value=""> --- </option>
-				                                        	<?php
-				                                        		$s_01 	= "SELECT TAXLA_NUM, TAXLA_DESC FROM tbl_tax_ppn";
-				                                        		$r_01 	= $this->db->query($s_01)->result();
-				                                        		foreach($r_01 as $rw_01):
-				                                        			$PPN_NUM 	= $rw_01->TAXLA_NUM;
-				                                        			$PPN_DESC = $rw_01->TAXLA_DESC;
-				                                        			?>
-				                                        				<option value="<?=$PPN_NUM?>" <?php if($TAXCODE1 == $PPN_NUM) { ?> selected <?php } ?>><?=$PPN_DESC?></option>
-				                                        			<?php
-				                                        		endforeach;
-				                                        	?>
-				                                        </select>
-				                                    <?php } else { ?>
-				                                        <select name="data[<?php echo $currentRow; ?>][TAXCODE1]" id="TAXCODE1<?php echo $currentRow; ?>" class="form-control" style="min-width: 80px; max-width:150px" onChange="getWOPPN(this.value,<?php echo $currentRow; ?>);">
-				                                        	<option value=""> --- </option>
-				                                        	<?php
-				                                        		$s_01 	= "SELECT TAXLA_NUM, TAXLA_DESC FROM tbl_tax_ppn";
-				                                        		$r_01 	= $this->db->query($s_01)->result();
-				                                        		foreach($r_01 as $rw_01):
-				                                        			$PPN_NUM 	= $rw_01->TAXLA_NUM;
-				                                        			$PPN_DESC = $rw_01->TAXLA_DESC;
-				                                        			?>
-				                                        				<option value="<?=$PPN_NUM?>" <?php if($TAXCODE1 == $PPN_NUM) { ?> selected <?php } ?>><?=$PPN_DESC?></option>
-				                                        			<?php
-				                                        		endforeach;
-				                                        	?>
-				                                        </select>
-				                                    <?php } ?>
+			                                     	<?php echo number_format($TAXPRICE1, $decFormat); ?>
+			                                        <select name="data[<?php echo $currentRow; ?>][TAXCODE1]" id="TAXCODE1<?php echo $currentRow; ?>" class="form-control" style="max-width:150px; display: none;" onChange="getWOPPN(this.value,<?php echo $currentRow; ?>);">
+			                                        	<option value=""> --- </option>
+			                                        	<?php
+			                                        		$s_01 	= "SELECT TAXLA_NUM, TAXLA_DESC FROM tbl_tax_ppn";
+			                                        		$r_01 	= $this->db->query($s_01)->result();
+			                                        		foreach($r_01 as $rw_01):
+			                                        			$PPN_NUM 	= $rw_01->TAXLA_NUM;
+			                                        			$PPN_DESC = $rw_01->TAXLA_DESC;
+			                                        			?>
+			                                        				<option value="<?=$PPN_NUM?>" <?php if($TAXCODE1 == $PPN_NUM) { ?> selected <?php } ?>><?=$PPN_DESC?></option>
+			                                        			<?php
+			                                        		endforeach;
+			                                        	?>
+			                                        </select>
+
 			                                        <input type="hidden" name="data[<?php echo $currentRow; ?>][TAXPRICE1]" id="data<?php echo $currentRow; ?>TAXPRICE1" size="20" value="<?php echo $TAXPRICE1; ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:left">
 			                                    </td>
 												<td style="text-align:center; vertical-align: middle;" nowrap>
-			                                     	<?php if($disRow == 1) { ?>
-			                                     		<?php echo number_format($TAXPERC1, 2); ?>
-														 <input type="hidden" name="data[<?php echo $currentRow; ?>][TAXPERC1]" id="data<?php echo $currentRow; ?>TAXPERC1" size="20" value="<?php echo $TAXPERC1; ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right">
-				                                    <?php } else { ?>
-					                                    <input type="text" name="TAXPERC1<?php echo $currentRow; ?>" id="TAXPERC1<?php echo $currentRow; ?>" size="20" value="<?php echo number_format($TAXPERC1, 2); ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right" disabled>
-														<input type="hidden" name="data[<?php echo $currentRow; ?>][TAXPERC1]" id="data<?php echo $currentRow; ?>TAXPERC1" size="20" value="<?php echo $TAXPERC1; ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right">
-				                                    <?php } ?>    
+		                                     		<?php echo number_format($TAXPERC1, 2); ?>
+													<input type="hidden" name="data[<?php echo $currentRow; ?>][TAXPERC1]" id="data<?php echo $currentRow; ?>TAXPERC1" size="20" value="<?php echo $TAXPERC1; ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right">
 			                                    </td>
 			                                    <td nowrap style="text-align:right; vertical-align: middle;">
-			                                     	<?php if($disRow == 1) { ?>
-			                                     		<?php echo number_format($TAXPRICE2, $decFormat); ?>
-					                                    <select name="data[<?php echo $currentRow; ?>][TAXCODE2]" id="TAXCODE2<?php echo $currentRow; ?>" class="form-control" style="max-width:150px; display: none;" onChange="getWOPPH(this.value,<?php echo $currentRow; ?>);">
-				                                        	<option value=""> --- </option>
-				                                        	<?php
-				                                        		$s_01 	= "SELECT TAXLA_NUM, TAXLA_DESC FROM tbl_tax_la";
-				                                        		$r_01 	= $this->db->query($s_01)->result();
-				                                        		foreach($r_01 as $rw_01):
-				                                        			$PPH_NUM 	= $rw_01->TAXLA_NUM;
-				                                        			$PPH_DESC = $rw_01->TAXLA_DESC;
-				                                        			?>
-				                                        				<option value="<?=$PPH_NUM?>" <?php if($TAXCODE2 == $PPH_NUM) { ?> selected <?php } ?>><?=$PPH_DESC?></option>
-				                                        			<?php
-				                                        		endforeach;
-				                                        	?>
-				                                        </select>
-				                                    <?php } else { ?>
-					                                    <select name="data[<?php echo $currentRow; ?>][TAXCODE2]" id="TAXCODE2<?php echo $currentRow; ?>" class="form-control" style="min-width: 80px; max-width:150px" onChange="getWOPPH(this.value,<?php echo $currentRow; ?>);">
-				                                        	<option value=""> --- </option>
-				                                        	<?php
-				                                        		$s_01 	= "SELECT TAXLA_NUM, TAXLA_DESC FROM tbl_tax_la";
-				                                        		$r_01 	= $this->db->query($s_01)->result();
-				                                        		foreach($r_01 as $rw_01):
-				                                        			$PPH_NUM 	= $rw_01->TAXLA_NUM;
-				                                        			$PPH_DESC = $rw_01->TAXLA_DESC;
-				                                        			?>
-				                                        				<option value="<?=$PPH_NUM?>" <?php if($TAXCODE2 == $PPH_NUM) { ?> selected <?php } ?>><?=$PPH_DESC?></option>
-				                                        			<?php
-				                                        		endforeach;
-				                                        	?>
-				                                        </select>
-				                                    <?php } ?>
+		                                     		<?php echo number_format($TAXPRICE2, $decFormat); ?>
+				                                    <select name="data[<?php echo $currentRow; ?>][TAXCODE2]" id="TAXCODE2<?php echo $currentRow; ?>" class="form-control" style="max-width:150px; display: none;" onChange="getWOPPH(this.value,<?php echo $currentRow; ?>);">
+			                                        	<option value=""> --- </option>
+			                                        	<?php
+			                                        		$s_01 	= "SELECT A.TAXLA_NUM, A.TAXLA_DESC FROM tbl_tax_la A INNER JOIN tbl_chartaccount_$PRJHOVW B ON A.TAXLA_LINKIN = B.Account_Number";
+			                                        		$r_01 	= $this->db->query($s_01)->result();
+			                                        		foreach($r_01 as $rw_01):
+			                                        			$PPH_NUM 	= $rw_01->TAXLA_NUM;
+			                                        			$PPH_DESC = $rw_01->TAXLA_DESC;
+			                                        			?>
+			                                        				<option value="<?=$PPH_NUM?>" <?php if($TAXCODE2 == $PPH_NUM) { ?> selected <?php } ?>><?=$PPH_DESC?></option>
+			                                        			<?php
+			                                        		endforeach;
+			                                        	?>
+			                                        </select>
+
 			                                        <input type="hidden" name="data[<?php echo $currentRow; ?>][TAXPRICE2]" id="data<?php echo $currentRow; ?>TAXPRICE2" size="20" value="<?php echo $TAXPRICE2; ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:left">
 			                                    </td>
 												<td style="text-align:center; vertical-align: middle;" nowrap>
-			                                     	<?php if($disRow == 1) { ?>
-			                                     		<?php echo number_format($TAXPERC2, 2); ?>
-														 <input type="hidden" name="data[<?php echo $currentRow; ?>][TAXPERC2]" id="data<?php echo $currentRow; ?>TAXPERC2" size="20" value="<?php echo $TAXPERC2; ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right">
-				                                    <?php } else { ?>
-					                                    <input type="text" name="TAXPERC2<?php echo $currentRow; ?>" id="TAXPERC2<?php echo $currentRow; ?>" size="20" value="<?php echo number_format($TAXPERC2, 2); ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right" disabled>
-														<input type="hidden" name="data[<?php echo $currentRow; ?>][TAXPERC2]" id="data<?php echo $currentRow; ?>TAXPERC2" size="20" value="<?php echo $TAXPERC2; ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right">
-				                                    <?php } ?>    
+		                                     		<?php echo number_format($TAXPERC2, 2); ?>
+													<input type="hidden" name="data[<?php echo $currentRow; ?>][TAXPERC2]" id="data<?php echo $currentRow; ?>TAXPERC2" size="20" value="<?php echo $TAXPERC2; ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right">
 			                                    </td>
 											  	<td style="text-align:right; vertical-align: middle;">
-			                                     	<?php if($disRow == 1) { ?>
-			                                     		<?php echo number_format($WO_TOTAL2, $decFormat); ?>
-					                                    <input type="hidden" name="data<?php echo $currentRow; ?>WO_TOTAL2X" id="WO_TOTAL2X<?php echo $currentRow; ?>" value="<?php echo number_format($WO_TOTAL2, 2); ?>" class="form-control" style="min-width:130px; max-width:130px; text-align:right;" onKeyPress="return isIntOnlyNew(event);" disabled >
-				                                    <?php } else { ?>
-					                                    <input type="text" name="data<?php echo $currentRow; ?>WO_TOTAL2X" id="WO_TOTAL2X<?php echo $currentRow; ?>" value="<?php echo number_format($WO_TOTAL2, 2); ?>" class="form-control" style="min-width:130px; max-width:130px; text-align:right;" onKeyPress="return isIntOnlyNew(event);" disabled >
-				                                    <?php } ?>
+			                                     	<?php echo number_format($WO_TOTAL2, $decFormat); ?>
+					                                <input type="hidden" name="data<?php echo $currentRow; ?>WO_TOTAL2X" id="WO_TOTAL2X<?php echo $currentRow; ?>" value="<?php echo number_format($WO_TOTAL2, 2); ?>" class="form-control" style="min-width:130px; max-width:130px; text-align:right;" onKeyPress="return isIntOnlyNew(event);" disabled >
 
 			                                        <input type="hidden" name="data[<?php echo $currentRow; ?>][WO_TOTAL2]" id="data<?php echo $currentRow; ?>WO_TOTAL2" value="<?php echo $WO_TOTAL2; ?>" class="form-control" style="max-width:300px;" onKeyPress="return isIntOnlyNew(event);" >
 			                              		</td>
-											  	<td style="text-align:left;" nowrap>
-			                                     	<?php if($disRow == 1) { ?>
-			                                     		<?php
-			                                     			$PPHINFO 	= "";
-			                                        		$s_01 		= "SELECT A.TAXLA_NUM, A.TAXLA_LINKIN, A.TAXLA_DESC, B.isPPhFinal FROM tbl_tax_la A
-			                                        							INNER JOIN tbl_chartaccount_478020 B ON A.TAXLA_LINKIN = B.Account_Number
-			                                        						WHERE A.TAXLA_NUM = '$TAXCODE2' LIMIT 1";
-			                                        		$r_01 		= $this->db->query($s_01)->result();
-			                                        		foreach($r_01 as $rw_01):
-			                                        			$ACCPPH 	= $rw_01->TAXLA_LINKIN;
-			                                        			$PPHDESC 	= $rw_01->TAXLA_DESC;
-			                                        			$PPHFINAL 	= $rw_01->isPPhFinal;
-			                                        			if($PPHFINAL == 1)
-			                                        			{
-				                                        			$PPHINFO 	= "<br><br>
-	                                                        						<span class='text-red' style='font-style: italic; font-weight: bold;'>
-	                                                        							(Y) PPH $ACCPPH : 
-	                                                        						</span>
-	                                                        						<div class='text-red' style='margin-left: 15px; font-style: italic; font-weight: bold;'>
-																				  		$PPHDESC
-																				  	</div>";
-			                                        			}
-			                                        			else
-			                                        			{
-				                                        			$PPHINFO 	= "<br><br>
-	                                                        						<span class='text-red' style='font-style: italic; font-weight: bold;'>
-	                                                        							(N) PPH $ACCPPH : 
-	                                                        						</span>
-	                                                        						<div class='text-red' style='margin-left: 15px; font-style: italic; font-weight: bold;'>
-																				  		$PPHDESC
-																				  	</div>";
-			                                        			}
-			                                        		endforeach;
+											  	<td style="text-align:left;">
+		                                     		<?php
+		                                     			$PPHINFO 	= "";
+		                                        		$s_01 		= "SELECT A.TAXLA_NUM, A.TAXLA_LINKIN, A.TAXLA_DESC, B.isPPhFinal FROM tbl_tax_la A
+		                                        							INNER JOIN tbl_chartaccount_$PRJCODEVW B ON A.TAXLA_LINKIN = B.Account_Number
+		                                        						WHERE A.TAXLA_NUM = '$TAXCODE2' LIMIT 1";
+		                                        		$r_01 		= $this->db->query($s_01)->result();
+		                                        		foreach($r_01 as $rw_01):
+		                                        			$ACCPPH 	= $rw_01->TAXLA_LINKIN;
+		                                        			$PPHDESC 	= $rw_01->TAXLA_DESC;
+		                                        			$PPHFINAL 	= $rw_01->isPPhFinal;
+		                                        			if($PPHFINAL == 1)
+		                                        			{
+			                                        			$PPHINFO 	= "<br><br>
+                                                        						<span class='text-red' style='font-style: italic; font-weight: bold;'>
+                                                        							(Y) PPH $ACCPPH : 
+                                                        						</span>
+                                                        						<div class='text-red' style='margin-left: 15px; font-style: italic; font-weight: bold;'>
+																			  		$PPHDESC
+																			  	</div>";
+		                                        			}
+		                                        			else
+		                                        			{
+			                                        			$PPHINFO 	= "<br><br>
+                                                        						<span class='text-red' style='font-style: italic; font-weight: bold;'>
+                                                        							(N) PPH $ACCPPH : 
+                                                        						</span>
+                                                        						<div class='text-red' style='margin-left: 15px; font-style: italic; font-weight: bold;'>
+																			  		$PPHDESC
+																			  	</div>";
+		                                        			}
+		                                        		endforeach;
 
-			                                     			echo $WO_DESC.$PPHINFO;
-			                                     		?>
-			                                     		
-					                                    <input type="hidden" name="data[<?php echo $currentRow; ?>][WO_DESC]" id="data<?php echo $currentRow; ?>WO_DESC" size="20" value="<?php echo $WO_DESC; ?>" class="form-control" style="min-width:130px; max-width:150px; text-align:left">
-				                                    <?php } else { ?>
-					                                    <input type="text" name="data[<?php echo $currentRow; ?>][WO_DESC]" id="data<?php echo $currentRow; ?>WO_DESC" size="20" value="<?php echo $WO_DESC; ?>" class="form-control" style="min-width:130px; max-width:150px; text-align:left">
-				                                    <?php } ?>    
+		                                     			echo wordwrap($WO_DESC, 100, "<br>", TRUE).$PPHINFO;
+		                                     		?>
+
+				                                    <input type="hidden" name="data[<?php echo $currentRow; ?>][WO_DESC]" id="data<?php echo $currentRow; ?>WO_DESC" size="20" value="<?php echo $WO_DESC; ?>" class="form-control" style="min-width:130px; max-width:150px; text-align:left">
 			                                    </td>
 							          		</tr>
 		                              	<?php
@@ -2285,13 +2270,15 @@ $Patt_Number= $default['Patt_Number'];
 		}
 
 		// document.getElementById('btnAppr').style.display = 'none';
+		document.getElementById('btnSave').style.display 	= 'none';
+		document.getElementById('btnBack').style.display 	= 'none';
 
-		let frm = document.getElementById('frm');
-		frm.addEventListener('submit', (e) => {
-			console.log(e)
-			document.getElementById('btnSave').style.display 	= 'none';
-			document.getElementById('btnBack').style.display 	= 'none';
-		});
+		// let frm = document.getElementById('frm');
+		// frm.addEventListener('submit', (e) => {
+		// 	console.log(e)
+		// 	document.getElementById('btnSave').style.display 	= 'none';
+		// 	document.getElementById('btnBack').style.display 	= 'none';
+		// });
 	}
 
 	function viewFile(fileName)

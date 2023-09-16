@@ -80,6 +80,7 @@ class M_down_payment extends CI_Model
 						INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
 					WHERE PRJCODE = '$PRJCODE' AND A.WO_DPPER > 0 
 						AND A.WO_DPSTAT = 0 AND WO_STAT = 3 AND A.TTK_CREATED = 1
+						AND A.WO_CODE NOT IN (SELECT DISTINCT DP_REFCODE FROM tbl_dp_header WHERE PRJCODE = A.PRJCODE AND DP_STAT NOT IN (5,9) AND DP_REFCODE != 'PKS539022.000079')
 						AND (A.WO_CODE LIKE '%$search%' ESCAPE '!' OR A.WO_NOTE LIKE '%$search%' ESCAPE '!'
 						OR A.WO_STARTD LIKE '%$search%' ESCAPE '!' OR A.WO_ENDD LIKE '%$search%' ESCAPE '!'
 						OR A.WO_VALUE LIKE '%$search%' ESCAPE '!')";
@@ -97,6 +98,7 @@ class M_down_payment extends CI_Model
 							INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
 						WHERE PRJCODE = '$PRJCODE' AND A.WO_DPPER > 0 
 							AND A.WO_DPSTAT = 0 AND WO_STAT = 3 AND A.TTK_CREATED = 1
+							AND A.WO_CODE NOT IN (SELECT DISTINCT DP_REFCODE FROM tbl_dp_header WHERE PRJCODE = A.PRJCODE AND DP_STAT NOT IN (5,9) AND DP_REFCODE != 'PKS539022.000079')
 							AND (A.WO_CODE LIKE '%$search%' ESCAPE '!' OR A.WO_NOTE LIKE '%$search%' ESCAPE '!'
 							OR A.WO_STARTD LIKE '%$search%' ESCAPE '!' OR A.WO_ENDD LIKE '%$search%' ESCAPE '!'
 							OR A.WO_VALUE LIKE '%$search%' ESCAPE '!') ORDER BY $order $dir";
@@ -108,6 +110,7 @@ class M_down_payment extends CI_Model
 							INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
 						WHERE PRJCODE = '$PRJCODE' AND A.WO_DPPER > 0 
 							AND A.WO_DPSTAT = 0 AND WO_STAT = 3 AND A.TTK_CREATED = 1
+							AND A.WO_CODE NOT IN (SELECT DISTINCT DP_REFCODE FROM tbl_dp_header WHERE PRJCODE = A.PRJCODE AND DP_STAT NOT IN (5,9) AND DP_REFCODE != 'PKS539022.000079')
 							AND (A.WO_CODE LIKE '%$search%' ESCAPE '!' OR A.WO_NOTE LIKE '%$search%' ESCAPE '!'
 							OR A.WO_STARTD LIKE '%$search%' ESCAPE '!' OR A.WO_ENDD LIKE '%$search%' ESCAPE '!'
 							OR A.WO_VALUE LIKE '%$search%' ESCAPE '!')";
@@ -123,6 +126,7 @@ class M_down_payment extends CI_Model
 							INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
 						WHERE PRJCODE = '$PRJCODE' AND A.WO_DPPER > 0 
 							AND A.WO_DPSTAT = 0 AND WO_STAT = 3 AND A.TTK_CREATED = 1
+							AND A.WO_CODE NOT IN (SELECT DISTINCT DP_REFCODE FROM tbl_dp_header WHERE PRJCODE = A.PRJCODE AND DP_STAT NOT IN (5,9) AND DP_REFCODE != 'PKS539022.000079')
 							AND (A.WO_CODE LIKE '%$search%' ESCAPE '!' OR A.WO_NOTE LIKE '%$search%' ESCAPE '!'
 							OR A.WO_STARTD LIKE '%$search%' ESCAPE '!' OR A.WO_ENDD LIKE '%$search%' ESCAPE '!'
 							OR A.WO_VALUE LIKE '%$search%' ESCAPE '!') ORDER BY $order $dir
@@ -135,6 +139,7 @@ class M_down_payment extends CI_Model
 							INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
 						WHERE PRJCODE = '$PRJCODE' AND A.WO_DPPER > 0 
 							AND A.WO_DPSTAT = 0 AND WO_STAT = 3 AND A.TTK_CREATED = 1
+							AND A.WO_CODE NOT IN (SELECT DISTINCT DP_REFCODE FROM tbl_dp_header WHERE PRJCODE = A.PRJCODE AND DP_STAT NOT IN (5,9) AND DP_REFCODE != 'PKS539022.000079')
 							AND (A.WO_CODE LIKE '%$search%' ESCAPE '!' OR A.WO_NOTE LIKE '%$search%' ESCAPE '!'
 							OR A.WO_STARTD LIKE '%$search%' ESCAPE '!' OR A.WO_ENDD LIKE '%$search%' ESCAPE '!'
 							OR A.WO_VALUE LIKE '%$search%' ESCAPE '!') LIMIT $start, $length";
@@ -148,6 +153,7 @@ class M_down_payment extends CI_Model
 		$sql 	= "tbl_po_header A
 						INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
 					WHERE PRJCODE = '$PRJCODE' AND A.PO_DPSTAT = 0 AND A.TTK_CREATED = 1 AND PO_STAT = 3
+						AND A.PO_CODE NOT IN (SELECT DISTINCT DP_REFCODE FROM tbl_dp_header WHERE PRJCODE = A.PRJCODE AND DP_STAT NOT IN (5,9) AND DP_REFCODE != '')
 						AND (A.PO_CODE LIKE '%$search%' ESCAPE '!' OR A.PO_NOTES LIKE '%$search%' ESCAPE '!'
 						OR A.PO_DATE LIKE '%$search%' ESCAPE '!' OR A.PO_DUED LIKE '%$search%' ESCAPE '!'
 						OR A.PO_TOTCOST LIKE '%$search%' ESCAPE '!')";
@@ -164,6 +170,7 @@ class M_down_payment extends CI_Model
 						FROM tbl_po_header A
 							INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
 						WHERE PRJCODE = '$PRJCODE' AND A.PO_DPSTAT = 0 AND A.TTK_CREATED = 1 AND PO_STAT = 3
+							AND A.PO_CODE NOT IN (SELECT DISTINCT DP_REFCODE FROM tbl_dp_header WHERE PRJCODE = A.PRJCODE AND DP_STAT NOT IN (5,9) AND DP_REFCODE != '')
 							AND (A.PO_CODE LIKE '%$search%' ESCAPE '!' OR A.PO_NOTES LIKE '%$search%' ESCAPE '!'
 							OR A.PO_DATE LIKE '%$search%' ESCAPE '!' OR A.PO_DUED LIKE '%$search%' ESCAPE '!'
 							OR A.PO_TOTCOST LIKE '%$search%' ESCAPE '!') ORDER BY $order $dir";
@@ -174,6 +181,7 @@ class M_down_payment extends CI_Model
 						FROM tbl_po_header A
 							INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
 						WHERE PRJCODE = '$PRJCODE' AND A.PO_DPSTAT = 0 AND A.TTK_CREATED = 1 AND PO_STAT = 3
+							AND A.PO_CODE NOT IN (SELECT DISTINCT DP_REFCODE FROM tbl_dp_header WHERE PRJCODE = A.PRJCODE AND DP_STAT NOT IN (5,9) AND DP_REFCODE != '')
 							AND (A.PO_CODE LIKE '%$search%' ESCAPE '!' OR A.PO_NOTES LIKE '%$search%' ESCAPE '!'
 							OR A.PO_DATE LIKE '%$search%' ESCAPE '!' OR A.PO_DUED LIKE '%$search%' ESCAPE '!'
 							OR A.PO_TOTCOST LIKE '%$search%' ESCAPE '!')";
@@ -188,6 +196,7 @@ class M_down_payment extends CI_Model
 						FROM tbl_po_header A
 							INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
 						WHERE PRJCODE = '$PRJCODE' AND A.PO_DPSTAT = 0 AND A.TTK_CREATED = 1 AND PO_STAT = 3
+							AND A.PO_CODE NOT IN (SELECT DISTINCT DP_REFCODE FROM tbl_dp_header WHERE PRJCODE = A.PRJCODE AND DP_STAT NOT IN (5,9) AND DP_REFCODE != '')
 							AND (A.PO_CODE LIKE '%$search%' ESCAPE '!' OR A.PO_NOTES LIKE '%$search%' ESCAPE '!'
 							OR A.PO_DATE LIKE '%$search%' ESCAPE '!' OR A.PO_DUED LIKE '%$search%' ESCAPE '!'
 							OR A.PO_TOTCOST LIKE '%$search%' ESCAPE '!') ORDER BY $order $dir
@@ -199,6 +208,7 @@ class M_down_payment extends CI_Model
 						FROM tbl_po_header A
 							INNER JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
 						WHERE PRJCODE = '$PRJCODE' AND A.PO_DPSTAT = 0 AND A.TTK_CREATED = 1 AND PO_STAT = 3
+							AND A.PO_CODE NOT IN (SELECT DISTINCT DP_REFCODE FROM tbl_dp_header WHERE PRJCODE = A.PRJCODE AND DP_STAT NOT IN (5,9) AND DP_REFCODE != '')
 							AND (A.PO_CODE LIKE '%$search%' ESCAPE '!' OR A.PO_NOTES LIKE '%$search%' ESCAPE '!'
 							OR A.PO_DATE LIKE '%$search%' ESCAPE '!' OR A.PO_DUED LIKE '%$search%' ESCAPE '!'
 							OR A.PO_TOTCOST LIKE '%$search%' ESCAPE '!') LIMIT $start, $length";

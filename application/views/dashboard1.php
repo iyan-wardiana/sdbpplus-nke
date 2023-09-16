@@ -150,18 +150,31 @@
 		$myPRJCODEX 	= "'$selPRJCODE'";
 		$PRJCODEX 		= $selPRJCODE;
 		$PRJNAMEX 		= $selPRJCODE;
+		$timeR 			= 0;
+		$timP 			= 0;
 		$sqlPRJ   		= "SELECT PRJNAME, PRJCOST, PRJAMD, PRJDATE, PRJEDAT, PRJ_IMGNAME, PRJ_MNG FROM tbl_project WHERE PRJCODE = $myPRJCODE LIMIT 1";
 		$resPRJ   		= $this->db->query($sqlPRJ)->result();
 		foreach($resPRJ as $rowPRJ) :
 			$PRJNAMEX   = $rowPRJ->PRJNAME;
 			$PRJCOSTX   = $rowPRJ->PRJCOST;
-			$PRJAMDX   = $rowPRJ->PRJAMD;
+			$PRJAMDX   	= $rowPRJ->PRJAMD;
+			$PRJDATEN   = date('Y-m-d', strtotime($rowPRJ->PRJDATE));
 			$PRJDATEA   = date('Y-m-d', strtotime($rowPRJ->PRJDATE));
 			$PRJEDATA   = date('Y-m-d', strtotime($rowPRJ->PRJEDAT));
 			$PRJDATEX   = date('d.m.Y', strtotime($rowPRJ->PRJDATE));
 			$PRJEDATX   = date('d.m.Y', strtotime($rowPRJ->PRJEDAT));
 			$PRJ_IMGNAME= $rowPRJ->PRJ_IMGNAME;
 			$PRJ_MNGX 	= $rowPRJ->PRJ_MNG;
+
+			$dt1 	= new DateTime($PRJDATEA);
+			$dt2 	= new DateTime($PRJEDATA);
+			$dtN 	= date('Y-m-d');
+			$dt3 	= new DateTime($dtN);
+			$d1 	= $dt2->diff($dt1)->days + 1;
+			$d2 	= $dt3->diff($dt1)->days + 1;
+
+			$timeR 	= $d1 - $d2;
+			$timP 	= $d2 / $d1 * 100;
 		endforeach;
 
 		if($PRJ_MNGX == "")
@@ -1255,7 +1268,7 @@
 			<div class="row">
 				<div class="col-md-3 col-sm-6 col-xs-12">
 					<div class="info-box">
-						<span class="info-box-icon bg-yellow-gradient"><i class="fa fa-building-o"></i></span>
+						<span class="info-box-icon bg-yellow-gradient"><i class="fa fa-calendar"></i></span>
 					    <?php
 							/*$cLogTask	= "tbl_project WHERE proj = '$Emp_ID'";
 							$cLogTaskv	= $this->db->count_all($cLogTask);*/
@@ -1264,15 +1277,27 @@
 							$cPRJACTALL	= "tbl_project WHERE PRJCATEG IN ('GDG','SPL')";
 							$cPRJACTALLV= $this->db->count_all($cPRJACTALL);
 						?>
-						<div class="info-box-content">
+						<!-- <div class="info-box-content">
 							<span class="info-box-text">PROJECT ACTIVE</span>
 							<span class="info-box-number" style="font-size: 40px"><?php echo number_format($cPRJACTv,0); ?> <sup> / <?php echo number_format($cPRJACTALLV,0); ?></sup></span>
+						</div> -->
+						<div class="info-box-content">
+							<span class="info-box-text">
+								PERIODE<br>
+								<?php
+									$timeRD = '<span class="info-box-number">S : '.date('d/m/Y', strtotime($PRJDATEA)).'</span>';
+									$timeOD = '<span class="info-box-number">E : '.date('d/m/Y', strtotime($PRJEDATA)).'</span>';
+								?>
+								<?=$timeRD?>
+								<?=$timeOD?>
+							</span>
+							<!-- <span class="info-box-number" style="font-size: 40px"><?php echo number_format($cPRJACTv,0); ?> <sup> / <?php echo number_format($cPRJACTALLV,0); ?></sup></span> -->
 						</div>
 					</div>
 				</div>
 				<div class="col-md-3 col-sm-6 col-xs-12">
 					<div class="info-box">
-						<span class="info-box-icon bg-green-gradient"><i class="fa fa-dollar"></i></span>
+						<span class="info-box-icon bg-green-gradient"><i class="fa fa-clock-o"></i></span>
 					    <?php
 							/*$cLogHist	= "tbl_login_hist WHERE LOG_EMP = '$Emp_ID'";
 							$cLogHistV	= $this->db->count_all($cLogHist);*/
@@ -1290,9 +1315,23 @@
 								$TPROJ_NACT = $rw_PRJNACT->TPROJ_NACT;
 							endforeach;
 						?>
-						<div class="info-box-content">
+						<!-- <div class="info-box-content">
 							<span class="info-box-text">PROJECT VALUE</span>
 							<span class="info-box-number" style="font-size: 20px"><div class="pull-right" title="Nilai Proyek Aktif"><?php echo number_format($TPROJ_ACT/1000000000,2); ?> M</div><br><div class="pull-right" title="Nilai Proyek Keseluruhan"><?php echo number_format($TPROJ_NACT/1000000000,2); ?> M</div></span>
+						</div> -->
+						<div class="info-box-content">
+							TOTAL  <?=$d1?> hari
+							<?php
+								$timeRD 	= '<span class="info-box-number">R : '.$d2.' hari</span>';
+								$timeOD 	= "OVER : -";
+								if($timeR < 0)
+								{
+									$timeRD = '<span class="info-box-number">R : '.$d2.' hari</span>';
+									$timeOD = '<span class="info-box-number">O : '.$timeR.' hari</span>';
+								}
+							?>
+							<?=$timeRD?>
+							<?=$timeOD?>
 						</div>
 					</div>
 				</div>
@@ -1443,7 +1482,7 @@
 				        <div class="box box-info">
 							<div class="box-body no-padding">
 					            <div class="box-header with-border" style="text-align: center;">
-					              	<h3 class="box-title">Progress Proyek <?php echo $PRJNAMEX; ?></h3>
+					              	<h3 class="box-title">Progress Proyek <?php echo $PRJNAMEX; ?> (TimeP : <?=number_format($timP,2)?> %)</h3>
 					            </div>
 					            <div class="row">
 									<div class="col-md-10 col-sm-10 box1">

@@ -939,7 +939,8 @@ class M_joblist extends CI_Model
 		$r_02 		= $this->db->query($s_02)->result();
 		foreach($r_02 as $rw_02) :
         	$JOBDESCH  	= addslashes($rw_02->JOBDESC);
-        	$JOB_UNIT  	= strtoupper($rw_02->ITM_UNIT);
+        	$ITM_UNIT 	= htmlentities($rw_02->ITM_UNIT, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
+        	$JOB_UNIT  	= strtoupper($ITM_UNIT);
         	$JOB_BOQV  	= $rw_02->BOQ_VOLM;
         	$JOB_BOQP  	= $rw_02->BOQ_PRICE;
         	$JOB_BOQT 	= $rw_02->BOQ_JOBCOST;
@@ -947,7 +948,10 @@ class M_joblist extends CI_Model
         	$JOB_RAPP  	= $rw_02->ITM_PRICE;
         	//$JOB_RAPT = $rw_02->ITM_BUDG;
 
-        	if($JOB_UNIT == 'LS')
+        	$isLSQ		= "tbl_unitls WHERE ITM_UNIT = '$JOB_UNIT'";
+        	$isLSR		= $this->db->count_all($isLSQ);
+
+        	if($isLSR > 0)
         		$JOB_RAPV 	= 1;
         	else
         		$JOB_RAPV 	= $ITM_RAPV;

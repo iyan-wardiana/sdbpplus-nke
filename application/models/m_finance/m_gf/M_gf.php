@@ -94,5 +94,10 @@ class M_gf extends CI_Model
 	{
 		$this->db->insert("tbl_upload_doctrx", $uplFile);
 	}
+
+	function delUPL_DOC($GF_NUM, $PRJCODE, $fileName)
+	{
+		$this->db->delete("tbl_upload_doctrx", ["REF_NUM" => $GF_NUM, "PRJCODE" => $PRJCODE, "UPL_FILENAME" => $fileName]);
+	}
 }
 ?>

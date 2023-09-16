@@ -262,8 +262,6 @@ $moneyFormat = new moneyFormat();
 
         $INV_TOTCOST    = $INV_AMOUNT + $INV_AMOUNT_PPN + $INV_AMOUNT_OTH - $INV_TOTPOT;
 
-        echo "$INV_TOTCOST    = $INV_AMOUNT + $INV_AMOUNT_PPN + $INV_AMOUNT_OTH - $INV_TOTPOT<br>";
-
         $sqlPRJ     = "SELECT PRJNAME FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
         $resPRJ     = $this->db->query($sqlPRJ)->result();
         foreach($resPRJ as $rowPRJ) :
@@ -351,9 +349,10 @@ $moneyFormat = new moneyFormat();
         }
 
         $Journal_Amount_PD  = 0;
+        $Invoice_Amount     = 0;
         $TOTINV_PD          = $INV_TOTCOST; // Nilai Penyelesaian PD Saat INI
         // GET Hist. INV PD LALU
-            $getHistPD = "SELECT JournalH_Id, JournalH_Code, Manual_No, Journal_Amount_PD 
+            $getHistPD = "SELECT JournalH_Id, JournalH_Code, Manual_No, Journal_Amount_PD, Invoice_Amount
                             FROM tbl_journalheader_pd_rinv
                             WHERE Proj_Code = '$PRJCODE' 
                             AND Invoice_No = '$INV_NUM'";
@@ -364,6 +363,7 @@ $moneyFormat = new moneyFormat();
                     $JournalH_Id        = $rHistPD->JournalH_Id;
                     $JournalH_Code      = $rHistPD->JournalH_Code;
                     $Journal_Amount_PD  = $rHistPD->Journal_Amount_PD;
+                    $Invoice_Amount     = $rHistPD->Invoice_Amount;
 
                     // GET Manual_No PD & Ref
                         $Manual_No          = "";
@@ -380,23 +380,37 @@ $moneyFormat = new moneyFormat();
                         }
                     
                     // GET LastHist PD
+                    $TOTINV_LastPD = 0;
                     $getLastPD  = "SELECT SUM(Invoice_Amount) AS TOTINV_LastPD
-                                        FROM tbl_journalheader_pd_rinv
-                                        WHERE JournalH_Id < '$JournalH_Id' AND JournalH_Code = '$JournalH_Code'";
-                        $resLastPD  = $this->db->query($getLastPD);
-                        if($resLastPD->num_rows() > 0)
-                        {
-                            $TOTINV_LastPD      = 0;
-                            foreach($resLastPD->result() as $rLastPD):
-                                $TOTINV_LastPD  = $rLastPD->TOTINV_LastPD;
-                            endforeach;
-                        }
+                                    FROM tbl_journalheader_pd_rinv
+                                    WHERE JournalH_Id < '$JournalH_Id' AND JournalH_Code = '$JournalH_Code'";
+                    $resLastPD  = $this->db->query($getLastPD);
+                    if($resLastPD->num_rows() > 0)
+                    {
+                        $TOTINV_LastPD      = 0;
+                        foreach($resLastPD->result() as $rLastPD):
+                            $TOTINV_LastPD  = $rLastPD->TOTINV_LastPD;
+                        endforeach;
+                    }
+
+                    // GET LastHist PD
+                    $getThisPD  = "SELECT SUM(Invoice_Amount) AS TOTINV_ThisPD
+                                    FROM tbl_journalheader_pd_rinv
+                                    WHERE Invoice_No = '$INV_NUM'";
+                    $resThisPD  = $this->db->query($getThisPD);
+                    if($resThisPD->num_rows() > 0)
+                    {
+                        $TOTINV_ThisPD      = 0;
+                        foreach($resThisPD->result() as $rThisPD):
+                            $TOTINV_ThisPD  = $rThisPD->TOTINV_ThisPD;
+                        endforeach;
+                    }
                 endforeach;
             }
 
         $TREALZAmount       = $TOTINV_PD + $TOTINV_LastPD;
-        echo "$TREALZAmount       = $TOTINV_PD + $TOTINV_LastPD";
-        $REMREALZ_Amount    = $TREALZAmount - $Journal_Amount_PD;
+        /*$REMREALZ_Amount    = $TREALZAmount - $Journal_Amount_PD;*/
+        $REMREALZ_Amount    = $TREALZAmount - $Invoice_Amount;
         if($TREALZAmount < $Journal_Amount_PD)
         {
             $REM_DESC = "Lebih Bayar";
@@ -427,7 +441,7 @@ $moneyFormat = new moneyFormat();
                 </div>
                 <div class="box-column-title">
                     <span>VOUCHER<br></span>
-                    <span style="color: red !important;"><?php echo $Title_PD; ?></span>
+                    <!-- <span style="color: red !important;"><?php // echo $Title_PD; ?></span> -->
                 </div>
             </div>
             <div class="box-header-detail">
@@ -486,7 +500,7 @@ $moneyFormat = new moneyFormat();
                         <tr>
                             <td width="100">&nbsp;</td>
                             <td>Uang Muka</td>
-                            <td colspan="2" width="100" style="text-align: right;">(<?php echo number_format($INV_AMOUNT_POTUM, 2); ?>)</td>
+                            <td colspan="2" width="100" style="text-align: right;">(<?php echo number_format($INV_AMOUNT_DPB, 2); ?>)</td>
                         </tr>
                         <tr>
                             <td width="100">&nbsp;</td>
@@ -505,18 +519,19 @@ $moneyFormat = new moneyFormat();
                         </tr>
                         <tr>
                             <td width="100">&nbsp;</td>
-                            <td>Nilai Pemb. Dimuka, <?php echo "$Manual_No, Referensi No. $Reference_Number"; ?></td>
-                            <td colspan="2" width="100" style="text-align: right;"><?php echo number_format($Journal_Amount_PD, 2); ?></td>
+                            <td>Nilai Pemb. Dimuka, <?php echo "$Manual_No, Referensi No. $Reference_Number"; ?> <div class="pull-right" style="font-weight: bold; font-style: italic;"><?php echo number_format($Journal_Amount_PD, 2); ?></div></td>
+                            <td colspan="2" width="100" style="text-align: right;">&nbsp;</td>
                         </tr>
                         <tr>
                             <td width="100">&nbsp;</td>
-                            <td>Penyelesaian Sebelumnya</td>
-                            <td colspan="2" width="100" style="text-align: right;"><?php echo number_format($TOTINV_LastPD, 2); ?></td>
+                            <td>Penyelesaian Sebelumnya <div class="pull-right" style="font-weight: bold; font-style: italic;"><?php echo number_format($TOTINV_LastPD, 2); ?></div></td>
+                            <td colspan="2" width="100" style="text-align: right;">&nbsp;</td>
                         </tr>
                         <tr>
                             <td width="100">&nbsp;</td>
                             <td>Penyelesaian Saat Ini</td>
-                            <td colspan="2" width="100" style="text-align: right;"><?php echo number_format($TOTINV_PD, 2); ?></td>
+                            <!-- <td colspan="2" width="100" style="text-align: right;"><?php // echo number_format($TOTINV_PD, 2); ?></td> -->
+                            <td colspan="2" width="100" style="text-align: right;">(<?php echo number_format($TOTINV_ThisPD, 2); ?>)</td>
                         </tr>
                         <tr>
                             <td width="100">&nbsp;</td>
@@ -540,10 +555,10 @@ $moneyFormat = new moneyFormat();
                                         echo $moneyFormat->terbilang($REMREALZ_AmountD, 2); 
                                 ?>
                             </td>
-                            <td style="font-weight: bold; font-style: italic; font-size: 8pt; border-right: hidden;">
+                            <td style="font-weight: bold; font-style: italic; font-size: 8pt; border-right: hidden;" nowrap>
                                 <?php echo $REM_DESC; ?> :
                             </td>
-                            <td style="text-align: right;">
+                            <td style="text-align: right; font-weight:bold;">
                                 <?php echo number_format($REMREALZ_Amount,2); ?>
                             </td>
                         </tr>
@@ -800,92 +815,7 @@ $moneyFormat = new moneyFormat();
                                         <?php
                                     endforeach;
                                 }
-                                
-                                /* --------------- PPN diambil dari tbl_ttk_tax -----------------
-                                    if($PPN_Amount != 0)
-                                    {
-                                        $no = $no + 1;
-                                        // get PPN 
-                                        $JournalDesc    = '';
-                                        $Acc_Id         = '';
-                                        $this->db->select("TAXLA_DESC, TAXLA_LINKIN");
-                                        $getAccPPN = $this->db->get_where("tbl_tax_ppn", ["TAXLA_NUM" => $PPN_Code]);
-                                        if($getAccPPN->num_rows() > 0)
-                                        {
-                                            foreach ($getAccPPN->result() as $rPPN):
-                                                $TAXLA_DESC     = $rPPN->TAXLA_DESC;
-                                                $TAXLA_LINKIN   = $rPPN->TAXLA_LINKIN;
-                                            endforeach;
-                                        }
 
-                                        $JournalDesc    = $Ref_Number;
-                                        $Acc_Id         = $TAXLA_LINKIN;
-                                        $ITM_CODE       = '';
-                                        $Base_Debet     = $PPN_Amount;
-                                        $Base_Kredit    = 0;
-                                        ?>
-                                            <tr>
-                                                <td style="text-align: center;"><?php echo $no; ?></td>
-                                                <td><?php echo $JournalDesc; ?></td>
-                                                <td style="text-align: center;"><?php echo $PRJCODE; ?></td>
-                                                <td style="text-align: center;"><?php echo $Acc_Id; ?></td>
-                                                <td style="text-align: center;">
-                                                    <?php if($Journal_DK == 'D') echo $ITM_CODE; ?>
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <?php echo number_format($Base_Debet, 2); ?>
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <?php 
-                                                        echo number_format($Base_Kredit, 2);
-                                                    ?>
-                                                </td>
-                                            </tr>
-                                        <?php
-                                    }
-
-                                    if($PPH_Amount != 0)
-                                    {
-                                        $no = $no + 1;
-                                        // get PPN 
-                                        $JournalDesc    = '';
-                                        $Acc_Id         = '';
-                                        $this->db->select("TAXLA_DESC, TAXLA_LINKIN");
-                                        $getAccPPH = $this->db->get_where("tbl_tax_la", ["TAXLA_NUM" => $PPH_Code]);
-                                        if($getAccPPH->num_rows() > 0)
-                                        {
-                                            foreach ($getAccPPH->result() as $rPPH):
-                                                $TAXLA_DESC     = $rPPH->TAXLA_DESC;
-                                                $TAXLA_LINKIN   = $rPPH->TAXLA_LINKIN;
-                                            endforeach;
-                                        }
-
-                                        $JournalDesc    = $TAXLA_DESC;
-                                        $Acc_Id         = $TAXLA_LINKIN;
-                                        $ITM_CODE       = '';
-                                        $Base_Debet     = 0;
-                                        $Base_Kredit    = $PPH_Amount;
-                                        ?>
-                                            <tr>
-                                                <td style="text-align: center;"><?php echo $no; ?></td>
-                                                <td><?php echo $JournalDesc; ?></td>
-                                                <td style="text-align: center;"><?php echo $PRJCODE; ?></td>
-                                                <td style="text-align: center;"><?php echo $Acc_Id; ?></td>
-                                                <td style="text-align: center;">
-                                                    <?php if($Journal_DK == 'D') echo $ITM_CODE; ?>
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <?php echo number_format($Base_Debet, 2); ?>
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <?php 
-                                                        echo number_format($Base_Kredit, 2);
-                                                    ?>
-                                                </td>
-                                            </tr>
-                                        <?php
-                                    }
-                                ----------------------- End Hidden ------------------------- */
                                 $TBalance_Debet     = $TBalance_Debet + $TBalance_PPNDebet;
                                 $TBalance_Kredit    = $TBalance_Kredit + $TBalance_PPNKredit;
                                 ?>

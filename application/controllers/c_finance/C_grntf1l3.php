@@ -135,6 +135,14 @@ class C_grntf1l3 extends CI_Controller
 			$GF_CODE		= $this->input->post('GF_CODE');
 			$PRJCODE		= $this->input->post('PRJCODE');
 			$GF_FILENAME 	= $this->input->post('GF_FILENAME');
+			$SPLCODE		= $this->input->post('SPLCODE');
+
+			$SPLDESC 		= "";
+	        $sqlSPL 		= "SELECT SPLDESC FROM tbl_supplier WHERE SPLCODE = '$SPLCODE'";
+		    $resSPL 		= $this->db->query($sqlSPL)->result();
+		    foreach($resSPL as $rowSPL) :
+		        $SPLDESC 	= $rowSPL->SPLDESC;
+		    endforeach;
 
 			// ============================= Start Upload File ========================================== //
 				$fileUpload	= null;
@@ -209,6 +217,7 @@ class C_grntf1l3 extends CI_Controller
 			
 			// ============================= End Upload File ========================================== //
 
+
 			$InsGF	= array('GF_NUM'			=> $GF_NUM,
 							'GF_CODE'			=> $this->input->post('GF_CODE'),
 							'GF_NAME'			=> $this->input->post('GF_NAME'),
@@ -219,9 +228,11 @@ class C_grntf1l3 extends CI_Controller
 							'GF_FILENAME'		=> $GF_FILENAME,
 							'PRJCODE'			=> $this->input->post('PRJCODE'),
 							'SPLCODE'			=> $this->input->post('SPLCODE'),
+							'SPLDESC'			=> $SPLDESC,
 							'WO_NUM'			=> $this->input->post('WO_NUM'),
 							'WO_CODE'			=> $this->input->post('WO_CODE'),
 							'WO_VALUE'			=> $this->input->post('WO_VALUE'),
+							'GF_STATDOC'		=> $this->input->post('GF_STATDOC'),
 							'GF_STATUS'			=> $this->input->post('GF_STATUS'));
 			$this->m_gf->add($InsGF);
 
@@ -306,6 +317,7 @@ class C_grntf1l3 extends CI_Controller
 			$data['WO_NUM'] 			= $getGF->WO_NUM;
 			$data['WO_CODE'] 			= $getGF->WO_CODE;
 			$data['WO_VALUE'] 			= $getGF->WO_VALUE;
+			$data['GF_STATDOC'] 		= $getGF->GF_STATDOC;
 			$data['GF_STATUS'] 			= $getGF->GF_STATUS;
 			$GF_STATUS 					= $getGF->GF_STATUS;
 			
@@ -334,6 +346,14 @@ class C_grntf1l3 extends CI_Controller
 			$GF_CODE		= $this->input->post('GF_CODE');
 			$PRJCODE		= $this->input->post('PRJCODE');
 			$GF_FILENAME 	= $this->input->post('GF_FILENAME');
+			$SPLCODE		= $this->input->post('SPLCODE');
+
+			$SPLDESC 		= "";
+	        $sqlSPL 		= "SELECT SPLDESC FROM tbl_supplier WHERE SPLCODE = '$SPLCODE'";
+		    $resSPL 		= $this->db->query($sqlSPL)->result();
+		    foreach($resSPL as $rowSPL) :
+		        $SPLDESC 	= $rowSPL->SPLDESC;
+		    endforeach;
 
 			$DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 			$AH_CODE		= $GF_NUM;
@@ -341,6 +361,11 @@ class C_grntf1l3 extends CI_Controller
 			$AH_APPROVER	= $DefEmp_ID;
 			$AH_APPROVED	= date('Y-m-d H:i:s');
 			$AH_ISLAST		= $this->input->post('IS_LAST');
+
+			if($GF_STATUS == 3 && $AH_ISLAST == 1)
+				$GF_STATUS 	= 3;
+			elseif($GF_STATUS == 3 && $AH_ISLAST == 0)
+				$GF_STATUS 	= 7;
 
 			$UpdGF			= array('GF_CODE'			=> $this->input->post('GF_CODE'),
 									'GF_NAME'			=> $this->input->post('GF_NAME'),
@@ -350,11 +375,24 @@ class C_grntf1l3 extends CI_Controller
 									'GF_NILAI_JAMINAN'	=> $this->input->post('GF_NILAI_JAMINAN'),
 									'PRJCODE'			=> $this->input->post('PRJCODE'),
 									'SPLCODE'			=> $this->input->post('SPLCODE'),
+									'SPLDESC'			=> $SPLDESC,
 									'WO_NUM'			=> $this->input->post('WO_NUM'),
 									'WO_CODE'			=> $this->input->post('WO_CODE'),
 									'WO_VALUE'			=> $this->input->post('WO_VALUE'),
-									'GF_STATUS'			=> $this->input->post('GF_STATUS'));						
+									'GF_STATDOC'		=> $this->input->post('GF_STATDOC'),
+									'GF_STATUS'			=> $GF_STATUS);						
 			$this->m_gf->update($GF_NUM, $UpdGF);
+
+			// START : UPDATE STATUS
+				$completeName 	= $this->session->userdata['completeName'];
+				$paramStat 		= array('PM_KEY' 		=> "GF_NUM",
+										'DOC_CODE' 		=> $GF_NUM,
+										'DOC_STAT' 		=> $GF_STATUS,
+										'PRJCODE' 		=> $PRJCODE,
+										//'CREATERNM'	=> $completeName,
+										'TBLNAME'		=> "tbl_gfile");
+				$this->m_updash->updateStatus($paramStat);
+			// END : UPDATE STATUS
 
 			// ============================= Start Upload File ========================================== //
 				$fileUpload	= null;
@@ -593,5 +631,38 @@ class C_grntf1l3 extends CI_Controller
 
 			echo json_encode($output);
 		// END : FOR SERVER-SIDE
+	}
+
+	function trashFile()
+	{
+		$GF_NUM		= $this->input->post("GF_NUM");
+		$PRJCODE	= $this->input->post("PRJCODE");
+		// $index 		= $this->input->post("indexRow");
+		$fileName	= $this->input->post("fileName");
+
+		/* Change PR_DOC to array => upd: 2022-09-16
+			$arrDOC = explode(", ", $PR_DOC);
+			foreach($arrDOC as $r => $val):
+				$getarr[] = $val;
+			endforeach;
+
+			unset($getarr[$index]); // Delete index array
+		---------------------- End Hidden --------------------- */
+		
+		$this->m_gf->delUPL_DOC($GF_NUM, $PRJCODE, $fileName); // Delete File
+		
+		// Delete file in path folder
+			$path = "assets/AdminLTE-2.0.5/doc_center/uploads/GFile/$PRJCODE/$fileName";
+			unlink($path);
+	}
+
+	function downloadFile()
+	{
+		$this->load->helper('download');
+
+		$fileName 	= $_GET['file'];
+		$PRJCODE 	= $_GET['prjCode'];
+		$path 		= "assets/AdminLTE-2.0.5/doc_center/uploads/GFile/$PRJCODE/$fileName";
+		force_download($path, NULL);
 	}
 }

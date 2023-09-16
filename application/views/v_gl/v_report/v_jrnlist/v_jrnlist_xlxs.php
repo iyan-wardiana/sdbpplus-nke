@@ -84,7 +84,6 @@
 					<th style="text-align:center; width: 3%"><?php echo $JournalType; ?>  </th>
 					<th style="text-align:center; width: 5%"><?php echo $Account; ?>  </th>
 					<th style="text-align:center; width: 10%"><?php echo $AccountName; ?>  </th>
-	                <th style="text-align:center; width: 10%"><?php echo $ItemName; ?> </th>
 	                <th style="text-align:center; width: 10%"><?php echo $Description; ?> </th>
 	                <th style="text-align:center; width: 5%" nowrap>Debet </th>
 	                <th style="text-align:center; width: 5%" nowrap>Kredit </th>
@@ -97,6 +96,7 @@
 					<th style="text-align:center; width: 5%" nowrap><?php echo "No. Kwit."; ?> </th>
 					<th style="text-align:center; width: 5%" nowrap><?php echo "Tgl. Faktur"; ?> </th>
 					<th style="text-align:center; width: 5%" nowrap><?php echo "No. Seri Faktur"; ?> </th>
+	                <th style="text-align:center; width: 10%"><?php echo $ItemName; ?> </th>
 	                <th style="text-align:center; width: 2%" nowrap>User</th>
 	                <th style="text-align:center; width: 2%" nowrap>Tgl. Input</th>
                 </tr>
@@ -219,9 +219,9 @@
 							// }
 
 							$SPLCODE 			= $rowJD->SPLCODE;
-							$SPLDESC 			= html_entity_decode($rowJD->SPLDESC, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5,'UTF-8');
-							$Other_Desc			= html_entity_decode($rowJD->Other_Desc, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5,'UTF-8');
-							$Revise_Desc		= html_entity_decode($rowJD->Revise_Desc, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5,'UTF-8');
+							$SPLDESC 			= htmlspecialchars(html_entity_decode($rowJD->SPLDESC, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5,'UTF-8'));
+							$Other_Desc			= htmlspecialchars(html_entity_decode($rowJD->Other_Desc, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5,'UTF-8'));
+							$Revise_Desc		= htmlspecialchars(html_entity_decode($rowJD->Revise_Desc, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5,'UTF-8'));
 							$GEJ_STAT			= $rowJD->GEJ_STAT;
 					
 							$Acc_Id				= $rowJD->Acc_Id;
@@ -264,11 +264,10 @@
 								  	<td style="text-align:center;"><?=$JournalType?></td>
 									<td style="text-align:center;" class="str"><?php echo $Acc_Id; ?></td>
 									<td><?=$AccNameId?></td>
-									<td><?=$ITM_CODE?></td>
 									<td><?=$Other_Desc?></td>
-								  	<td style="text-align:right;"><?=$VJournalD_Debet?></b></td>
-								  	<td style="text-align:right;"><?=$VJournalD_Kredit?></b></td>
-								  	<td style="text-align:right;"><?=$vbalance?></td>
+									<td style="text-align:right;"><?=$VJournalD_Debet?></b></td>
+									<td style="text-align:right;"><?=$VJournalD_Kredit?></b></td>
+									<td style="text-align:right;"><?=$vbalance?></td>
 									<td style="text-align:center;"><?=$ProjCode?></td>
 									<td style="text-align:center;"><?=$Faktur_Code?></td>
 									<td style="text-align:center;"><?=$SPLCODE?></td>
@@ -277,6 +276,7 @@
 									<td style="text-align:center;"><?=$Kwitansi_No?></td>
 									<td style="text-align:center;"><?=$TAX_DATE?></td>
 									<td style="text-align:center;" class="str"><?php echo $TAX_NO; ?></td>
+									<td><?=$ITM_CODE?></td>
 									<td style="text-align:center;"><?=$empName?></td>
 									<td style="text-align:center;"><?=$Created?></td>
 								</tr>

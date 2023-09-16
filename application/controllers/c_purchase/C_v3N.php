@@ -816,21 +816,32 @@ class C_v3N extends CI_Controller
 		}
 		else
 		{
-	        $sqlUpd	= "UPDATE tbl_supplier_app SET APPROVER_1 ='$APPROVER_1', APPROVED_1 ='$APPROVED_1' WHERE SPLCODE = '$SPLCODE'";
-			$this->db->query($sqlUpd);
+			if($APPSTAT == 1)
+			{
+		        $sqlUpd	= "UPDATE tbl_supplier_app SET APPROVER_1 ='$APPROVER_1', APPROVED_1 ='$APPROVED_1' WHERE SPLCODE = '$SPLCODE'";
+				$this->db->query($sqlUpd);
 
-			$s_01 	= "SELECT APPROVER_1, APPROVER_2 FROM tbl_supplier_app WHERE SPLCODE = '$SPLCODE'";
-			$r_01 	= $this->db->query($s_01)->result();
-			foreach($r_01 as $rw_01) :
-				$APPROVER_1 = $rw_01->APPROVER_1;
-				$APPROVER_2 = $rw_01->APPROVER_2;
+				$s_01 	= "SELECT APPROVER_1, APPROVER_2 FROM tbl_supplier_app WHERE SPLCODE = '$SPLCODE'";
+				$r_01 	= $this->db->query($s_01)->result();
+				foreach($r_01 as $rw_01) :
+					$APPROVER_1 = $rw_01->APPROVER_1;
+					$APPROVER_2 = $rw_01->APPROVER_2;
 
-				if($APPROVER_1 != '' && $APPROVER_2 != '')
-				{
-					 $u_01	= "UPDATE tbl_supplier SET SPLSTAT = 1 WHERE SPLCODE = '$SPLCODE'";
-					$this->db->query($u_01);
-				}
-			endforeach;
+					if($APPROVER_1 != '' && $APPROVER_2 != '')
+					{
+						$u_01	= "UPDATE tbl_supplier SET SPLSTAT = 1 WHERE SPLCODE = '$SPLCODE'";
+						$this->db->query($u_01);
+					}
+				endforeach;
+			}
+			else
+			{
+		        $sqlUpd	= "UPDATE tbl_supplier_app SET APPROVER_1 ='', APPROVED_1 ='' WHERE SPLCODE = '$SPLCODE'";
+				$this->db->query($sqlUpd);
+
+				$u_01	= "UPDATE tbl_supplier SET SPLSTAT = 0 WHERE SPLCODE = '$SPLCODE'";
+				$this->db->query($u_01);
+			}
 		}
 		echo "$APPSTAT";
 	}
@@ -856,21 +867,32 @@ class C_v3N extends CI_Controller
 		}
 		else
 		{
-	        $sqlUpd	= "UPDATE tbl_supplier_app SET APPROVER_2 ='$APPROVER_2', APPROVED_2 ='$APPROVED_2' WHERE SPLCODE = '$SPLCODE'";
-			$this->db->query($sqlUpd);
+			if($APPSTAT == 1)
+			{
+		        $sqlUpd	= "UPDATE tbl_supplier_app SET APPROVER_2 ='$APPROVER_2', APPROVED_2 ='$APPROVED_2' WHERE SPLCODE = '$SPLCODE'";
+				$this->db->query($sqlUpd);
 
-			$s_01 	= "SELECT APPROVER_1, APPROVER_2 FROM tbl_supplier_app WHERE SPLCODE = '$SPLCODE'";
-			$r_01 	= $this->db->query($s_01)->result();
-			foreach($r_01 as $rw_01) :
-				$APPROVER_1 = $rw_01->APPROVER_1;
-				$APPROVER_2 = $rw_01->APPROVER_2;
+				$s_01 	= "SELECT APPROVER_1, APPROVER_2 FROM tbl_supplier_app WHERE SPLCODE = '$SPLCODE'";
+				$r_01 	= $this->db->query($s_01)->result();
+				foreach($r_01 as $rw_01) :
+					$APPROVER_1 = $rw_01->APPROVER_1;
+					$APPROVER_2 = $rw_01->APPROVER_2;
 
-				if($APPROVER_1 != '' && $APPROVER_2 != '')
-				{
-					 $u_01	= "UPDATE tbl_supplier SET SPLSTAT = 1 WHERE SPLCODE = '$SPLCODE'";
-					$this->db->query($u_01);
-				}
-			endforeach;
+					if($APPROVER_1 != '' && $APPROVER_2 != '')
+					{
+						$u_01	= "UPDATE tbl_supplier SET SPLSTAT = 1 WHERE SPLCODE = '$SPLCODE'";
+						$this->db->query($u_01);
+					}
+				endforeach;
+			}
+			else
+			{
+		        $sqlUpd	= "UPDATE tbl_supplier_app SET APPROVER_2 ='', APPROVED_2 ='' WHERE SPLCODE = '$SPLCODE'";
+				$this->db->query($sqlUpd);
+
+				$u_01	= "UPDATE tbl_supplier SET SPLSTAT = 0 WHERE SPLCODE = '$SPLCODE'";
+				$this->db->query($u_01);
+			}
 		}
 		echo "$APPSTAT";
 	}

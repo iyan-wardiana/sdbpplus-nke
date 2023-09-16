@@ -555,6 +555,10 @@ class C_it180e2elst  extends CI_Controller
 								  	</div>";
 				}
 
+				$LshowHist		= "$PRJCODE~$ITM_CODE";
+				$secsHist		= site_url('c_inventory/c_it180e2elst/showHist/?id='.$this->url_encryption_helper->encode_url($LshowHist));
+				$showHist 		= "<span class='btn btn-warning btn-xs' onClick='showHist(\"".$secsHist."\");'><i class='fa fa-clock-o'></i></span>";
+
 				$ITMVOLM		= $dataI['ITM_VOLM'];
 				$ITMIN			= $dataI['ITM_IN'];
 				$ITMOUT			= $dataI['ITM_OUT'];
@@ -582,7 +586,7 @@ class C_it180e2elst  extends CI_Controller
 										  $dataI['ITM_UNIT'],
 										  "<span class='label label-".$STATCOL."' style='font-size:12px'>".$STATUSD."</span>",
 										  "<label class='pull-right' style='white-space:nowrap'><a href='".site_url('c_inventory/c_it180e2elst/update/?id='.$this->url_encryption_helper->encode_url($COLLVAR))."' class='btn btn-info btn-xs' title='Update'>
-										<i class='glyphicon glyphicon-pencil'></i></a>&nbsp;$ACC_IN $ACC_OUT $ACC_SAL</label>");
+										<i class='glyphicon glyphicon-pencil'></i></a>&nbsp;$ACC_IN $ACC_OUT $ACC_SAL $showHist</label>");
 				$noU++;
 			}
 
@@ -2349,4 +2353,47 @@ class C_it180e2elst  extends CI_Controller
 			redirect('__l1y');
 		}
 	}
+	
+    function showHist() 
+	{
+		$sqlApp 		= "SELECT * FROM tappname";
+		$resultaApp = $this->db->query($sqlApp)->result();
+		foreach($resultaApp as $therow) :
+			$appName = $therow->app_name;
+		endforeach;
+			
+		$collData	= $_GET['id'];
+		$collData	= $this->url_encryption_helper->decode_url($collData);
+		$data1		= explode("~", $collData);
+		$PRJCODE	= $data1[0];
+		$ITM_CODE	= $data1[1];
+		
+		if ($this->session->userdata('login') == TRUE)
+		{
+			$data['title'] 			= $appName;
+			$data['h1_title'] 		= 'Logbook Item';
+			$LangID 				= $this->session->userdata['LangID'];
+			if($LangID == 'IND')
+			{
+				$data['title'] 		= $appName;
+				$data['h1_title'] 	= 'Logbook Item';
+			}
+			else
+			{
+				$data['title'] 		= $appName;
+				$data['h1_title'] 	= 'Item Logbook';
+			}
+			
+			$TOTPROJ				= 1;
+		
+			$data['PRJCODE'] 		= $PRJCODE;
+			$data['ITM_CODE'] 		= $ITM_CODE;
+			
+			$this->load->view('v_inventory/v_itemlist/showHist', $data);
+		}
+		else
+		{
+			redirect('__l1y');
+		}
+    }
 }

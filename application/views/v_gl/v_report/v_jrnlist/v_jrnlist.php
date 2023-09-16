@@ -682,7 +682,6 @@ $DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 								<th style="vertical-align:middle; text-align:center; width: 3%"><?php echo $JournalType; ?>  </th>
 								<th style="vertical-align:middle; text-align:center; width: 5%"><?php echo $Account; ?>  </th>
 								<th style="vertical-align:middle; text-align:center; width: 10%"><?php echo $AccountName; ?>  </th>
-		                        <th style="vertical-align:middle; text-align:center; width: 10%"><?php echo $ItemCode; ?> </th>
 		                        <th style="vertical-align:middle; text-align:center; width: 10%"><?php echo $Description; ?> </th>
 		                        <th style="vertical-align:middle; text-align:center; width: 5%" nowrap>Debet </th>
 		                        <th style="vertical-align:middle; text-align:center; width: 5%" nowrap>Kredit </th>
@@ -695,6 +694,7 @@ $DefEmp_ID 		= $this->session->userdata['Emp_ID'];
 								<th style="vertical-align:middle; text-align:center; width: 5%" nowrap><?php echo "No. Kwit."; ?> </th>
 								<th style="vertical-align:middle; text-align:center; width: 5%" nowrap><?php echo "Tgl. Faktur"; ?> </th>
 								<th style="vertical-align:middle; text-align:center; width: 5%" nowrap><?php echo "No. Seri Faktur"; ?> </th>
+		                        <th style="vertical-align:middle; text-align:center; width: 10%"><?php echo $ItemCode; ?> </th>
 		                        <th style="vertical-align:middle; text-align:center; width: 2%" nowrap>&nbsp;</th>
 		                    </tr>
 		                </thead>

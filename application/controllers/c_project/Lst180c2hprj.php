@@ -1103,6 +1103,14 @@ class Lst180c2hprj extends CI_Controller
 				$PRJPROG		= $dataI['PRJPROG'];
 				$PRJ_ISLOCK		= $dataI['PRJ_LOCK_STAT'];
 
+				$ALRT_OT 		= "";
+				if($PRJEDAT < date('Y-m-d'))
+				{
+					$ALRT_OT 	= "<div class='alert alert-danger alert-dismissible'>
+			                            Masa waktu proyek habis pada $PRJEDATV
+			                        </div>";
+				}
+
 				// GET ADDRESS
 					$PRJADD2 		= $PRJLOCT;
 					if($PRJADD != '')
@@ -1328,7 +1336,8 @@ class Lst180c2hprj extends CI_Controller
 										  		<p class='text-muted'>
 										  			".$PRJNOTE."
 										  		</p>
-										  	</div>",
+										  	</div>
+										  	$ALRT_OT",
 											"<div style='text-align:center; white-space:nowrap'><span class='label label-".$STATCOL."' style='font-size:12px'>".$isActDesc."</span></div>",
 											"<div class='cssProgress'>
 											    <div class='progress3'>

@@ -2040,7 +2040,7 @@ else
 					$Active1Cls		= "class='active'";
 					$Active2Cls		= "";
 		    	?>
-		        <div class="modal fade" id="mdl_selITM" name='mdl_selITM' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		        <div class="modal fade" id="mdl_selITM" name='mdl_selITM' role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		            <div class="modal-dialog">
 			            <div class="modal-content">
 			                <div class="modal-body">
@@ -3931,7 +3931,7 @@ else
 					return false;
 				}
 				
-				if(JournalD_Desc == '')
+				if(Other_Desc == '' && GEJ_STAT != 4)
 				{
 					swal('<?php echo $alert2; ?>',
 					{
@@ -3940,7 +3940,7 @@ else
 					.then(function()
 		            {
 		                swal.close();
-		                document.getElementById('data'+i+'JournalD_Desc').focus();
+		                document.getElementById('data'+i+'Other_Desc').focus();
 		            });
 					return false;
 				}
@@ -4050,7 +4050,7 @@ else
 					return false;
 				}
 				
-				if(JournalD_Desc == '')
+				if(Other_Desc == '' && GEJ_STAT != 4)
 				{
 					swal('<?php echo $alert2; ?>',
 					{
@@ -4059,7 +4059,7 @@ else
 					.then(function()
 		            {
 		                swal.close();
-		                document.getElementById('data'+i+'JournalD_Desc').focus();
+		                document.getElementById('data'+i+'Other_Desc').focus();
 		            });
 					return false;
 				}

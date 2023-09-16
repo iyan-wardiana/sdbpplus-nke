@@ -16,11 +16,19 @@ $DefEmp_ID 	= $this->session->userdata['Emp_ID'];
 $comp_name 	= $this->session->userdata['comp_name'];
 
 $sqlPRJ			= "SELECT PRJCODE, PRJNAME, PRJCOST FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
-$resPRJ	= $this->db->query($sqlPRJ)->result();
+$resPRJ			= $this->db->query($sqlPRJ)->result();
 foreach($resPRJ as $rowPRJ) :
 	$PRJCODE 	= $rowPRJ->PRJCODE;
 	$PRJNAME 	= $rowPRJ->PRJNAME;
 	$PRJCOST 	= $rowPRJ->PRJCOST;
+endforeach;
+
+$PRJCODEVW 		= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
+$ITM_BUDG 		= 0;
+$sqlBUD			= "SELECT ITM_BUDG FROM tbl_joblist_detail_$PRJCODEVW WHERE PRJCODE = '$PRJCODE' AND JOBCODEID = '$JOBCODEID'";
+$resBUD			= $this->db->query($sqlBUD)->result();
+foreach($resBUD as $rowBUD) :
+	$ITM_BUDG 	= $rowBUD->ITM_BUDG;
 endforeach;
 ?>
 <!DOCTYPE html>
@@ -142,16 +150,20 @@ endforeach;
 	                      	<td width="8%" style="text-align:center">Tanggal</td>
 	                        <td width="50%" style="text-align:center">Deskripsi</td>
 	                        <td width="5%" style="text-align:center">Volume</td>
-	                        <td width="10%" style="text-align:center" nowrap>Harga</td>
 	                        <td width="10%" style="text-align:center" nowrap>Jumlah</td>
+	                        <td width="10%" style="text-align:center" nowrap>Total</td>
 	                    </tr>
+                        <tr>
+                            <td style="text-align:right;" colspan="6">&nbsp;</td>
+                            <td style="text-align:right" nowrap><?php echo number_format($ITM_BUDG,2); ?></td>
+                        </tr>
 	                    <?php									
 							$no		= 0;
-							$totAm	= 0;
+							$totAm	= $ITM_BUDG;
 							$sqlJD	= "SELECT
 											A.AMD_NUM,
 											B.AMD_CODE,
-											B.AMD_DATE,
+											B.AMD_DATE AS AMD_DATE,
 											A.JOBCODEID,
 											A.ITM_CODE,
 											C.ITM_NAME,
@@ -167,9 +179,32 @@ endforeach;
 										WHERE
 											A.PRJCODE = '$PRJCODE' 
 											AND A.JOBCODEID = '$JOBCODEID' 
+											AND B.AMD_STAT IN (3,6)
+
+										UNION
+
+										SELECT
+											A.AMD_NUM,
+											B.AMD_CODE,
+											B.AMD_DATE AS AMD_DATE,
+											A.JOBCODEID,
+											A.ITM_CODE,
+											C.ITM_NAME,
+											A.ITM_UNIT,
+											A.AMD_DESC,
+											A.AMD_VOLM,
+											(-1 * A.AMD_PRICE) AS AMD_PRICE,
+											(-1 * A.AMD_TOTAL) AS AMD_TOTAL 
+										FROM
+											tbl_amd_detail_subs A
+											INNER JOIN tbl_amd_header B ON A.AMD_NUM = B.AMD_NUM 
+											INNER JOIN tbl_item C ON A.ITM_CODE = C.ITM_CODE AND A.PRJCODE = C.PRJCODE
+										WHERE
+											A.PRJCODE = '$PRJCODE' 
+											AND A.JOBCODEID = '$JOBCODEID' 
 											AND B.AMD_STAT IN (3,6) 
 										ORDER BY
-											B.AMD_DATE";
+											AMD_DATE";
 							$resJD	= $this->db->query($sqlJD)->result();
 							foreach($resJD as $rowJD) :
 								$no			= $no+1;
@@ -193,6 +228,7 @@ endforeach;
 								$AMD_VOLM 	= $rowJD->AMD_VOLM;
 								$AMD_PRICE 	= $rowJD->AMD_PRICE;
 								$AMD_TOTAL 	= $rowJD->AMD_TOTAL;
+								$totAm 		= $totAm + $AMD_TOTAL;
 								?>
 	                                <tr>
 	                                    <td style="text-align:center"><?php echo $no; ?></td>
@@ -206,7 +242,7 @@ endforeach;
 	                                    </td>
 	                                    <td style="text-align:right" nowrap><?php echo number_format($AMD_VOLM,2); ?></td>
 	                                    <td style="text-align:right" nowrap><?php echo number_format($AMD_PRICE,2); ?></td>
-	                                    <td style="text-align:right" nowrap><?php echo number_format($AMD_TOTAL,2); ?></td>
+	                                    <td style="text-align:right" nowrap><?php echo number_format($totAm,2); ?></td>
 	                                </tr>
 	                    		<?php
 							endforeach;

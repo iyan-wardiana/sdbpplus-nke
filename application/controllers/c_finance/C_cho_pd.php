@@ -298,8 +298,8 @@ class C_cho_pd extends CI_Controller
 					if($Manual_No == '')
 						$Manual_No		= $JournalH_Code;
 				
-				$JournalH_Desc		= $dataI['JournalH_Desc'];
-				$JournalH_Desc2		= $dataI['JournalH_Desc2'];
+				$JournalH_Desc		= htmlspecialchars($dataI['JournalH_Desc'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
+				$JournalH_Desc2		= htmlspecialchars($dataI['JournalH_Desc2'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 				$JournalType		= $dataI['JournalType'];
 				$Journal_Amount		= number_format($dataI['Journal_Amount'],2);
 				$GJournal_Total 	= number_format($dataI['GJournal_Total'],2);
@@ -319,6 +319,10 @@ class C_cho_pd extends CI_Controller
 				$PERSL_EMPID		= $dataI['PERSL_EMPID'];
 				$acc_number			= $dataI['acc_number'];
 				$realizD_Amn		= $dataI['Journal_AmountReal'];
+				$refPD_No			= $dataI['Reference_Number'];
+				$refPD_NoD 			= "";
+				if(trim($refPD_No) != '')
+					$refPD_NoD 		= "($refPD_No)";
 
 				$ISPERSLD 			= "Pembayaran Dimuka (PD)";
 				$EMP_NAME 			= "";
@@ -483,7 +487,7 @@ class C_cho_pd extends CI_Controller
 					$Acc_NameD 		= "";
 
 				$output['data'][] 	= array("$noU.",
-										  	"<div style='white-space:nowrap'>$isLockD $Manual_No</div>
+										  	"<div style='white-space:nowrap'>$isLockD $Manual_No $refPD_NoD</div>
 										  	<div style='white-space:nowrap'><strong><i class='fa fa-gg margin-r-5'></i> ".$ISPERSLD." </strong></div>",
 										  	$PD_DateV,
 										  	"<i class='fa fa-commenting margin-r-5'></i> ".$JournalH_Desc."<br>
@@ -607,6 +611,10 @@ class C_cho_pd extends CI_Controller
 				$PERSL_EMPID		= $dataI['PERSL_EMPID'];
 				$acc_number			= $dataI['acc_number'];
 				$realizD_Amn		= $dataI['Journal_AmountReal'];
+				$refPD_No			= $dataI['Reference_Number'];
+				$refPD_NoD 			= "";
+				if(trim($refPD_No) != '')
+					$refPD_NoD 		= "($refPD_No)";
 
 				$ISPERSLD 			= "Pembayaran Dimuka (PD)";
 				$EMP_NAME 			= "";
@@ -755,7 +763,7 @@ class C_cho_pd extends CI_Controller
 				}
 				
 				$output['data'][] 	= array("$noU.",
-										  	"<div style='white-space:nowrap'>$isLockD $Manual_No</div>
+										  	"<div style='white-space:nowrap'>$isLockD $Manual_No $refPD_NoD</div>
 										  	<div style='white-space:nowrap'><strong><i class='fa fa-gg margin-r-5'></i> ".$ISPERSLD." </strong></div>",
 										  	$PD_DateV,
 										  	"<i class='fa fa-commenting margin-r-5'></i> ".$JournalH_Desc."

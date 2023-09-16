@@ -39,6 +39,7 @@ if($task == 'add')
 	$GF_FILENAME		= "";
 	$PRJCODE			= "";
 	$SPLCODE			= "";
+	$GF_STATDOC			= 0;
 	$GF_STATUS 			= 0;
 	$WO_NUM 			= "";
 	$WO_CODE 			= "";
@@ -121,6 +122,7 @@ else
 			if($TranslCode == 'Amount')$Amount = $LangTransl;
 			if($TranslCode == 'Select')$Select = $LangTransl;
 			if($TranslCode == 'Close')$Close = $LangTransl;
+			if($TranslCode == 'dokLam')$dokLam = $LangTransl;
 		endforeach;
 		if($LangID == 'IND')
 		{
@@ -128,6 +130,7 @@ else
 			$alert2		= "Nama gudang tidak boleh kosong.";
 			$alert3		= "Lokasi gudang tidak boleh kosong.";
 			$alert4		= "Pilih salah satu lokasi proyek ...!";
+			$alert5 	= "Anda yakin akan menghapus file ini?";
 		}
 		else
 		{
@@ -135,6 +138,7 @@ else
 			$alert2		= "Warehouse Name can not be empty.";
 			$alert3		= "Warehouse location can not be empty.";
 			$alert4		= "Select one of the project location ...";
+			$alert5 	= "Are you sure want to delete this file?";
 		}
 		
 		// START : APPROVE PROCEDURE
@@ -538,9 +542,19 @@ else
 		                        </div>
 		                        <div class="form-group">
 		                            <label for="inputName" class="col-sm-3 control-label">Nilai Jaminan</label>
-		                            <div class="col-sm-9">
-		                                <input type="text" class="form-control" name="GF_NILAI_JAMINANX" id="GF_NILAI_JAMINANX" value="<?php echo number_format($GF_NILAI_JAMINAN,2); ?>" placeholder="Nilai Jaminan (Rp)" onBlur="chgAmount(this);" onKeyPress="return isIntOnlyNew(event);" />
+		                            <div class="col-sm-3">
+		                                <input type="text" class="form-control" name="GF_NILAI_JAMINANX" id="GF_NILAI_JAMINANX" value="<?php echo number_format($GF_NILAI_JAMINAN,2); ?>" placeholder="Nilai Jaminan (Rp)" onBlur="chgAmount(this);" style="text-align: right;" onKeyPress="return isIntOnlyNew(event);" />
 		                                <input type="hidden" class="form-control" name="GF_NILAI_JAMINAN" id="GF_NILAI_JAMINAN" value="<?php echo $GF_NILAI_JAMINAN; ?>" />
+		                            </div>
+		                            <label for="inputName" class="col-sm-2 control-label">Status Dok.</label>
+		                            <div class="col-sm-4">
+		                                <select name="GF_STATDOC" id="GF_STATDOC" class="form-control select2" >
+		                                    <option value="0" > --- </option>
+		                                    <option value="1" <?php if($GF_STATDOC == 1) { ?> selected <?php } ?> > Digunakan </option>
+		                                    <option value="2" <?php if($GF_STATDOC == 2) { ?> selected <?php } ?> > Selesai </option>
+		                                    <option value="3" <?php if($GF_STATDOC == 3) { ?> selected <?php } ?> > Diperpanjang </option>
+		                                    <option value="4" <?php if($GF_STATDOC == 4) { ?> selected <?php } ?> > Kadaluwarsa </option>
+		                                </select>
 		                            </div>
 		                        </div>
 		                        <script type="text/javascript">
@@ -644,131 +658,56 @@ else
 												}
 												else
 												{
-													//$disButton	= 1;
-													if($ISCREATE == 1)
+													if(($GF_STATUS == 1 || $GF_STATUS == 4) && $ISCREATE == 1)
 													{
-														if($GF_STATUS == 1 || $GF_STATUS == 4)
-														{
-															//$disButton	= 0;
-															?>
-																<select name="GF_STATUS" id="GF_STATUS" class="form-control select2" <?php if($disButton == 1){ ?> disabled <?php } ?>>
-																	<option value="0">---</option>
-																	<option value="1"<?php if($GF_STATUS == 1) { ?> selected <?php } ?>>New</option>
-																	<option value="2"<?php if($GF_STATUS == 2) { ?> selected <?php } ?>>Confirm</option>
-																</select>
-															<?php
-														}
-														elseif($GF_STATUS == 2 || $GF_STATUS == 7)
-														{
-															//$disButton	= 0;
-															if($canApprove == 0)
-																$disButton	= 1;
-															
-															$sqlCAPPHE	= "tbl_approve_hist WHERE AH_CODE = '$GF_NUM' AND AH_APPROVER = '$DefEmp_ID'";
-															$resCAPPHE	= $this->db->count_all($sqlCAPPHE);
-															if($resCAPPHE > 0)
-																$disButton	= 1;										
-															?>
-																<select name="GF_STATUS" id="GF_STATUS" class="form-control select2" onChange="selStat(this.value)" >
-																	<option value="0">---</option>
-																	<option value="1"<?php if($GF_STATUS == 1) { ?> selected <?php } ?> disabled>New</option>
-																	<option value="2"<?php if($GF_STATUS == 2) { ?> selected <?php } ?>>Confirm</option>
-																	<option value="3"<?php if($GF_STATUS == 3) { ?> selected <?php } ?> <?php if($disabled == 1) { ?> disabled <?php } ?>>Approved</option>
-																	<option value="4"<?php if($GF_STATUS == 4) { ?> selected <?php } ?> >Revising</option>
-																	<option value="5"<?php if($GF_STATUS == 5) { ?> selected <?php } ?> >Rejected</option>
-																	<option value="6"<?php if($GF_STATUS == 6) { ?> selected <?php } ?> disabled>Closed</option>
-																	<option value="7"<?php if($GF_STATUS == 7) { ?> selected <?php } ?> >Waiting</option>
-																	<option value="9"<?php if($GF_STATUS == 9) { ?> selected <?php } ?> disabled>Void</option>
-																</select>
-															<?php
-														}
-														elseif($GF_STATUS == 3)
-														{
-															//$disButton	= 0;
-															if($canApprove == 0)
-																$disButton	= 1;
-															
-															$sqlCAPPHE	= "tbl_approve_hist WHERE AH_CODE = '$GF_NUM' AND AH_APPROVER = '$DefEmp_ID'";
-															$resCAPPHE	= $this->db->count_all($sqlCAPPHE);
-															if($resCAPPHE > 0)
-																$disButton	= 1;	
-															if($ISDELETE == 1)
-																$disButton	= 0;				
-														
-															?>
-																<select name="GF_STATUS" id="GF_STATUS" class="form-control select2" >
-																	<option value="1"<?php if($GF_STATUS == 1) { ?> selected <?php } ?> disabled>New</option>
-																	<option value="2"<?php if($GF_STATUS == 2) { ?> selected <?php } ?> disabled>Confirm</option>
-																	<option value="3"<?php if($GF_STATUS == 3) { ?> selected <?php } ?> <?php if($disabled == 1) { ?> disabled <?php } ?>>Approved</option>
-																	<option value="4"<?php if($GF_STATUS == 4) { ?> selected <?php } ?> disabled>Revising</option>
-																	<option value="5"<?php if($GF_STATUS == 5) { ?> selected <?php } ?> disabled>Rejected</option>
-																	<option value="6"<?php if($GF_STATUS == 6) { ?> selected <?php } ?> disabled>Closed</option>
-																	<option value="7"<?php if($GF_STATUS == 7) { ?> selected <?php } ?> disabled >Waiting</option>
-																	<option value="9"<?php if($GF_STATUS == 9) { ?> selected <?php } ?> disabled>Void</option>
-																</select>
-															<?php
-														}
+														//$disButton	= 0;
+														?>
+															<select name="GF_STATUS" id="GF_STATUS" class="form-control select2" <?php if($disButton == 1){ ?> disabled <?php } ?>>
+																<option value="0">---</option>
+																<option value="1"<?php if($GF_STATUS == 1) { ?> selected <?php } ?>>New</option>
+																<option value="2"<?php if($GF_STATUS == 2) { ?> selected <?php } ?>>Confirm</option>
+															</select>
+														<?php
 													}
-													elseif($ISAPPROVE == 1)
+													elseif(($GF_STATUS == 2 || $GF_STATUS == 7) && $ISAPPROVE == 1)
 													{
-														if($GF_STATUS == 1 || $GF_STATUS == 4)
-														{
-															//$disButton	= 1;
-															?>
-																<select name="GF_STATUS" id="GF_STATUS" class="form-control select2" >
-																	<option value="1">New</option>
-																	<option value="2">Confirm</option>
-																</select>
-															<?php
-														}
-														elseif($GF_STATUS == 2 || $GF_STATUS == 7)
-														{
-															//$disButton	= 0;
-															if($canApprove == 0)
-																$disButton	= 1;
-															
-															$sqlCAPPHE	= "tbl_approve_hist WHERE AH_CODE = '$GF_NUM' AND AH_APPROVER = '$DefEmp_ID'";
-															$resCAPPHE	= $this->db->count_all($sqlCAPPHE);
-															if($resCAPPHE > 0)
-																$disButton	= 1;					
+														//$disButton	= 0;
+														if($canApprove == 0)
+															$disButton	= 1;
 														
-															?>
-																<select name="GF_STATUS" id="GF_STATUS" class="form-control select2" onChange="selStat(this.value)" >
-																	<option value="1"<?php if($GF_STATUS == 1) { ?> selected <?php } ?> disabled>New</option>
-																	<option value="2"<?php if($GF_STATUS == 2) { ?> selected <?php } ?>>Confirm</option>
-																	<option value="3"<?php if($GF_STATUS == 3) { ?> selected <?php } ?> <?php if($disabled == 1) { ?> disabled <?php } ?>>Approved</option>
-																	<option value="4"<?php if($GF_STATUS == 4) { ?> selected <?php } ?> >Revising</option>
-																	<option value="5"<?php if($GF_STATUS == 5) { ?> selected <?php } ?> >Rejected</option>
-																	<option value="6"<?php if($GF_STATUS == 6) { ?> selected <?php } ?> disabled>Closed</option>
-																	<option value="7"<?php if($GF_STATUS == 7) { ?> selected <?php } ?> disabled>Waiting</option>
-																	<option value="9"<?php if($GF_STATUS == 9) { ?> selected <?php } ?> disabled>Void</option>
-																</select>
-															<?php
-														}
-														elseif($GF_STATUS == 3)
-														{
-															//$disButton	= 0;
-															if($canApprove == 0)
-																$disButton	= 1;
-															
-															$sqlCAPPHE	= "tbl_approve_hist WHERE AH_CODE = '$GF_NUM' AND AH_APPROVER = '$DefEmp_ID'";
-															$resCAPPHE	= $this->db->count_all($sqlCAPPHE);
-															if($resCAPPHE > 0)
-																$disButton	= 1;					
-														
-															?>
-																<select name="GF_STATUS" id="GF_STATUS" class="form-control select2" onChange="selStat(this.value)" >
-																	<option value="1"<?php if($GF_STATUS == 1) { ?> selected <?php } ?> disabled>New</option>
-																	<option value="2"<?php if($GF_STATUS == 2) { ?> selected <?php } ?> disabled>Confirm</option>
-																	<option value="3"<?php if($GF_STATUS == 3) { ?> selected <?php } ?> <?php if($disabled == 1) { ?> disabled <?php } ?>>Approved</option>
-																	<option value="4"<?php if($GF_STATUS == 4) { ?> selected <?php } ?> disabled>Revising</option>
-																	<option value="5"<?php if($GF_STATUS == 5) { ?> selected <?php } ?> disabled>Rejected</option>
-																	<option value="6"<?php if($GF_STATUS == 6) { ?> selected <?php } ?> disabled>Closed</option>
-																	<option value="7"<?php if($GF_STATUS == 7) { ?> selected <?php } ?> disabled >Waiting</option>
-																	<option value="9"<?php if($GF_STATUS == 9) { ?> selected <?php } ?> disabled>Void</option>
-																</select>
-															<?php
-														}
+														$sqlCAPPHE	= "tbl_approve_hist WHERE AH_CODE = '$GF_NUM' AND AH_APPROVER = '$DefEmp_ID'";
+														$resCAPPHE	= $this->db->count_all($sqlCAPPHE);
+														if($resCAPPHE > 0)
+															$disButton	= 1;										
+														?>
+															<select name="GF_STATUS" id="GF_STATUS" class="form-control select2" >
+																<option value="0">---</option>
+																<option value="1"<?php if($GF_STATUS == 1) { ?> selected <?php } ?> disabled>New</option>
+																<option value="2"<?php if($GF_STATUS == 2) { ?> selected <?php } ?>>Confirm</option>
+																<option value="3"<?php if($GF_STATUS == 3) { ?> selected <?php } ?> <?php if($disabled == 1) { ?> disabled <?php } ?>>Approved</option>
+																<option value="4"<?php if($GF_STATUS == 4) { ?> selected <?php } ?> >Revising</option>
+																<option value="5"<?php if($GF_STATUS == 5) { ?> selected <?php } ?> >Rejected</option>
+																<option value="6"<?php if($GF_STATUS == 6) { ?> selected <?php } ?> disabled>Closed</option>
+																<option value="7"<?php if($GF_STATUS == 7) { ?> selected <?php } ?> >Waiting</option>
+																<option value="9"<?php if($GF_STATUS == 9) { ?> selected <?php } ?> disabled>Void</option>
+															</select>
+														<?php
+													}
+													else
+													{
+														$disButton	= 1;
+														?>
+															<select name="GF_STATUS" id="GF_STATUS" class="form-control select2" >
+																<option value="1"<?php if($GF_STATUS == 1) { ?> selected <?php } ?> disabled>New</option>
+																<option value="2"<?php if($GF_STATUS == 2) { ?> selected <?php } ?> disabled>Confirm</option>
+																<option value="3"<?php if($GF_STATUS == 3) { ?> selected <?php } ?> disabled>Approved</option>
+																<option value="4"<?php if($GF_STATUS == 4) { ?> selected <?php } ?> disabled>Revising</option>
+																<option value="5"<?php if($GF_STATUS == 5) { ?> selected <?php } ?> disabled>Rejected</option>
+																<option value="6"<?php if($GF_STATUS == 6) { ?> selected <?php } ?> disabled>Closed</option>
+																<option value="7"<?php if($GF_STATUS == 7) { ?> selected <?php } ?> disabled >Waiting</option>
+																<option value="9"<?php if($GF_STATUS == 9) { ?> selected <?php } ?> disabled>Void</option>
+															</select>
+														<?php
 													}
 												}
 											// END : FOR ALL APPROVAL FUNCTION
@@ -780,7 +719,7 @@ else
 										<label for="inputName" class="control-label">&nbsp;</label>
 				                        <div class="input-group">
 				                            <?php
-												if($ISCREATE == 1 && $disButton == 0)
+												if(($ISCREATE == 1 || $ISAPPROVE == 1) && $disButton == 0)
 												{
 													if($task=='add')
 													{
@@ -806,6 +745,139 @@ else
 			                </div>
 			            </div>
 			        </div>
+
+					<?php
+						$shAttc 	= 0;
+						if($GF_STATUS == 1 || $GF_STATUS == 4)
+						{
+							$shAttc = 1;
+							$shTInp = 1;
+							$smTAtt = 4;
+							$smTDok = 8;
+						}
+						else
+						{
+							$shTInp = 0;
+							$smTAtt = 4;
+							$smTDok = 12;
+							$getUPL_DOC = "SELECT * FROM tbl_upload_doctrx
+											WHERE REF_NUM = '$GF_NUM' AND PRJCODE = '$PRJCODE'";
+							$resUPL_DOC = $this->db->query($getUPL_DOC);
+							if($resUPL_DOC->num_rows() > 0)
+								$shAttc = 1;
+						}
+					?>
+					
+					<div class="col-md-12" <?php if($shAttc == 0) { ?> style="display: none;" <?php } ?>>
+						<div class="box box-default">
+							<div class="box-header with-border">
+								<label for="inputName"><?php echo $dokLam; ?></label>
+								<div class="box-tools pull-right">
+									<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+									</button>
+								</div>
+							</div>
+							<div class="box-body">
+								<div class="form-group">
+									<div class="col-sm-12">
+										<?php
+											// GET Upload Doc TRx
+											$getUPL_DOC = "SELECT * FROM tbl_upload_doctrx
+															WHERE REF_NUM = '$GF_NUM' AND PRJCODE = '$PRJCODE'";
+											$resUPL_DOC = $this->db->query($getUPL_DOC);
+											if($resUPL_DOC->num_rows() > 0)
+											{
+												?>
+													<label>List Uploaded</label>
+													<div class="uploaded_area">
+														<?php
+															$newRow = 0;
+															foreach($resUPL_DOC->result() as $rDOC):
+																$newRow 		= $newRow + 1;
+																$UPL_NUM		= $rDOC->UPL_NUM;
+																$REF_NUM		= $rDOC->REF_NUM;
+																$REF_CODE		= $rDOC->REF_CODE;
+																$UPL_PRJCODE	= $rDOC->PRJCODE;
+																$UPL_DATE		= $rDOC->UPL_DATE;
+																$UPL_FILENAME	= $rDOC->UPL_FILENAME;
+																$UPL_FILESIZE	= $rDOC->UPL_FILESIZE;
+																$UPL_FILETYPE	= $rDOC->UPL_FILETYPE;
+
+																?>
+																	<div class="itemFile_<?=$newRow?>">
+																		<?php
+																			if($UPL_FILETYPE == 'application/pdf') $fileicon = "fa-file-pdf-o";
+																			else $fileicon = "fa-file-image-o";
+
+																			if($GF_STATUS == 1 || $GF_STATUS == 4)
+																			{
+																				?>
+																					<div class="file">
+																						<div class="iconfile">
+																							<!-- View File -->
+																							<i class="fa <?=$fileicon?> fa-2x"></i>
+																						</div>
+																						<div class="titlefile">
+																							<?php echo $UPL_FILENAME; ?>
+																						</div>
+																						<div class="actfile">
+																							<!-- Hapus File -->
+																							<a href="#" onclick="trashItemFile(<?=$newRow?>, '<?php echo $UPL_FILENAME;?>')" title="Hapus File">
+																								<i class="fa fa-trash" style="color: red;"></i> Delete
+																							</a> 
+																							&nbsp;&nbsp;&nbsp;
+																							<!-- View File -->
+																							<a href="#" onclick="viewFile('<?php echo $UPL_FILENAME;?>')" title="View File">
+																								<i class="fa fa-eye" style="color: green;"></i> View
+																							</a>
+																							&nbsp;
+																							<!-- Download File -->
+																							<a href="<?php echo site_url("c_finance/c_grntf1l3/downloadFile/?file=".$UPL_FILENAME."&prjCode=".$UPL_PRJCODE); ?>" title="Download File">
+																								<i class="fa fa-download" style="color: green;"></i> Download
+																							</a>
+																						</div>
+																					</div>
+																					
+																				<?php
+																			}
+																			else
+																			{
+																				?>
+																					<div class="file">
+																						<div class="iconfile">
+																							<!-- View File -->
+																							<i class="fa <?=$fileicon?> fa-2x"></i>
+																						</div>
+																						<div class="titlefile">
+																							<?php echo $UPL_FILENAME; ?>
+																						</div>
+																						<div class="actfile">
+																							<!-- View File -->
+																							<a href="#" onclick="viewFile('<?php echo $UPL_FILENAME;?>')" title="View File">
+																								<i class="fa fa-eye" style="color: green;"></i> View
+																							</a>
+																							&nbsp;
+																							<a href="<?php echo site_url("c_finance/c_grntf1l3/downloadFile/?file=".$UPL_FILENAME."&prjCode=".$UPL_PRJCODE); ?>" title="Download File">
+																								<i class="fa fa-download" style="color: green;"></i> Download
+																							</a>
+																						</div>
+																					</div>
+																				<?php
+																			}
+																		?>
+																	</div>
+																<?php
+															endforeach;
+														?>
+													</div>
+												<?php
+											}
+										?>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 			    </div>
 			</form>
 
@@ -1080,6 +1152,56 @@ else
 		document.getElementById('WO_CODE').value	= WO_CODE;
 		document.getElementById('WO_VALUE').value 	= WO_VALUE;
 		document.getElementById('WO_VALUEX').value 	= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(WO_VALUE)),2));
+	}
+
+	function trashItemFile(row, fileName)
+	{		
+		swal({
+			text: "<?php echo $alert5; ?>",
+			icon: "warning",
+			buttons: ["No", "Yes"],
+		}).then((willDelete) => {
+			if (willDelete) {
+				let GF_NUM	= "<?php echo $GF_NUM; ?>";
+				let PRJCODE	= "<?php echo $PRJCODE; ?>";
+				$.ajax({
+					type: "POST",
+					url: "<?php echo site_url("c_finance/c_grntf1l3/trashFile"); ?>",
+					data: {GF_NUM:GF_NUM, PRJCODE:PRJCODE, fileName:fileName},
+					beforeSend: function(xhr) {
+						//*** console.log(xhr);
+					},
+					success: function(callback) {
+						//*** console.log(callback);
+						swal("File has been deleted!", {icon: "success",});
+						$('.itemFile_'+row).remove();
+					},
+				});
+			}
+			else {
+				swal("Your file is safe!");
+			}
+		});
+	}
+
+	function viewFile(fileName)
+	{
+		// const url 		= "<?php // echo base_url() . 'assets/AdminLTE-2.0.5/doc_center/webpdf/web/viewer.php?FileUpName='; ?>";
+		const url 		= "<?php echo 'https://sdbpplus.nke.co.id/assets/AdminLTE-2.0.5/doc_center/webpdf/web/viewer.php?FileUpName='; ?>";
+		// const urlOpen	= "<?php // echo base_url(); ?>";
+		const urlOpen	= "<?php echo "https://sdbpplus.nke.co.id/"; ?>";
+		// const urlDom	= "<?php // echo "https://sdbpplus.nke.co.id/"; ?>";
+		let PRJCODE 	= "<?php echo $PRJCODE; ?>";
+		let path 		= "GFile/"+PRJCODE+"/"+fileName+"";
+		// let FileUpName	= ''+path+'&fileName='+fileName+'&base_url='+urlOpen+'&base_urlDom='+urlDom;
+		let FileUpName	= ''+path+'&fileName='+fileName+'&base_url='+urlOpen;
+		title = 'Select Item';
+		w = 850;
+		h = 550;
+		//window.open(url,'window_baru','width=500','height=200','scrollbars=yes,resizable=yes,location=no,status=yes');
+		let left = (screen.width/2)-(w/2);
+		let top = (screen.height/2)-(h/2);
+		return window.open(url+FileUpName, title, 'toolbar=yes, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
 	}
 
 	function doDecimalFormat(angka) 

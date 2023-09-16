@@ -323,8 +323,7 @@ foreach($resCURLEV as $rowCL) :
 endforeach;
 
 // POSITION LIST
-// $sqlPOSC		= "SELECT POSS_CODE, POSS_NAME, POSS_PARENT, POSS_LEVIDX FROM tbl_position_str WHERE POSS_STAT = 1";
-$sqlPOSC		= "SELECT POSS_CODE, POSS_NAME, POSS_PARENT, POSS_LEVIDX FROM tbl_position_str WHERE POSS_ISLAST = 0";
+$sqlPOSC		= "SELECT POSS_CODE, POSS_NAME, POSS_PARENT, POSS_LEVIDX FROM tbl_position_str WHERE POSS_STAT = 1";
 $resPOSC		= $this->db->query($sqlPOSC)->result();
 ?>
 <!DOCTYPE html>

@@ -1315,6 +1315,8 @@ $DATE_NOW 		= date('Y-m-d');
 </html>
 <script>
   	$(function () {
+		let MenuCode        = "<?php echo $MenuCode; ?>";
+		let PRJCODE        	= "<?php echo $PRJCODE; ?>";
 		var DateTRX  = <?php echo $DATE_NOW; ?>;
 		if(DateTRX != '')
 			var startTRX = moment().subtract(DateTRX, 'days');
@@ -1437,6 +1439,23 @@ $DATE_NOW 		= date('Y-m-d');
 	    $(".timepicker").timepicker({
 	      showInputs: false
 	    });
+
+		// START: Generate Uniq Code
+			$.ajax({
+				url: "<?php echo site_url('c_finance/c_cho70d18/getGenerateUC_VTLK') ?>",
+				type: "POST",
+				data: {MenuCode:MenuCode, PRJCODE:PRJCODE},
+				dataType: "JSON",
+				error: function(xhr, txtstat, errthr) {
+					console.log("tes"+txtstat);
+				},
+				success: function(result) {
+					console.log(result);
+					$("#TLK_CODE").val(result);
+					$("#TLK_CODE1").val(result);
+				}
+			});
+		// END: Generate Uniq Code
 	});
 
 	// START : LOCK PROCEDURE

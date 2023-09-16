@@ -163,7 +163,7 @@ endforeach;
                         <div class="box-body">
                             <div class="col-sm-2">
                                 <label for="inputName" class="control-label"><?=$Budget?></label>
-                                <select name="PRJCODEA" id="PRJCODEA" class="form-control select2">
+                                <select name="PRJCODEA" id="PRJCODEA" class="form-control select2" onChange="grpData(this.value)">
                                     <option value=""> --- </option>
                                     <?php
                                         $s_BUDG     = "SELECT DISTINCT PRJCODE, PRJPERIOD FROM tbl_project WHERE PRJCODE_HO = '$PRJHO'";
@@ -180,7 +180,7 @@ endforeach;
                             </div>
                             <div class="col-sm-4">
                                 <label for="inputName" class="control-label">Supplier</label>
-                                <select name="SPLCODEA" id="SPLCODEA" class="form-control select2" style="width: 100%">
+                                <select name="SPLCODEA" id="SPLCODEA" class="form-control select2" style="width: 100%" onChange="grpData(this.value)">
                                     <option value=""> --- </option>
                                     <?php
                                         $s_SPL  = "SELECT DISTINCT A.SPLCODE, B.SPLDESC FROM tbl_ttk_header A
@@ -194,28 +194,6 @@ endforeach;
                                             <option value="<?php echo $SPLCODE; ?>"><?php echo "$SPLDESC"; ?></option>
                                             <?php
                                         endforeach;
-                                    ?>
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="inputName" class="control-label">No. LPM/Opn</label>
-                                <select name="DOC_REF" id="DOC_REF" class="form-control select2">
-                                    <option value=""> --- </option>
-                                    <?php
-                                        $s_DOCREF   = "SELECT IR_NUM AS DOC_NUM, IR_CODE AS DOC_CODE FROM tbl_ir_header WHERE PRJCODE = '$PRJCODE' AND IR_STAT IN (3,6)
-                                                        UNION
-                                                        SELECT OPNH_NUM AS DOC_NUM, OPNH_CODE AS DOC_CODE FROM tbl_opn_header WHERE PRJCODE = '$PRJCODE' AND OPNH_STAT IN (3,6)";
-                                        $r_DOCREF   = $this->db->query($s_DOCREF);
-                                        if($r_DOCREF->num_rows() > 0)
-                                        {
-                                            foreach($r_DOCREF->result() as $rw_DOCREF):
-                                                $DOC_NUM    = $rw_DOCREF->DOC_NUM;
-                                                $DOC_CODE   = $rw_DOCREF->DOC_CODE;
-                                                ?>
-                                                <option value="<?=$DOC_NUM?>"><?=$DOC_CODE?></option>
-                                                <?php
-                                            endforeach;
-                                        }
                                     ?>
                                 </select>
                             </div>
@@ -372,17 +350,8 @@ endforeach;
         //"scrollX": false,
         "autoWidth": true,
         "filter": true,
-        // "ajax": "<?php // echo site_url('c_purchase/c_pi180c23/get_AllData/?id='.$PRJCODE)?>",
-        "ajax": {
-            "url": "<?php echo site_url('c_purchase/c_pi180c23/get_AllData/?id='.$PRJCODE)?>",
-            "type": "GET",
-            "data": function(data) {
-                data.DOC_NUM    = $('#DOC_NUM').val();
-                data.SPLCODE    = $('#SPLCODEA').val();
-                data.PRJPERIOD  = $('#PRJCODEA').val();
-            }
-        },
-        // "type": "POST",
+        "ajax": "<?php echo site_url('c_purchase/c_pi180c23/get_AllData/?id='.$PRJCODE)?>",
+        "type": "POST",
         //"lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
         "lengthMenu": [[10, 25, 50, 100, 200], [10, 25, 50, 100, 200]],
         "columnDefs": [ { targets: [0,6], className: 'dt-body-center' },

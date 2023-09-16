@@ -307,6 +307,12 @@ $moneyFormat = new moneyFormat();
 </head>
 <body class="page A4">
     <section class="page sheet custom">
+        <div id="Layer1" <?php if($GEJ_STAT == 2) echo "style='display: none;'" ?>>
+            <a href="#" onClick="Layer1.style.visibility='hidden'; self.print(); self.close();" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Print</a>
+            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; display: none;">
+            <i class="fa fa-download"></i> Generate PDF
+            </button>
+        </div>
         <div class="cont">
             <div class="box-header">
                 <div class="box-column-logo">
@@ -477,12 +483,6 @@ $moneyFormat = new moneyFormat();
                     </tr>
                 </table>
             </div>
-        </div>
-        <div id="Layer1">
-            <a href="#" onClick="Layer1.style.visibility='hidden'; self.print(); self.close();" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Print</a>
-            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; display: none;">
-            <i class="fa fa-download"></i> Generate PDF
-            </button>
         </div>
     </section>
 </body>

@@ -50,8 +50,8 @@ else
 if($PRJCODECOL[0] != 1)
 {
 	$ArrPRJCODE 	= join("','", $PRJCODECOL);
-	$addQPRJ 		= "PRJCODE IN ('$ArrPRJCODE')";
-	$addQPRJJur 	= "A.proj_Code IN ('$ArrPRJCODE')";
+	$addQPRJ 		= "WHERE PRJCODE IN ('$ArrPRJCODE')";
+	$addQPRJ2 		= "WHERE PRJCODE IN ('$ArrPRJCODE') AND ";
 }
 else
 {
@@ -66,8 +66,10 @@ else
 		endforeach;
 		$ArrPRJCODE = join("','", $arrPRJ);
 	}
-	$addQPRJ 	= "PRJCODE IN ('$ArrPRJCODE')";
-	$addQPRJJur = "A.proj_Code IN ('$ArrPRJCODE')";
+	//$addQPRJ 	= "PRJCODE IN ('$ArrPRJCODE')";
+	//$addQPRJJur = "A.proj_Code IN ('$ArrPRJCODE')";
+	$addQPRJ 	= "";
+	$addQPRJ2 	= "";
 }
 	
 $sql = "SELECT A.proj_Number, A.PRJCODE, A.PRJCNUM, A.PRJNAME, A.PRJLOCT, A.PRJOWN, A.PRJDATE, A.PRJDATE_CO, A.PRJEDAT,
@@ -76,8 +78,7 @@ $sql = "SELECT A.proj_Number, A.PRJCODE, A.PRJCNUM, A.PRJNAME, A.PRJLOCT, A.PRJO
 			A.PRJ_MNG, A.PRJBOQ,
 			A.CHGUSER, A.CHGSTAT, A.PRJPROG, A.QTY_SPYR, A.PRC_STRK, A.PRC_ARST, A.PRC_MKNK, A.PRC_ELCT, A.PRJ_IMGNAME,
 			A.isHO
-		FROM tbl_project A
-		WHERE $addQPRJ";
+		FROM tbl_project A $addQPRJ";
 
 $resPROJ	= $this->db->query($sql)->result();
 foreach($resPROJ as $rowPROJ){
@@ -104,11 +105,12 @@ if($PRJ_MNG != '')
 }
 
 $ADDQRY_ACC1 = "";
+$ADDQRY_ACC1A= "";
 $ADDQRY_ACC2 = "";
 if($sellAccount2 != 0)
 {
 	$rowACC 	= 0;
-	$sqlACC 	= "SELECT Account_Number, Account_NameId, syncPRJ FROM tbl_chartaccount WHERE $addQPRJ AND (ID BETWEEN $sellAccount AND $sellAccount2) AND isLast = 1";
+	$sqlACC 	= "SELECT Account_Number, Account_NameId, syncPRJ FROM tbl_chartaccount WHERE $addQPRJ2 (ID BETWEEN $sellAccount AND $sellAccount2) AND isLast = 1";
 	$resACC 	= $this->db->query($sqlACC);
 	if($resACC->num_rows() > 0)
 	{
@@ -122,14 +124,15 @@ if($sellAccount2 != 0)
     			$ACCSELCOL = "'$ACCSELCOL1', $ACCSELCOL";
     	endforeach;
     	
-    	$ADDQRY_ACC1 	= "AND Account_Number IN ($ACCSELCOL)";
+    	$ADDQRY_ACC1 	= "Account_Number IN ($ACCSELCOL)";
+    	$ADDQRY_ACC1A 	= "AND Account_Number IN ($ACCSELCOL)";
 	    $ADDQRY_ACC2 	= "AND A.Acc_Id IN ($ACCSELCOL)";
 	}
 }
 elseif($sellAccount != 0)
 {
 	$rowACC 	= 0;
-	$sqlACC 	= "SELECT Account_Number, Account_NameId, syncPRJ FROM tbl_chartaccount WHERE $addQPRJ AND ID = $sellAccount AND isLast = 1";
+	$sqlACC 	= "SELECT Account_Number, Account_NameId, syncPRJ FROM tbl_chartaccount WHERE $addQPRJ2 ID = $sellAccount AND isLast = 1";
 	$resACC 	= $this->db->query($sqlACC);
 	if($resACC->num_rows() > 0)
 	{
@@ -143,7 +146,8 @@ elseif($sellAccount != 0)
     			$ACCSELCOL = "'$ACCSELCOL1', $ACCSELCOL";
     	endforeach;
     	
-    	$ADDQRY_ACC1 	= "AND Account_Number IN ($ACCSELCOL)";
+    	$ADDQRY_ACC1 	= "Account_Number IN ($ACCSELCOL)";
+    	$ADDQRY_ACC1A 	= "AND Account_Number IN ($ACCSELCOL)";
 	    $ADDQRY_ACC2 	= "AND A.Acc_Id IN ($ACCSELCOL)";
 	}
 }
@@ -152,7 +156,7 @@ $ACCSELCOL 		= $ADDQRY_ACC1;
 $Account_Number = '';
 $Account_NameId	= '';
 $syncPRJ		= $ACCSELCOL;
-$sqlACC 	= "SELECT Account_Number, Account_NameId, syncPRJ FROM tbl_chartaccount WHERE $addQPRJ $ADDQRY_ACC1";
+$sqlACC 	= "SELECT Account_Number, Account_NameId, syncPRJ FROM tbl_chartaccount WHERE $addQPRJ2 $ADDQRY_ACC1";
 $resACC 	= $this->db->query($sqlACC)->result();
 foreach($resACC as $rowACC) :
 	$Account_Number = $rowACC->Account_Number;
@@ -314,7 +318,7 @@ $DrafTTD1   = "white";
 		                <?php
 							$CASH_OUTTOT	= 0;
 							$sqlACC		= "SELECT Account_Class FROM tbl_chartaccount 
-												WHERE PRJCODE = '$PRJCODE' $ADDQRY_ACC1";
+												WHERE PRJCODE = '$PRJCODE' $ADDQRY_ACC1A";
 							$resACC	= $this->db->query($sqlACC)->result();
 							foreach($resACC as $rowACC):
 								$Account_Class	= $rowACC->Account_Class;
@@ -360,20 +364,18 @@ $DrafTTD1   = "white";
 							$sqlJRNDC		= "tbl_journaldetail A
 													INNER JOIN tbl_journalheader B ON B.JournalH_Code = A.JournalH_Code
 												WHERE 
-													$ADDQUERY
+													$addQPRJ
 													B.JournalH_Date >= '$StartDate'
 													AND B.JournalH_Date < '$EndDate'
 													AND B.GEJ_STAT = 3
 													$ADDQRY_ACC2
-													-- AND (A.Base_Debet > 0 OR A.Base_Kredit > 0)
-													-- AND A.JournalH_Code IN (SELECT C.JournalH_Code FROM tbl_journaldetail C WHERE C.Acc_Id IN ($ACCSELCOL))
 												ORDER BY B.JournalH_Date, B.JournalH_Code ASC";
 							$resJRNDC		= $this->db->count_all($sqlJRNDC);
 							
 							$JCODE2			= "";
 							$ACC_NAME 		= "";
 							$sqlACC			= "SELECT Account_Number AS ACC_NUMB, Account_NameId AS ACC_NAME FROM tbl_chartaccount 
-												WHERE PRJCODE = '$PRJCODE' $ADDQRY_ACC1";
+												WHERE PRJCODE = '$PRJCODE' $ADDQRY_ACC1A";
 							$resACC			= $this->db->query($sqlACC)->result();
 							foreach($resACC as $rowACC):
 								$ACC_NUMB	= $rowACC->ACC_NUMB;
@@ -415,7 +417,7 @@ $DrafTTD1   = "white";
 													tbl_journaldetail A
 												INNER JOIN tbl_journalheader B ON B.JournalH_Code = A.JournalH_Code
 												WHERE 
-													$ADDQUERY
+													$addQPRJ
 													B.JournalH_Date >= '$StartDate'
 													AND B.JournalH_Date < '$EndDate'
 													AND A.Acc_Id = '$ACC_NUMB'

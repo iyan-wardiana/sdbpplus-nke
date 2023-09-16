@@ -462,13 +462,13 @@ $(function () {
         }
     });
 
-	/* ----------- Change with fetch javascript --------------------
+    /* ----------- Change with fetch javascript --------------------
     getITM_CODE = function() {
         let PRJCODE     = $('#frm1PRJCODE').val();
         let ITM_GROUP   = $('#ITM_GROUP').val();
         $.ajax({
             type: "POST",
-            url: "<?php // echo base_url("c_project/c_r3p/getITM_CODE_NEW") ?>",
+            url: "<?php echo base_url("c_project/c_r3p/getITM_CODE_NEW") ?>",
             dataType: "JSON",
             data: {PRJCODE:PRJCODE, ITM_GROUP:ITM_GROUP},
             success: function(data) {
@@ -486,107 +486,107 @@ $(function () {
             }
         });
     }
-	------------------- END ------------------------------------- */
+    ----------------------- END ------------------------------------ */
     
-		$('#frm1PRJCODE').on('change', function(){
-			getITM_CODE();
-		});
+    $('#frm1PRJCODE').on('change', function(){
+        getITM_CODE();
+    });
 
-		$('#ITM_GROUP').on('change', function(){
-			getITM_CODE(); 
-		});
-  	});
+    $('#ITM_GROUP').on('change', function(){
+        getITM_CODE(); 
+    });
+  });
 
-	async function getITM_CODE()
-	{
-		let PRJCODE     = $('#frm1PRJCODE').val();
+    async function getITM_CODE()
+    {
+        let PRJCODE     = $('#frm1PRJCODE').val();
         let ITM_GROUP   = $('#ITM_GROUP').val();
-		fetch("<?php echo site_url('c_project/c_r3p/getITM_CODE_NEW/?id=') ?>"+PRJCODE+"&ITM_GROUP="+ITM_GROUP).then(function(response) {
-			return response.json();
-		}).then(function(result) {
-			const lnData    = result.length;
-			console.log(lnData);
-			if(lnData != 0) dataOpt = '<option value="1">Semua</option>';
-			for(let i=0; i<lnData; i++) {
-				let ITM_CODE = result[i].ITM_CODE;
-				let ITM_NAME = result[i].ITM_NAME;
-				dataOpt += '<option value="'+ITM_CODE+'">'+ITM_CODE+' - '+ITM_NAME+'</option>';
-			}
-			document.getElementById('frm1ITM_CODE').innerHTML = dataOpt;
-		});
-	}
-	
-	function targetJOB_popup(form)
-	{
-		var url = "<?php echo $form_action; ?>";
-		
-		PRJCODE1 = $('#frm1PRJCODE').val();
-		if(PRJCODE1 == '')
-		{
-		alert("<?php echo $alert1; ?>");
-		if(PRJCODE1 == '') $('#frm1PRJCODE').focus();
-		return false;
-		}
-		
-		JOBPARENT1 = $('#frm1JOBPARENT').val();
-		if(JOBPARENT1 == '')
-		{
-		alert("<?php echo $alert3; ?>");
-		if(JOBPARENT1 == '') $('#frm1JOBPARENT').focus();
-		return false;
-		}
+        fetch("<?php echo site_url('c_project/c_r3p/getITM_CODE_NEW/?id=') ?>"+PRJCODE+"&ITM_GROUP="+ITM_GROUP).then(function(response) {
+            return response.json();
+        }).then(function(result) {
+            const lnData    = result.length;
+            console.log(lnData);
+            if(lnData != 0) dataOpt = '<option value="1">Semua</option>';
+            for(let i=0; i<lnData; i++) {
+                let ITM_CODE = result[i].ITM_CODE;
+                let ITM_NAME = result[i].ITM_NAME;
+                dataOpt += '<option value="'+ITM_CODE+'">'+ITM_CODE+' - '+ITM_NAME+'</option>';
+            }
+            document.getElementById('frm1ITM_CODE').innerHTML = dataOpt;
+        });
+    }
+  
+    function targetJOB_popup(form)
+    {
+        var url = "<?php echo $form_action; ?>";
+        
+        PRJCODE1 = $('#frm1PRJCODE').val();
+        if(PRJCODE1 == '')
+        {
+        alert("<?php echo $alert1; ?>");
+        if(PRJCODE1 == '') $('#frm1PRJCODE').focus();
+        return false;
+        }
+        
+        JOBPARENT1 = $('#frm1JOBPARENT').val();
+        if(JOBPARENT1 == '')
+        {
+        alert("<?php echo $alert3; ?>");
+        if(JOBPARENT1 == '') $('#frm1JOBPARENT').focus();
+        return false;
+        }
 
-		// JOBCODEID = $('#JOBCODEID').val();
-		// if(JOBCODEID == '' || JOBCODEID == null)
-		// {
-		//   alert("<?php echo $alert2; ?>");
-		//   return false;
-		// }
-		
-		title = 'Select Item';
-		w = 1300;
-		h = 550;
-		var left = (screen.width/2)-(w/2);
-		var top = (screen.height/2)-(h/2);
-		window.open('url', 'formpopup', 'toolbar=yes, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-		form.target = 'formpopup';
-	}
+        // JOBCODEID = $('#JOBCODEID').val();
+        // if(JOBCODEID == '' || JOBCODEID == null)
+        // {
+        //   alert("<?php echo $alert2; ?>");
+        //   return false;
+        // }
+        
+        title = 'Select Item';
+        w = 1300;
+        h = 550;
+        var left = (screen.width/2)-(w/2);
+        var top = (screen.height/2)-(h/2);
+        window.open('url', 'formpopup', 'toolbar=yes, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+        form.target = 'formpopup';
+    }
 
-	function targetITM_popup(form)
-	{
-		var url = "<?php echo $form_action; ?>";
-		
-		PRJCODE2 = $('#frm2PRJCODE').val();
-		if(PRJCODE2 == '')
-		{
-		alert("<?php echo $alert1; ?>");
-		if(PRJCODE2 == '') $('#frm2PRJCODE').focus();
-		return false;
-		}
-		
-		JOBPARENT2 = $('#frm2JOBPARENT').val();
-		if(JOBPARENT2 == '')
-		{
-		alert("<?php echo $alert3; ?>");
-		if(JOBPARENT2 == '') $('#frm2JOBPARENT').focus();
-		return false;
-		}
+    function targetITM_popup(form)
+    {
+        var url = "<?php echo $form_action; ?>";
+        
+        PRJCODE2 = $('#frm2PRJCODE').val();
+        if(PRJCODE2 == '')
+        {
+        alert("<?php echo $alert1; ?>");
+        if(PRJCODE2 == '') $('#frm2PRJCODE').focus();
+        return false;
+        }
+        
+        JOBPARENT2 = $('#frm2JOBPARENT').val();
+        if(JOBPARENT2 == '')
+        {
+        alert("<?php echo $alert3; ?>");
+        if(JOBPARENT2 == '') $('#frm2JOBPARENT').focus();
+        return false;
+        }
 
-		// JOBCODEID = $('#JOBCODEID').val();
-		// if(JOBCODEID == '' || JOBCODEID == null)
-		// {
-		//   alert("<?php echo $alert2; ?>");
-		//   return false;
-		// }
-		
-		title = 'Select Item';
-		w = 1300;
-		h = 550;
-		var left = (screen.width/2)-(w/2);
-		var top = (screen.height/2)-(h/2);
-		window.open('url', 'formpopup', 'toolbar=yes, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-		form.target = 'formpopup';
-	}
+        // JOBCODEID = $('#JOBCODEID').val();
+        // if(JOBCODEID == '' || JOBCODEID == null)
+        // {
+        //   alert("<?php echo $alert2; ?>");
+        //   return false;
+        // }
+        
+        title = 'Select Item';
+        w = 1300;
+        h = 550;
+        var left = (screen.width/2)-(w/2);
+        var top = (screen.height/2)-(h/2);
+        window.open('url', 'formpopup', 'toolbar=yes, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+        form.target = 'formpopup';
+    }
 </script>
 <?php
     $sqlcss = "SELECT cssjs_lnk FROM tbl_cssjs WHERE cssjs_typ = 'js' AND isAct IN (1,3,4) AND cssjs_vers IN ('$vers', 'All')";

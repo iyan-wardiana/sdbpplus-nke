@@ -9,7 +9,7 @@
 if($viewType == 1)
 {
     $repDate    = date('ymdHis');
-    $fileNm     = "JobBudgetDet_".$repDate;
+    $fileNm     = "ItemBudgetDet_".$repDate;
     header("Content-type: application/octet-stream");
     header("Content-Disposition: attachment; filename=$fileNm.xls");
     header("Pragma: no-cache");
@@ -190,10 +190,10 @@ function cut_text($var, $len = 200, $txt_titik = "-")
             padding-top: 20px;
         }
 
-        .header_content .col-8 {
+        /* .header_content .col-8 {
             float: left;
             width: 60%;
-        }
+        } */
 
         .header_content .col-12 table tr th {
             border: hidden;
@@ -245,7 +245,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                     <tr>
                         <td width="50" rowspan="3" valign="top" class="style2" style="text-align:left; font-weight:bold;"><img src="<?php echo base_url() . 'assets/AdminLTE-2.0.5/dist/img/compLog/LogoPrintOut.png'; ?>" width="180"></td>
                         <td colspan="2" class="style2" style="text-align:center; font-weight:bold; text-transform:uppercase; font-size:20px">
-                            LAPORAN DETIL REALISASI <span style="font-size: 10pt; display:block; padding-top:5px;">PERIODE: <?php echo date('d-m-Y', strtotime($Start_Date));?>  S/D <?php echo date('d-m-Y', strtotime($End_Date));?></span>
+                            LAPORAN DETIL REQUEST <span style="font-size: 10pt; display:block; padding-top:5px;">PERIODE: <?php echo date('d-m-Y', strtotime($Start_Date));?>  S/D <?php echo date('d-m-Y', strtotime($End_Date));?></span>
                         </td>
                     </tr>
                     <tr>
@@ -262,8 +262,16 @@ function cut_text($var, $len = 200, $txt_titik = "-")
             <?php
             // GET JOBPARENT
                 $PRJCODEVW  = strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
+
+                $addQJOBPAR = "";
+                if($JOBPARENT[0] != '1')
+                {
+                    $joinJOBPAR     = join("','", $JOBPARENT);
+                    $addQJOBPAR     = "AND JOBCODEID IN ('$joinJOBPAR')";
+                }
+
                 $JOBCODEID  = [];
-                $getJOBPAR  = "SELECT JOBCODEID FROM tbl_joblist_detail_$PRJCODEVW WHERE JOBCODEID LIKE '$JOBPARENT%' AND ISLASTH = 1";
+                $getJOBPAR  = "SELECT JOBCODEID FROM tbl_joblist_detail_$PRJCODEVW WHERE ISLASTH = 1 $addQJOBPAR";
                 $resJOBPAR  = $this->db->query($getJOBPAR);
                 if($resJOBPAR->num_rows() > 0)
                 {
@@ -274,12 +282,12 @@ function cut_text($var, $len = 200, $txt_titik = "-")
 
                 $JoinJOBPAR     = join("','", $JOBCODEID);
 
-                $addQITM        = "";
-                if($ITM_CODE[0] != 1)
-                {
-                    $JoinITMCODE    = join("','", $ITM_CODE);
-                    $addQITM        = "AND ITM_CODE IN ('$JoinITMCODE')";
-                }
+                // $addQITM        = "";
+                // if($ITM_CODE[0] != 1)
+                // {
+                //     $JoinITMCODE    = join("','", $ITM_CODE);
+                //     $addQITM        = "AND ITM_CODE IN ('$JoinITMCODE')";
+                // }
 
             // cek LS & friends
                 $UNIT_CHK = [];
@@ -292,9 +300,8 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                     endforeach;
                 }
 
-                $getBUD_ITM     = "SELECT JOBCODEID, JOBPARENT, JOBDESC, ITM_CODE, ITM_UNIT, ITM_VOLM, ITM_BUDG, AMD_VOL, AMD_VAL, AMDM_VOL, AMDM_VAL, ITM_USED, ITM_USED_AM
-                                    FROM tbl_joblist_detail_$PRJCODEVW
-                                    WHERE ISLAST = 1 $addQITM AND JOBPARENT IN ('$JoinJOBPAR') ORDER BY JOBCODEID";
+                $getBUD_ITM     = "SELECT JOBCODEID, JOBPARENT, JOBDESC, ITM_CODE, ITM_UNIT, ITM_VOLM, ITM_BUDG, AMD_VOL, AMD_VAL, AMDM_VOL, AMDM_VAL, ITM_USED, ITM_USED_AM FROM tbl_joblist_detail_$PRJCODEVW
+                                    WHERE ISLAST = 1 AND ITM_CODE = '$ITM_CODE' AND JOBPARENT IN ('$JoinJOBPAR')";
                 $resBUD_ITM     = $this->db->query($getBUD_ITM);
                 $ITM_VOLM2      = 0;
                 $ITM_BUDG2      = 0;
@@ -343,6 +350,9 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                     $JOBDESC_H      = $rJH->JOBDESC;
                                 endforeach;
                             }
+                            
+                        $REM_VOLMBG     = $ITM_VOLMBG2;
+                        $REM_BUDG       = $ITM_BUDG2;
 
                         ?>
                             <div class="header_content">
@@ -352,7 +362,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                             <tr style="text-align:left; font-style:italic; display: none;">
                                                 <th width="150" nowrap valign="top">NAMA LAPORAN</th>
                                                 <th width="10">:</th>
-                                                <th><?php echo "$h1_title"; ?></th>
+                                                <th><?php // echo "$h1_title"; ?></th>
                                             </tr>
                                             <tr style="text-align:left; font-style:italic; display: none;">
                                                 <th width="150" nowrap valign="top">PERIODE LAPORAN</th>
@@ -602,7 +612,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                         B.IR_CODE, B.SPLCODE, B.STATDESC
                                         FROM tbl_ir_detail A
                                         INNER JOIN tbl_ir_header B ON B.IR_NUM = A.IR_NUM AND B.PRJCODE = A.PRJCODE
-                                        WHERE B.PRJCODE = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND A.ITM_CODE = '$ITM_CODE' AND B.IR_STAT NOT IN (5,9)
+                                        WHERE B.PRJCODE = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND B.IR_STAT NOT IN (5,9)
                                         AND (B.IR_DATE BETWEEN '$Start_Date' AND '$End_Date')
                                         ORDER BY B.IR_CODE, B.IR_DATE ASC";
                             $resDataIR  = $this->db->query($getIR);

@@ -54,21 +54,23 @@ $DocNumber			= $default['JournalH_Code'];
 $JournalH_Date		= $default['JournalH_Date'];*/
 $JournalH_DateX		= $JournalH_Date;
 $JournalH_DateY		= date('d/m/Y',strtotime($JournalH_Date));
-// $JournalH_Date_PD	= date('d/m/Y',strtotime($JournalH_Date_PD));
-// echo "$JournalH_Date_PD";
-// $JournalH_Date_PD	= date('d/m/Y',strtotime($JournalH_Date_PD)); // diambil dari controll C_r_pd
-/*$JournalH_Desc	= $default['JournalH_Desc'];
-$JournalH_Desc2		= $default['JournalH_Desc2'];
-$proj_Code			= $default['proj_Code'];
-$PRJCODE_HO			= $default['proj_CodeHO'];
-$PRJPERIOD			= $default['PRJPERIOD'];
-$proj_Code			= $default['proj_Code'];*/
+$JournalH_Date_PD	= date('d/m/Y',strtotime($JournalH_Date_PD));
 $PRJCODE			= $proj_Code;
 /*$GEJ_STAT_PD		= $default['GEJ_STAT_PD'];
 $acc_number			= $default['acc_number'];
 $Journal_Amount		= $default['Journal_Amount'];
 $ISPERSL			= $default['ISPERSL'];
 $PERSL_EMPID		= $default['PERSL_EMPID'];*/
+$GEJ_STAT_PD		= 1;
+$s_SR 				= "SELECT DISTINCT GEJ_STAT_PD FROM tbl_journaldetail_pd
+						WHERE JournalH_Code = '$JournalH_Code' AND proj_Code = '$PRJCODE' AND ISPERSL_REALIZ = 1";
+$r_SR				= $this->db->query($s_SR);
+if($r_SR->num_rows() > 0)
+{
+	foreach($r_SR->result() as $rw_SR):
+		$GEJ_STAT_PD= $rw_SR->GEJ_STAT_PD;
+	endforeach;
+}
 
 // GET Journal Lock
 	$disabled 	= 0;
@@ -2181,7 +2183,6 @@ $secPrint = site_url('c_finance/c_r_pd/printdocument_PD/?id='.$this->url_encrypt
 		{
 			var url         = "<?php echo site_url('lck/appStat')?>";
 			let DOC_DATE 	= $('#datepicker1').val();
-			console.log(DOC_DATE);
 			
 				
 			$.ajax({

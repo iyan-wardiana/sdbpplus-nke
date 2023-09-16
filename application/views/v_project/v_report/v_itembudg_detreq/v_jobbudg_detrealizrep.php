@@ -275,7 +275,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                 $JoinJOBPAR     = join("','", $JOBCODEID);
 
                 $addQITM        = "";
-                if($ITM_CODE[0] != 1)
+                if($ITM_CODE[0] != '1')
                 {
                     $JoinITMCODE    = join("','", $ITM_CODE);
                     $addQITM        = "AND ITM_CODE IN ('$JoinITMCODE')";
@@ -415,7 +415,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                                 INNER JOIN tbl_ir_header B ON B.IR_NUM = A.IR_NUM AND B.PRJCODE = A.PRJCODE
                                                 INNER JOIN tbl_item_$PRJCODEVW C ON C.ITM_CODE = A.ITM_CODE
                                                 WHERE B.PRJCODE = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND B.IR_STAT NOT IN (5,9)
-                                                AND (B.IR_DATE BETWEEN '$Start_Date' AND '$End_Date')
+                                                AND A.ITM_CODE = '$ITM_CODE' AND (B.IR_DATE BETWEEN '$Start_Date' AND '$End_Date')
                                                 AND C.ITM_GROUP NOT IN ('M','T')
                                                 ORDER BY B.IR_CODE, B.IR_DATE ASC";
                             $resDataIR      = $this->db->query($getDataIR);
@@ -509,7 +509,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                         FROM tbl_um_detail A
                                         INNER JOIN tbl_um_header B ON B.UM_NUM = A.UM_NUM AND B.PRJCODE = A.PRJCODE
                                         WHERE B.PRJCODE = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND B.UM_STAT NOT IN (5,9)
-                                        AND (B.UM_DATE BETWEEN '$Start_Date' AND '$End_Date')
+                                        AND A.ITM_CODE = '$ITM_CODE' AND (B.UM_DATE BETWEEN '$Start_Date' AND '$End_Date')
                                         ORDER BY B.UM_CODE, B.UM_DATE ASC";
                             $resDataUM  = $this->db->query($getUM);
                             if($resDataUM->num_rows() > 0)
@@ -602,7 +602,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                         B.IR_CODE, B.SPLCODE, B.STATDESC
                                         FROM tbl_ir_detail A
                                         INNER JOIN tbl_ir_header B ON B.IR_NUM = A.IR_NUM AND B.PRJCODE = A.PRJCODE
-                                        WHERE B.PRJCODE = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND B.IR_STAT NOT IN (5,9)
+                                        WHERE B.PRJCODE = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND A.ITM_CODE = '$ITM_CODE' AND B.IR_STAT NOT IN (5,9)
                                         AND (B.IR_DATE BETWEEN '$Start_Date' AND '$End_Date')
                                         ORDER BY B.IR_CODE, B.IR_DATE ASC";
                             $resDataIR  = $this->db->query($getIR);
@@ -695,7 +695,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                                 FROM tbl_opn_detail A
                                                 INNER JOIN tbl_opn_header B ON B.OPNH_NUM = A.OPNH_NUM AND B.PRJCODE = A.PRJCODE
                                                 WHERE B.PRJCODE = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND B.OPNH_STAT NOT IN (5,9)
-                                                AND B.OPNH_TYPE = 0 AND (B.OPNH_DATE BETWEEN '$Start_Date' AND '$End_Date')
+                                                AND A.ITM_CODE = '$ITM_CODE' AND B.OPNH_TYPE = 0 AND (B.OPNH_DATE BETWEEN '$Start_Date' AND '$End_Date')
                                                 ORDER BY B.OPNH_CODE, B.OPNH_DATE ASC";
                             $resDataOPN     = $this->db->query($getDataOPN);
                             if($resDataOPN->num_rows() > 0)
@@ -804,7 +804,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                                 FROM tbl_journaldetail_vcash A 
                                                 INNER JOIN tbl_journalheader_vcash B ON B.JournalH_Code = A.JournalH_Code AND B.proj_Code = A.proj_Code
                                                 WHERE A.proj_Code = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND B.GEJ_STAT NOT IN (5,9)
-                                                AND (B.JournalH_Date BETWEEN '$Start_Date' AND '$End_Date')
+                                                AND A.ITM_CODE = '$ITM_CODE' AND (A.JournalH_Date BETWEEN '$Start_Date' AND '$End_Date')
                                                 ORDER BY A.JournalH_Date ASC";
                             $resDataVC     = $this->db->query($getDataVC);
                             if($resDataVC->num_rows() > 0)
@@ -916,7 +916,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                                 INNER JOIN tbl_journalheader_cprj B ON B.JournalH_Code = A.JournalH_Code AND B.proj_Code = A.proj_Code
                                                 LEFT JOIN tbl_employee C ON B.PERSL_EMPID = C.Emp_ID
                                                 WHERE A.proj_Code = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND B.GEJ_STAT NOT IN (5,9)
-                                                AND (B.JournalH_Date BETWEEN '$Start_Date' AND '$End_Date')
+                                                AND A.ITM_CODE = '$ITM_CODE' AND (A.JournalH_Date BETWEEN '$Start_Date' AND '$End_Date')
                                                 ORDER BY A.JournalH_Date ASC";
                             $resDataVLK     = $this->db->query($getDataVLK);
                             if($resDataVLK->num_rows() > 0)
@@ -1038,7 +1038,7 @@ function cut_text($var, $len = 200, $txt_titik = "-")
                                                 INNER JOIN tbl_journalheader_pd B ON B.JournalH_Code = A.JournalH_Code AND B.proj_Code = A.proj_Code
                                                 LEFT JOIN tbl_employee C ON B.PERSL_EMPID = C.Emp_ID
                                                 WHERE A.proj_Code = '$PRJCODE' AND A.JOBCODEID = '$JOBCODEID' AND B.GEJ_STAT NOT IN (5,9)
-                                                AND (B.JournalH_Date BETWEEN '$Start_Date' AND '$End_Date')
+                                                AND A.ITM_CODE = '$ITM_CODE' AND (A.JournalH_Date BETWEEN '$Start_Date' AND '$End_Date')
                                                 ORDER BY A.JournalH_Date ASC";
                             $resDataPD     = $this->db->query($getDataPD);
                             if($resDataPD->num_rows() > 0)

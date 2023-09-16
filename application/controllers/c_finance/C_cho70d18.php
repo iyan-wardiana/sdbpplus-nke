@@ -9105,10 +9105,13 @@ class C_cho70d18 extends CI_Controller
 				$disabledB = 0;
 				if($r_isLS > 0)
 				{
+					if($ITM_REMVOL < 0)
+						$ITM_REMVOL= 1;
+
 					//$tempTotMax	= $ITM_BUDG - $ITM_USED_AM;		// 13
 					$tempTotMax		= $ITM_REMVAL;					// 13
 					$disabledB 		= 0;
-					$ITM_REMVOL 	= 0;
+					//$ITM_REMVOL 	= 0;
 					if($ITM_REMVAL <= 0)
 						$disabledB	= 1;
 
@@ -9207,6 +9210,14 @@ class C_cho70d18 extends CI_Controller
 					else
 					{
 						$chkBox		= "<input type='checkbox' name='chk' value='".$ACC_ID."|".$JONDESCRIP."|".$ITM_CODE."|".$ITM_GROUP."|".$JOBCODEID."|".$ITM_REMVOL."|".$ITM_REMVAL."|".$ITM_UNIT."|".$ITM_LASTP."|".$noU."' style='display: none' />";
+					}
+
+					$ISLOCKED	= $dataI['ISLOCKED'];
+					if($ISLOCKED == 1)
+					{
+						$chkBox	= 	"<label style='white-space:nowrap'><i class='fa fa-lock'></i>
+										   	</a>
+										</label>";
 					}
 
 					$JOBDESCH		= $JOBDESCPAR;

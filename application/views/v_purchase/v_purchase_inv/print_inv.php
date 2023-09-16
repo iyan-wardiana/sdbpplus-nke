@@ -260,7 +260,8 @@ $moneyFormat = new moneyFormat();
 
             $TOT_PPH    = 0;            // TOTAL PPH NON FINAL
             $TOT_PPHF   = 0;            // TOTAL PPH FINAL
-            $s_01       = "SELECT A.ITM_AMOUNT_PPH, A.TAXCODE_PPH FROM tbl_pinv_detail A WHERE A.INV_NUM = '$INV_NUM' AND A.PRJCODE = '$PRJCODE'";
+            $s_01       = "SELECT A.ITM_AMOUNT_PPH, A.TAXCODE_PPH FROM tbl_pinv_detail A
+                            WHERE A.INV_NUM = '$INV_NUM' AND A.PRJCODE = '$PRJCODE'";
             $r_01       = $this->db->query($s_01)->result();
             foreach($r_01 as $rw_01):
                 $ITM_AMOUNT_PPH = $rw_01->ITM_AMOUNT_PPH;
@@ -291,6 +292,21 @@ $moneyFormat = new moneyFormat();
                     $PPH_DESC   = "(F I N A L)";
                 }
             endforeach;
+
+            // CEK APAKAH DI HEADER MEMILIH MANUAL PPH
+                $VOCPPH    = 0;
+                $s_02       = "SELECT A.INV_AMOUNT_PPH FROM tbl_pinv_header A WHERE A.INV_NUM = '$INV_NUM' AND A.PRJCODE = '$PRJCODE'";
+                $r_02       = $this->db->query($s_02)->result();
+                foreach($r_02 as $rw_02):
+                    $VOCPPH = $rw_02->INV_AMOUNT_PPH;
+                endforeach;
+                if($VOCPPH > 0)
+                {
+                    $TOT_PPH        = $VOCPPH;
+                    $TOT_PPHV       = $VOCPPH;
+                    $ITM_AMOUNT_PPH = $VOCPPH;
+                }
+
             $INV_AMOUNT_PPH     = $TOT_PPH;
         // END : CACATAN 29-08-2022. BY DIAN HERMANTO
 
@@ -407,6 +423,12 @@ $moneyFormat = new moneyFormat();
 </head>
 <body class="page A4">
     <section class="page sheet custom">
+        <div id="Layer1">
+            <a href="#" onClick="Layer1.style.visibility='hidden'; self.print(); self.close();" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Print</a>
+            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; display: none;">
+            <i class="fa fa-download"></i> Generate PDF
+            </button>
+        </div>
         <div class="cont">
             <div class="box-header">
                 <div class="box-column-logo">
@@ -567,12 +589,6 @@ $moneyFormat = new moneyFormat();
                     </tr>
                 </table>
             </div>
-        </div>
-        <div id="Layer1">
-            <a href="#" onClick="Layer1.style.visibility='hidden'; self.print(); self.close();" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Print</a>
-            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; display: none;">
-            <i class="fa fa-download"></i> Generate PDF
-            </button>
         </div>
     </section>
     <?php

@@ -32,7 +32,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -46,7 +46,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -64,7 +64,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -78,7 +78,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -138,7 +138,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -152,7 +152,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -170,7 +170,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -184,7 +184,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -629,7 +629,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -643,7 +643,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -661,7 +661,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM
@@ -675,7 +675,7 @@ class M_opname extends CI_Model
 			{
 				$sql = "SELECT A.OPNH_NUM, A.OPNH_CODE, A.OPNH_DATE, A.PRJCODE, A.SPLCODE, A.OPNH_DEPT, A.JOBCODEID,
 							A.OPNH_NOTE, A.OPNH_STAT, OPNH_MEMO, A.WO_NUM, A.WO_CODE, A.OPNH_CREATER, A.OPNH_ISCLOSE,
-							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number,
+							A.Patt_Year, A.Patt_Month, A.Patt_Date, A.Patt_Number, A.OPNH_TYPE,
 							A.STATDESC, A.STATCOL, A.CREATERNM, B.WO_CATEG
 						FROM tbl_opn_header A
 							INNER JOIN tbl_wo_header B ON A.WO_NUM = B.WO_NUM

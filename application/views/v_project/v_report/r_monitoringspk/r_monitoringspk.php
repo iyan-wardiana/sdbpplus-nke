@@ -154,7 +154,7 @@ if($resDTRX->num_rows() > 0)
                             <div class="col-sm-10">
                                 <select name="PRJCODE" id="PRJCODE" class="form-control select2" data-placeholder="&nbsp;&nbsp;&nbsp;<?php echo $ProjectName; ?>">
                                 <!-- <option value="All" > Semua </option> -->
-                                <option value=""> --- </option>
+                                <option value="All"> --- </option>
                                     <?php
                                     if($resPRJC>0)
                                     {
@@ -203,11 +203,11 @@ if($resDTRX->num_rows() > 0)
                                 <select name="SPLCODE" id="SPLCODE" class="form-control select2" data-placeholder="&nbsp;&nbsp;<?php echo $SupplierName; ?>">
                                     <option value="All" > Semua </option>
                                     <?php
-                                        $sqlSpl	= "SELECT SPLCODE, SPLDESC FROM tbl_supplier WHERE SPLSTAT = 1 ORDER BY SPLDESC ASC";
-                                        $sqlSpl	= $this->db->query($sqlSpl)->result();
+                                        $sqlSpl = "SELECT SPLCODE, SPLDESC FROM tbl_supplier WHERE SPLSTAT = 1 ORDER BY SPLDESC ASC";
+                                        $sqlSpl = $this->db->query($sqlSpl)->result();
                                         foreach($sqlSpl as $row) :
-                                            $SPLCODE1	= $row->SPLCODE;
-                                            $SPLDESC1	= $row->SPLDESC;
+                                            $SPLCODE1   = $row->SPLCODE;
+                                            $SPLDESC1   = $row->SPLDESC;
                                             ?>
                                                 <option value="<?php echo "$SPLCODE1"; ?>">
                                                     <?php echo "$SPLDESC1 - $SPLCODE1"; ?>
@@ -215,6 +215,15 @@ if($resDTRX->num_rows() > 0)
                                             <?php
                                         endforeach;
                                     ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <label for="inputName" class="col-sm-2 control-label">Indexed by</label>
+                            <div class="col-sm-10">
+                                <select name="IDXSHOW" id="IDXSHOW" class="form-control select2">
+                                    <option value="SPK" > SPK </option>
+                                    <option value="PAY" > Pembayaran </option>
                                 </select>
                             </div>
                         </div>           
@@ -375,13 +384,21 @@ if($resDTRX->num_rows() > 0)
   {
     const url       = "<?php echo $form_action; ?>";
     const PRJCODE   = document.getElementById('PRJCODE');
+    const SPLCODE   = document.getElementById('SPLCODE');
     
-    if(PRJCODE.value == '')
+    if(PRJCODE.value == 'All')
     {
       alert("<?php echo $alert1; ?>");
       PRJCODE.focus();
       return false;
     }
+    
+    /*if(SPLCODE.value == 'All')
+    {
+      alert("Nama supplier tiak boleh kosong. Pilih semua atau salah satu.");
+      SPLCODE.focus();
+      return false;
+    }*/
     
     title = 'Select Item';
     w = 1200;

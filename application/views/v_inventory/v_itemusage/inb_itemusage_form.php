@@ -898,7 +898,6 @@ $JOBCODEIDD	= "$JOBCODEID : $JOBD";
 												endforeach;
 											
 											// $MAX_UM_VOL 	= $ITM_STOCK_VOL - $ITM_UVOL_R - $ITMRSV2;
-											$MAX_UM_VOL 	= $ITM_STOCK_VOL;
 											// $REM_VOL 		= $ITM_STOCK_VOL - $ITM_UVOL_R - $ITMRSV2;
 											$REM_VOL 		= $ITM_STOCK_VOL;
 											// $REM_VAL 		= $ITM_STOCK_VAL - $ITM_UVAL_R;
@@ -1032,7 +1031,7 @@ $JOBCODEIDD	= "$JOBCODEID : $JOBD";
 											 		<?php echo number_format($ITM_QTY, 2); ?><br>
 			                                   		<input type="hidden" name="ITM_QTY<?php echo $currentRow; ?>" id="ITM_QTY<?php echo $currentRow; ?>" value="<?php echo number_format($ITM_QTY, 2); ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="getConvertion(this,<?php echo $currentRow; ?>);" >
 			                                   		<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_QTY]" id="data<?php echo $currentRow; ?>ITM_QTY" value="<?php echo $ITM_QTY; ?>" class="form-control" style="max-width:300px;" >
-			                                   		<input type="hidden" name="data[<?php echo $currentRow; ?>][ITM_PRICE]" id="data<?php echo $currentRow; ?>ITM_PRICE" value="<?php echo $ITM_PRICE; ?>" class="form-control" style="max-width:300px;" >
+			                                   		<input type=<?php if($DefEmp_ID == 'D15040004221') { echo "text"; } else { echo "hidden"; }?> name="data[<?php echo $currentRow; ?>][ITM_PRICE]" id="data<?php echo $currentRow; ?>ITM_PRICE" value="<?php echo $ITM_PRICE; ?>" class="form-control" style="max-width:300px;" >
 			                                   		<?php if($DefEmp_ID == 'D15040004221') { echo "Prc : ".number_format($ITM_PRICE,2); } ?>
 			                                 	</td>
 											  	<td width="4%" style="text-align:center" nowrap>

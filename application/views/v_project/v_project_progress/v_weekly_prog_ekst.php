@@ -216,6 +216,7 @@ function weekNumberOfMonth($theDate)
 						{ targets: [4,5], className: 'dt-body-right' },
 						{ "width": "100px", "targets": [1] }
 					  ],
+        "order": [[ 1, "desc" ]],
 		"language": {
             "infoFiltered":"",
             "processing": "<img src='<?php echo base_url() . 'assets/AdminLTE-2.0.5/dist/img/loading/loading1.gif'; ?>' width='150' />"

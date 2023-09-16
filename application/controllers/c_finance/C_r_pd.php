@@ -892,7 +892,7 @@ class C_r_pd extends CI_Controller
 			$data['JournalH_Date_PD']= $getGEJ->JournalH_Date_PD;
 			$JournalH_Date_PD		= $getGEJ->JournalH_Date_PD;
 			if($JournalH_Date_PD == '0000-00-00' || $JournalH_Date_PD == '')
-				$data['JournalH_Date_PD'] = date('d/m/Y');
+				$data['JournalH_Date_PD'] = date('Y-m-d');
 
 			$data['JournalY'] 			= date('Y', strtotime($JournalH_Date_PD));
 			$data['JournalM'] 			= date('n', strtotime($JournalH_Date_PD));
@@ -1165,7 +1165,8 @@ class C_r_pd extends CI_Controller
 			// $upJHA			= "UPDATE tbl_journalheader SET GEJ_STAT_PD = '$GEJ_STAT_PD' WHERE JournalH_Code = '$JournalH_PD'";
 			// $this->db->query($upJHA);
 
-			$upJHA			= "UPDATE tbl_journalheader_pd SET GEJ_STAT_PD = '$GEJ_STAT_PD', REF_CODE = '$Manual_No' WHERE JournalH_Code = '$JournalH_PD'";
+			/*$upJHA			= "UPDATE tbl_journalheader_pd SET GEJ_STAT_PD = '$GEJ_STAT_PD', REF_CODE = '$Manual_No' WHERE JournalH_Code = '$JournalH_PD'";*/
+			$upJHA			= "UPDATE tbl_journalheader_pd SET REF_CODE = '$Manual_No' WHERE JournalH_Code = '$JournalH_PD'";
 			$this->db->query($upJHA);
 			
 			// START : SETTING L/R
@@ -1231,6 +1232,7 @@ class C_r_pd extends CI_Controller
 					$Base_DebetTOT_Tax	= 0;
 					$PPNH_Amount 		= 0;
 					$PPHH_Amount 		= 0;
+					$totEXPENS 			= 0;
 					if(isset($_POST['data']))
 					{
 						foreach($_POST['data'] as $d)
@@ -1290,7 +1292,7 @@ class C_r_pd extends CI_Controller
 							$curr_rate			= 1;
 							$isDirect			= 1;
 							$TAX_DATE			= htmlentities($d['TAX_DATE'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
-							$TAX_NO				= htmlentities($d['TAX_NO'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
+							$TAX_NO				= $d['TAX_NO'];
 							$Other_Desc			= htmlentities($d['Other_Desc'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 							if($Other_Desc == "")
 								$Other_Desc		= htmlentities($JournalH_Desc, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
@@ -1367,7 +1369,7 @@ class C_r_pd extends CI_Controller
 													'DOC_NUM'	=> $JournalH_Code,
 													'DOC_STEP'	=> $nextStep,
 													'DOC_CATEG'	=> "PPD");
-								$this->m_updash->updJOBPAPP($compVAR);
+								//$this->m_updash->updJOBPAPP($compVAR);
 							// END : PROCEDURE UPDATE JOBLISTDETAIL
 
 							// START : INSERT PPN (JIKA ADA)								--- DEBET
@@ -1720,7 +1722,7 @@ class C_r_pd extends CI_Controller
 										'DOC_NUM'	=> $JournalH_Code,
 										'DOC_STEP'	=> $nextStep,
 										'DOC_CATEG'	=> "PPD");
-					$this->m_updash->updJOBM($compVAR);
+					//$this->m_updash->updJOBM($compVAR);
 				// END : PROCEDURE UPDATE JOBLISTDETAIL
 
 				// RESET DETAIL
@@ -1813,7 +1815,7 @@ class C_r_pd extends CI_Controller
 									$curr_rate			= 1;
 									$isDirect			= 1;
 									$TAX_DATE			= htmlentities($d['TAX_DATE'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
-									$TAX_NO				= htmlentities($d['TAX_NO'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
+									$TAX_NO				= $d['TAX_NO'];
 									$Other_Desc			= htmlentities($d['Other_Desc'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
 									if($Other_Desc == "")
 										$Other_Desc		= htmlentities($JournalH_Desc, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 | ENT_HTML5);
@@ -1876,7 +1878,7 @@ class C_r_pd extends CI_Controller
 															'DOC_TOTAL'	=> $DOC_TOTAL,
 															'VAR_VOL_R'	=> "PPD_VOL_R",
 															'VAR_VAL_R'	=> "PPD_VAL_R");
-										$this->m_updash->updJOBP($compVAR);
+										//$this->m_updash->updJOBP($compVAR);
 									// END : PROCEDURE UPDATE JOBLISTDETAIL
 								}
 							}
@@ -1914,12 +1916,12 @@ class C_r_pd extends CI_Controller
 						if($GEJ_STAT_PD == 2)
 						{
 							// START : UPDATE FINANCIAL DASHBOARD
-								$PPD_VAL 	= $totEXPENS;
-								$finDASH 	= array('PRJCODE'	=> $PRJCODE,
-													'PERIODE'	=> $JournalH_Date_PD,
-													'FVAL'		=> $PPD_VAL,
-													'FNAME'		=> "PPD_VAL");										
-								$this->m_updash->updFINDASH($finDASH);
+								// $PPD_VAL 	= $totEXPENS;
+								// $finDASH 	= array('PRJCODE'	=> $PRJCODE,
+								// 					'PERIODE'	=> $JournalH_Date_PD,
+								// 					'FVAL'		=> $PPD_VAL,
+								// 					'FNAME'		=> "PPD_VAL");										
+								// $this->m_updash->updFINDASH($finDASH);
 							// END : UPDATE FINANCIAL DASHBOARD
 						}
 					// END : DETAIL JOURNAL

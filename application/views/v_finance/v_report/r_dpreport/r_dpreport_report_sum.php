@@ -166,11 +166,11 @@ else
 								<td colspan="3" style="text-align:center;border:none">&nbsp;</td>
 			               	</tr>
 			               	<?php
-								// $addQuery = "";
-			               		// if($PRJCODE != 1)
-								// {
-								// 	$addQuery .= " AND A.PRJCODE = '$PRJCODE'";
-								// }
+								$addQuery = "";
+			               		if($PRJCODE != 1)
+								{
+									$addQuery .= " AND A.PRJCODE = '$PRJCODE'";
+								}
 
 								// $addQSPL = "";
 								// if($SPLCODE[0] != 1)
@@ -183,7 +183,7 @@ else
 								// 				WHERE A.DP_DATE BETWEEN '$Start_Date' AND '$End_Date' $addQuery";
 								$getDP 		= "SELECT A.* FROM tbl_dp_header A 
 												WHERE A.DP_DATE BETWEEN '$Start_Date' AND '$End_Date' 
-												AND A.PRJCODE = '$PRJCODE'AND A.SPLCODE = '$SPLCODE'";
+												AND A.PRJCODE = '$PRJCODE' $addQuery";
 								$resDP 		= $this->db->query($getDP);
 								if($resDP->num_rows() > 0)
 								{
@@ -224,6 +224,8 @@ else
 										$DP_STAT 		= $rDP->DP_STAT;	
 										$DP_PAID 		= $rDP->DP_PAID;
 
+										$DP_AMOUN_TOT 	= $DP_AMOUNT;
+
 										// get SPLDESC
 											$SPLDESC 	= "";
 											$getSPL 	= "SELECT SPLDESC FROM tbl_supplier WHERE SPLCODE = '$SPLCODE'";
@@ -246,8 +248,8 @@ else
 										$getPOTDP 	= "SELECT SUM(B.INV_AMOUNT_DPB) AS TOT_DPVAL FROM tbl_pinv_detail A
 														INNER JOIN tbl_pinv_header B ON B.INV_NUM = A.INV_NUM AND B.PRJCODE = A.PRJCODE
 														WHERE TTK_NUM IN (SELECT TTK_NUM FROM tbl_ttk_detail 
-																			WHERE PRJCODE = '$PRJCODE' AND TTK_REF2_NUM = '$DP_REFNUM') 
-														AND B.PRJCODE = '$PRJCODE'";
+																			WHERE PRJCODE = '$PRJCODE' AND TTK_REF2_CODE = '$DP_REFCODE') 
+														AND B.PRJCODE = '$PRJCODE' AND A.INV_STAT NOT IN (5,9)";
 										$resPOTDP 	= $this->db->query($getPOTDP);
 										foreach($resPOTDP->result() as $rPOTDP):
 											$TOT_DPVAL 	= $rPOTDP->TOT_DPVAL;

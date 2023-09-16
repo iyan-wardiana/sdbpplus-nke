@@ -148,6 +148,12 @@ else
 		$Base_D 	= $rowBAL->Base_Debet;
 		$Base_K 	= $rowBAL->Base_Kredit;
 		$ACC_OPBAL 	= $Base_OB + $Base_D - $Base_K;
+	endforeach;	
+	
+	$sql = "SELECT PRJCODE, PRJNAME FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
+	$resultProj = $this->db->query($sql)->result();
+	foreach($resultProj as $row) :
+		$PRJNAME = $row->PRJNAME;
 	endforeach;
 }
 
@@ -157,7 +163,7 @@ else
 					WHERE LockY = $JournalY AND LockM = $JournalM AND isLock = 1 AND UserLock != '$DefEmp_ID'";
 	$resJLock 	= $this->db->query($getJLock);
 	$countJLock = $resJLock->num_rows();
-	if($countJLock == 1) $disabled = 1;
+	if($countJLock == 1) $disabled = 0; // PD tidak membentuk jurnal
 		
 if($LangID == 'IND')
 {
@@ -1618,6 +1624,7 @@ endforeach;
 					let UserLockT	= response[0].UserLock;
 					console.log("isLockT ="+isLockT+" isLockJ = "+isLockJ+" LockCateg = "+LockCateg);
 
+					/* ------ hidden: PD tidak membentuk jurnal -------
 					if(isLockJ == 1)
 					{
 						$('#alrtLockJ').css('display','');
@@ -1632,6 +1639,7 @@ endforeach;
 						$('#GEJ_STAT>option[value="3"]').removeAttr('disabled','disabled');
 						// document.getElementById('btnSave').style.display    = '';
 					}
+					------------------ End Hidden ----------------------- */
 
 					if(isLockT == 1)
 					{

@@ -5358,10 +5358,20 @@ class M_project_amd extends CI_Model
 		else if($AMD_CATEG == 'NB' || $AMD_CATEG == 'SINJ')
 			$ADDQRY1	= "SELECT JOBCODEID FROM tbl_joblist_detail WHERE ITM_CODE != '$ITM_CODEH' AND ISLASTH = '1' AND REQ_VOLM > 0";*/
 
-		if($AMD_CATEG == 'OB' || $AMD_CATEG == 'SI' || $AMD_CATEG == 'OTH')
-			$ADDQRY1	= "SELECT JOBPARENT FROM $tblName WHERE ITM_CODE = '$ITM_CODEH'";
-		else if($AMD_CATEG == 'NB' || $AMD_CATEG == 'SINJ')
-			$ADDQRY1	= "SELECT JOBCODEID FROM tbl_joblist_detail WHERE ISLASTH = '1'";
+		if($ITM_CODEH == '')
+		{
+			if($AMD_CATEG == 'OB' || $AMD_CATEG == 'SI' || $AMD_CATEG == 'OTH')
+				$ADDQRY1	= "SELECT JOBPARENT FROM $tblName WHERE ISLAST = 1";
+			else if($AMD_CATEG == 'NB' || $AMD_CATEG == 'SINJ')
+				$ADDQRY1	= "SELECT JOBCODEID FROM tbl_joblist_detail WHERE ISLASTH = '1'";
+		}
+		else
+		{
+			if($AMD_CATEG == 'OB' || $AMD_CATEG == 'SI' || $AMD_CATEG == 'OTH')
+				$ADDQRY1	= "SELECT JOBPARENT FROM $tblName WHERE ITM_CODE = '$ITM_CODEH'";
+			else if($AMD_CATEG == 'NB' || $AMD_CATEG == 'SINJ')
+				$ADDQRY1	= "SELECT JOBCODEID FROM tbl_joblist_detail WHERE ISLASTH = '1'";
+		}
 
 		if($AMD_CATEG == 'SINJ')
 		{
@@ -5384,10 +5394,20 @@ class M_project_amd extends CI_Model
 		$PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 		$tblName 	= "tbl_joblist_detail_$PRJCODEVW";
 
-		if($AMD_CATEG == 'OB' || $AMD_CATEG == 'SI' || $AMD_CATEG == 'OTH')
-			$ADDQRY1	= "SELECT JOBPARENT FROM $tblName WHERE ITM_CODE = '$ITM_CODEH'";
-		else if($AMD_CATEG == 'NB' || $AMD_CATEG == 'SINJ')
-			$ADDQRY1	= "SELECT JOBCODEID FROM tbl_joblist_detail WHERE ISLASTH = '1'";
+		if($ITM_CODEH == '')
+		{
+			if($AMD_CATEG == 'OB' || $AMD_CATEG == 'SI' || $AMD_CATEG == 'OTH')
+				$ADDQRY1	= "SELECT JOBPARENT FROM $tblName WHERE ISLAST = 1";
+			else if($AMD_CATEG == 'NB' || $AMD_CATEG == 'SINJ')
+				$ADDQRY1	= "SELECT JOBCODEID FROM $tblName WHERE ISLASTH = '1'";
+		}
+		else
+		{
+			if($AMD_CATEG == 'OB' || $AMD_CATEG == 'SI' || $AMD_CATEG == 'OTH')
+				$ADDQRY1	= "SELECT JOBPARENT FROM $tblName WHERE ITM_CODE = '$ITM_CODEH'";
+			else if($AMD_CATEG == 'NB' || $AMD_CATEG == 'SINJ')
+				$ADDQRY1	= "SELECT JOBCODEID FROM $tblName WHERE ISLASTH = '1'";
+		}
 
 		if($AMD_CATEG == 'SINJ')
 		{
@@ -5792,7 +5812,7 @@ class M_project_amd extends CI_Model
 					$sql = "SELECT ITM_CODE, ITM_GROUP, ITM_CATEG, ITM_NAME, ITM_UNIT, ITM_VOLMBG, ITM_PRICE, ITM_TOTALP,
 								PR_VOLM, PR_AMOUNT, AMD_VOL, AMD_VAL
 							FROM tbl_item WHERE PRJCODE IN ($PRJCOLL) AND STATUS = 1
-								AND (ITM_CODE LIKE '%$search%' ESCAPE '!' OR ITM_NAME LIKE '%$search%' ESCAPE '!') ORDER BY A.ITM_NAME";
+								AND (ITM_CODE LIKE '%$search%' ESCAPE '!' OR ITM_NAME LIKE '%$search%' ESCAPE '!') ORDER BY ITM_NAME";
 				}
 				return $this->db->query($sql);
 			}
@@ -5810,7 +5830,7 @@ class M_project_amd extends CI_Model
 					$sql = "SELECT ITM_CODE, ITM_GROUP, ITM_CATEG, ITM_NAME, ITM_UNIT, ITM_VOLMBG, ITM_PRICE, ITM_TOTALP,
 								PR_VOLM, PR_AMOUNT, AMD_VOL, AMD_VAL
 							FROM tbl_item WHERE PRJCODE IN ($PRJCOLL) AND STATUS = 1
-								AND (ITM_CODE LIKE '%$search%' ESCAPE '!' OR ITM_NAME LIKE '%$search%' ESCAPE '!') ORDER BY A.ITM_NAME LIMIT $start, $length";
+								AND (ITM_CODE LIKE '%$search%' ESCAPE '!' OR ITM_NAME LIKE '%$search%' ESCAPE '!') ORDER BY ITM_NAME LIMIT $start, $length";
 				}
 				return $this->db->query($sql);
 			}
@@ -5832,7 +5852,7 @@ class M_project_amd extends CI_Model
 					$sql = "SELECT ITM_CODE, ITM_GROUP, ITM_CATEG, ITM_NAME, ITM_UNIT, ITM_VOLMBG, ITM_PRICE, ITM_TOTALP,
 								PR_VOLM, PR_AMOUNT, AMD_VOL, AMD_VAL
 							FROM tbl_item_$PRJCODEVW WHERE STATUS = 1
-								AND (ITM_CODE LIKE '%$search%' ESCAPE '!' OR ITM_NAME LIKE '%$search%' ESCAPE '!') ORDER BY A.ITM_NAME";
+								AND (ITM_CODE LIKE '%$search%' ESCAPE '!' OR ITM_NAME LIKE '%$search%' ESCAPE '!') ORDER BY ITM_NAME";
 				}
 				return $this->db->query($sql);
 			}
@@ -5851,7 +5871,7 @@ class M_project_amd extends CI_Model
 					$sql = "SELECT ITM_CODE, ITM_GROUP, ITM_CATEG, ITM_NAME, ITM_UNIT, ITM_VOLMBG, ITM_PRICE, ITM_TOTALP,
 								PR_VOLM, PR_AMOUNT, AMD_VOL, AMD_VAL
 							FROM tbl_item_$PRJCODEVW WHERE STATUS = 1
-								AND (ITM_CODE LIKE '%$search%' ESCAPE '!' OR ITM_NAME LIKE '%$search%' ESCAPE '!') ORDER BY A.ITM_NAME LIMIT $start, $length";
+								AND (ITM_CODE LIKE '%$search%' ESCAPE '!' OR ITM_NAME LIKE '%$search%' ESCAPE '!') ORDER BY ITM_NAME LIMIT $start, $length";
 				}
 				return $this->db->query($sql);
 			}
