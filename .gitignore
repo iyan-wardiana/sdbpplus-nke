@@ -19,7 +19,12 @@ user_guide_src/cilexer/build/*
 user_guide_src/cilexer/dist/*
 user_guide_src/cilexer/pycilexer.egg-info/*
 vendor/
-assets/AdminLTE-2.0.5/doc_center/uploads/
+assets/
+import_excel/
+uploads/
+mail_attachment/
+qrcodelist/
+!assets/AdminLTE-2.0.5/*/viewer.php
 node_modules/
 system/
 

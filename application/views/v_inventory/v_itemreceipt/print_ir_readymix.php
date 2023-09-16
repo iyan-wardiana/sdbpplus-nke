@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $title; ?></title>
+    <link rel="icon" type="image/png" href="<?php echo base_url() . 'assets/AdminLTE-2.0.5/dist/img/favicon/contract.png'; ?>" sizes="32x32">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.0/css/font-awesome.min.css" integrity="sha512-FEQLazq9ecqLN5T6wWq26hCZf7kPqUbFC9vsHNbXMJtSZZWAcbJspT+/NEAQkBfFReZ8r9QlA9JHaAuo28MTJA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style type="text/css">
+        @page { margin: 0 }
+        body { margin: 0 }
+        .sheet {
+          margin: 0;
+          overflow: hidden;
+          position: relative;
+          box-sizing: border-box;
+          page-break-after: always;
+        }
+
+        /** Paper sizes **/
+        body.A3               .sheet { width: 297mm; height: 419mm }
+        body.A3.landscape     .sheet { width: 420mm; height: 296mm }
+        body.A4               .sheet { width: 210mm; height: 296mm }
+        body.A4.landscape     .sheet { width: 297mm; height: 209mm }
+        body.A5               .sheet { width: 148mm; height: 209mm }
+        body.A5.landscape     .sheet { width: 210mm; height: 147mm }
+        body.letter           .sheet { width: 216mm; height: 279mm }
+        body.letter.landscape .sheet { width: 280mm; height: 215mm }
+        body.legal            .sheet { width: 216mm; height: 356mm }
+        body.legal.landscape  .sheet { width: 357mm; height: 215mm }
+
+        /** Padding area **/
+        .sheet.padding-10mm { padding: 10mm }
+        .sheet.padding-15mm { padding: 15mm }
+        .sheet.padding-20mm { padding: 20mm }
+        .sheet.padding-25mm { padding: 25mm }
+        .sheet.custom { padding: 1cm 0.38cm 0.97cm 0.5cm }
+
+        /** For screen preview **/
+        @media screen {
+          body { background: #e0e0e0 }
+          .sheet {
+            background: white;
+            box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
+            margin: 5mm auto;
+            border-radius: 5px 5px 5px 5px;
+          }
+        }
+
+        /** Fix for Chrome issue #273306 **/
+        @media print {
+          @page { size: a4;}
+          body.A3.landscape { width: 420mm }
+          body.A3, body.A4.landscape { width: 297mm }
+          body.A4, body.A5.landscape { width: 210mm }
+          body.A5                    { width: 148mm }
+          body.letter, body.legal    { width: 216mm }
+          body.letter.landscape      { width: 280mm }
+          body.legal.landscape       { width: 357mm }
+        }
+        .cont {
+            position: relative;
+            border: 2px solid;
+        }
+        .box-header {
+            width: 100%;
+            height: 62px;
+            border-bottom: 2px solid;
+
+        }
+        .box-header .box-logo {
+            float: left;
+            width: 135px;
+            height: 100%;
+            padding-left: 2px;
+            padding-top: 17px;
+            border-right: 1px solid;
+        }
+        .box-header .box-logo > img {
+            width: 33.38mm;
+        }
+        .box-header .box-title {
+            float: left;
+            padding-right: 5px;
+            width: 385px;
+            height: 100%;
+        }
+        .box-header .box-title > span:first-child {
+            display: block;
+            margin-bottom: 7px;
+            text-align: center;
+            font-family: "Impact";
+            font-size: 15pt;
+            font-weight: bold;
+        }
+        .box-header .box-title > span:nth-child(2) {
+            display: block;
+            padding-left: 30px;
+            font-family: "Arial Narrow";
+            font-size: 14pt;
+            font-weight: bold;
+        }
+        .box-header .box-dist {
+            float: left;
+            padding: 7px 5px 5px 5px;
+            font-family: "Calibri";
+            font-size: 6pt;
+            border-right: 1px solid;
+            border-left: 1px solid;
+            height: 100%;
+        }
+        .box-header .box-frm {
+            float: left;
+            font-family: "Arial";
+            font-size: 6pt;
+            padding-top: 15px;
+            padding-left: 5px;
+            height: 100%;
+        }
+        .box-header-content {
+            width: 100%;
+            height: 30px;
+            font-family: "Arial Narrow";
+            font-size: 8pt;
+            font-weight: bold;
+            border-bottom: 2px solid;
+        }
+        .box-header-content > span:nth-child(1) {
+            float: left;
+            display: grid;
+            width: 246px;
+            height: 100%;
+            padding-left: 5px;
+            padding-top: 8px;
+            border-right: 1px solid;
+        }
+        .box-header-content > span:nth-child(2) {
+            float: left;
+            display: grid;
+            width: 350px;
+            height: 100%;
+            padding-left: 5px;
+            padding-top: 8px;
+            border-right: 1px solid;
+        }
+        .box-header-content > span:nth-child(3) {
+            float: left;
+            display: grid;
+            padding-top: 8px;
+            padding-left: 5px;
+            height: 100%;
+        }
+        .box-notes {
+            width: 100%;
+            height: 80px;
+            border-bottom: 2px solid;
+            padding: 10px;
+        }
+        .box-notes > span:first-child {
+            display: grid;
+            font-family: "Arial Black";
+            font-size: 7pt;
+        }
+        .box-notes .notes {
+            float: left;
+            width: 447px;
+            margin-right: 25px;
+        }
+        .box-notes .notes > ul li {
+            font-family: "Arial Narraw";
+            font-size: 7pt;
+            font-weight: bold;
+            padding-left: 5px;
+        }
+        .box-notes .notes-nb {
+            float: left;
+            width: 250px;
+            font-family: "Arial Narraw";
+            font-size: 7pt;
+        }
+        .box-detail-header {
+            float: left;
+            width: 100%;
+            /*height: 40px;*/
+            border-bottom: 2px solid;
+            margin-top: -6px;
+        }
+        .box-detail-header .box-column-1 {
+            float: left;
+            width: 190px;
+            border-right: 1px solid;
+            font-family: "Arial Black";
+            font-size: 7pt;
+            padding: 5px;
+        }
+        .box-detail-header .box-column-1 > span {
+            display: block;
+        }
+        .box-detail-header .box-column-2 {
+            float: left;
+            width: 300px;
+            font-family: "Arial Black";
+            font-size: 7pt;
+            border-right: 1px solid;
+            padding: 5px;
+        }
+        .box-detail-header .box-column-3 {
+            float: left;
+            width: 200px;
+            font-family: "Arial Black";
+            font-size: 7pt;
+            padding-left: 5px;
+            padding-top: 5px;
+        }
+        .box-detail-no {
+            float: left;
+            font-family: "Arial Narrow";
+            font-size: 7pt;
+            font-weight: bold;
+            height: 80px;
+        }
+        .box-detail-no .box-column-1 {
+            float: left;
+            width: 190px;
+            height: 100%;
+            padding: 10px 5px 5px 5px;
+            border-right: 1px solid;
+        }
+        .box-detail-no .box-column-2 {
+            float: left;
+            width: 565px;
+            height: 100%;
+            font-family: "Arial Narrow";
+            font-size: 8pt;
+            font-weight: bold;
+            /*border-right: 1px solid;*/
+        }
+        .box-detail-no .box-column-2 > table td {
+            padding: 2px;
+        }
+        .box-detail-no .box-column-2 > table td {
+            border-bottom: 1px solid;
+            border-right: 1px;
+        }
+        .box-detail table {
+            font-family: "Arial Narrow";
+            font-size: 7pt;
+            font-weight: bold;
+        }
+        .box-detail table thead th {
+            text-align: center;
+        }
+        .box-detail table tfoot tr td {
+            padding: 5px;
+        }
+        .box-asign table {
+            font-family: "Arial Black";
+            font-size: 6pt;
+        }
+        .detail-page-notes {
+            font-family: "Arial";
+            font-size: 5pt;
+            font-style: italic;
+        }
+        .detail-page-notes .box-column-6#company {
+            float: left;
+        }
+        .detail-page-notes .box-column-6#docfile {
+            float: right;
+            padding-right: 5px;
+        }
+        ul.dashed {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+        ul.dashed > li {
+            text-indent: -6px;
+        }
+        ul.dashed > li::before {
+            content: "- ";
+            text-indent: -5px;
+        }
+        label {
+          display: inline-block;
+          padding-left: 15px;
+          text-indent: -15px;
+        }
+        input[type='checkbox'] {
+          width: 13px;
+          height: 13px;
+          padding: 0;
+          margin:0;
+          vertical-align: bottom;
+          position: relative;
+          top: -1px;
+          *overflow: hidden;
+        }
+    </style>
+    <?php
+        class moneyFormat
+        { 
+            public function rupiah ($angka) 
+            {
+                $rupiah = number_format($angka ,2, ',' , '.' );
+                return $rupiah;
+            }
+         
+            public function terbilang ($angka)
+            {
+                $angka = (float)$angka;
+                $bilangan = array('','Satu','Dua','Tiga','Empat','Lima','Enam','Tujuh','Delapan','Sembilan','Sepuluh','Sebelas');
+                if ($angka < 12) {
+                    return $bilangan[$angka];
+                } else if ($angka < 20) {
+                    return $bilangan[$angka - 10] . ' Belas';
+                } else if ($angka < 100) {
+                    $hasil_bagi = (int)($angka / 10);
+                    $hasil_mod = $angka % 10;
+                    return trim(sprintf('%s Puluh %s', $bilangan[$hasil_bagi], $bilangan[$hasil_mod]));
+                } else if ($angka < 200) {
+                    return sprintf('Seratus %s', $this->terbilang($angka - 100));
+                } else if ($angka < 1000) {
+                    $hasil_bagi = (int)($angka / 100);
+                    $hasil_mod = $angka % 100;
+                    return trim(sprintf('%s Ratus %s', $bilangan[$hasil_bagi], $this->terbilang($hasil_mod)));
+                } else if ($angka < 2000) {
+                    return trim(sprintf('Seribu %s', $this->terbilang($angka - 1000)));
+                } else if ($angka < 1000000) {
+                    $hasil_bagi = (int)($angka / 1000); 
+                    $hasil_mod = $angka % 1000;
+                    return sprintf('%s Ribu %s', $this->terbilang($hasil_bagi), $this->terbilang($hasil_mod));
+                } else if ($angka < 1000000000) {
+                    $hasil_bagi = (int)($angka / 1000000);
+                    $hasil_mod = $angka % 1000000;
+                    return trim(sprintf('%s Juta %s', $this->terbilang($hasil_bagi), $this->terbilang($hasil_mod)));
+                } else if ($angka < 1000000000000) {
+                    $hasil_bagi = (int)($angka / 1000000000);
+                    $hasil_mod = fmod($angka, 1000000000);
+                    return trim(sprintf('%s Milyar %s', $this->terbilang($hasil_bagi), $this->terbilang($hasil_mod)));
+                } else if ($angka < 1000000000000000) {
+                    $hasil_bagi = $angka / 1000000000000;
+                    $hasil_mod = fmod($angka, 1000000000000);
+                    return trim(sprintf('%s Triliun %s', $this->terbilang($hasil_bagi), $this->terbilang($hasil_mod)));
+                } else {
+                    return 'Data Salah';
+                }
+            }
+        }
+
+        $moneyFormat = new moneyFormat();
+
+        $IR_NUM      = $default['IR_NUM'];
+        $IR_CODE     = $default['IR_CODE'];
+        $IR_DATE     = $default['IR_DATE'];
+        $IR_DUEDATE  = $default['IR_DUEDATE'];
+        $IR_SOURCE   = $default['IR_SOURCE'];
+        $PRJCODE     = $default['PRJCODE'];
+        $SPLCODE     = $default['SPLCODE'];
+        $PO_NUM      = $default['PO_NUM'];
+        $PO_CODE     = $default['PO_CODE'];
+        $PO_DATE     = $this->db->select("PO_DATE")->where(["PO_NUM" => $PO_NUM])->get("tbl_po_header")->row("PO_DATE");
+        $PR_NUM      = $default['PR_NUM'];
+        $PR_CODE     = $default['PR_CODE'];
+        $IR_REFER    = $default['IR_REFER'];
+        $IR_AMOUNT   = $default['IR_AMOUNT'];
+        $TERM_PAY    = $default['TERM_PAY'];
+        $TRXUSER     = $default['TRXUSER'];
+        $APPROVE     = $default['APPROVE'];
+        $IR_STAT     = $default['IR_STAT'];
+        $INVSTAT     = $default['INVSTAT'];
+        $IR_NOTE     = $default['IR_NOTE'];
+        $IR_NOTE2    = $default['IR_NOTE2'];
+        $REVMEMO     = $default['REVMEMO'];
+        $WH_CODE     = $default['WH_CODE'];
+        $IR_LOC      = $default['IR_LOC'];
+
+        $sqlPRJ     = "SELECT PRJNAME FROM tbl_project WHERE PRJCODE = '$PRJCODE'";
+        $resPRJ     = $this->db->query($sqlPRJ)->result();
+        foreach($resPRJ as $rowPRJ) :
+            $PRJNAME= $rowPRJ->PRJNAME;
+        endforeach;
+    ?>
+</head>
+<body class="page A4">
+    <section class="page sheet custom">
+        <div class="cont">
+            <div class="box-header">
+                <div class="box-logo">
+                    <img src="<?=base_url()?>/assets/AdminLTE-2.0.5/dist/img/NKELogo.jpg">
+                </div>
+                <div class="box-title">
+                    <span>LAPORAN PENERIMAAN BARANG (LPB)</span>
+                    <span>KHUSUS UNTUK BETON READY MIX</span>
+                </div>
+                <div class="box-dist">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-right: hidden;">
+                        <tr>
+                            <td width="30">Putih</td>
+                            <td width="5">:</td>
+                            <td width="70">COMPRTROLLER</td>
+                        </tr>
+                        <tr>
+                            <td width="30">Biru</td>
+                            <td width="5">:</td>
+                            <td width="70">ARSIP GUDANG/PENERIMA</td>
+                        </tr>
+                        <tr>
+                            <td width="30">Merah</td>
+                            <td width="5">:</td>
+                            <td width="70">PENGADAAN/OWNER</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="box-frm">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="40">Doc. No</td>
+                            <td width="5">:</td>
+                            <td>FRM.NKE.07.33</td>
+                        </tr>
+                        <tr>
+                            <td width="40">Rev</td>
+                            <td width="5">:</td>
+                            <td>(06/02/20)</td>
+                        </tr>
+                        <tr>
+                            <td width="40">Amd</td>
+                            <td width="5">:</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="box-header-content">
+                <span>NO : &nbsp;<?php echo $IR_CODE; ?></span>
+                <span>PROYEK : &nbsp;<?php echo $PRJNAME; ?></span>
+                <span>KODE PROYEK : <?php echo $PRJCODE;  ?></span>
+            </div>
+            <div class="box-notes">
+                <span>CATATAN PENERAPAN :</span>
+                <div class="notes">
+                    <ul class="dashed">
+                        <li>LPB Dibuat per no.order dan per tanggal barang diterima atas dasar harga OP/Kontrak,</li>
+                        <li>Mencatat no.gudang/peralatan & no. LPB (cetak) ini ke dalam surat jalan,</li>
+                        <li>LPB diserahkan/disampaikan (terlampir : surat jalan & dokumen pendukung) ke Pusat/Perwakilan</li>
+                        <li>Paling lambat (<span style="color: red;">4</span> hari : proyek dalam kota, <span style="color: red;">7</span> hari : proyek luar kota) sejak barang diterima,</li>
+                    </ul>
+                </div>
+                <div class="notes-nb">
+                    <dd>
+                        <dt style="text-indent: -20px;"><span style="padding-left: 10px; color: red;">*</span>: Coret yang tidak perlu</dt>
+                        <dt style="text-indent: -20px;"><span style="padding-left: 5px; color: red;">**</span>: Bila lebih dari 1 kali pengiriman dari satu OP (Partial)</dt>
+                        <dt style="text-indent: -20px;"><span style="color: red;">***</span>: Kolom disetujui Owner jika disyaratkan, terutama untuk material yang disuplai oleh Owner</dt>
+                    </dd>
+                </div>
+            </div>
+            <div class="box-detail-header">
+                <div class="box-column-1">
+                    <span>TANGGAL PENGECORAN :</span>
+                </div>
+                <div class="box-column-2">
+                    <span>PEMASOK :</span>
+                </div>
+                <div class="box-column-3">
+                    SUPPLY BY OWNER :
+                    <span>
+                        <label><input type="checkbox" name="yes" id="yes" /> Ya</label>
+                        <label><input type="checkbox" name="no" id="no" /> Tidak</label>
+                    </span>
+                </div>
+            </div>
+            <div class="box-detail-no">
+                <div class="box-column-1">
+                    <span>PETUGAS PEMBELIAN / PENGADAAN (Proyek / Pusat) <span style="color: red;">*</span> :</span>
+                </div>
+                <div class="box-column-2">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td colspan="3" style="border-right: 1px solid; font-family: 'Arial Black'; font-size: 9pt;">SPP/P :</td>
+                            <td colspan="3" style="font-family: 'Arial Black'; font-size: 9pt;">OP (Order Pembelian) :</td>
+                        </tr>
+                        <tr>
+                            <td width="130">N o m o r</td>
+                            <td>:</td>
+                            <td width="152" style="border-right: 1px solid;">&nbsp;<?php echo $PR_CODE; ?></td>
+                            <td width="70">N o m o r</td>
+                            <td>:</td>
+                            <td>&nbsp;<?php echo $PO_CODE; ?></td>
+                        </tr>
+                        <tr>
+                            <td width="130">Di Acc Engineering Tgl</td>
+                            <td>:</td>
+                            <td width="152" style="border-right: 1px solid;">&nbsp;</td>
+                            <td width="70">T a n g g a l</td>
+                            <td>:</td>
+                            <td>&nbsp;<?php echo date('d M Y', strtotime($PO_DATE)); ?></td>
+                        </tr>
+                        <tr style="border-bottom: hidden;">
+                            <td width="130">Diterima Pengadaan Tgl </td>
+                            <td>:</td>
+                            <td width="152" style="border-right: 1px solid;">&nbsp;</td>
+                            <td width="70">&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="box-detail">
+                <table width="100%" border="1" cellpadding="1" cellspacing="1">
+                    <thead>
+                        <tr>
+                            <th>JENIS BARANG</th>
+                            <th>KODE ITEM</th>
+                            <th>KODE POS PEK</th>
+                            <th>UKURAN</th>
+                            <th>VOLUME</th>
+                            <th>SAT</th>
+                            <th>HARGA</th>
+                            <th>JUMLAH HARGA</th>
+                            <th>NO. GUDANG</th>
+                            <th>NO. DOCKET</th>
+                            <th>KE <span style="color: red;">**</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            $sqlDET     = "SELECT A.IR_ID, A.PRJCODE, A.IR_NUM, A.IR_CODE, A.JOBCODEDET, A.JOBCODEID,
+                                                A.ACC_ID, A.PO_NUM, A.ITM_CODE, A.ITM_UNIT,
+                                                A.ITM_QTY_REM, A.ITM_QTY, A.POD_ID,
+                                                A.ITM_QTY_BONUS, A.ITM_PRICE, A.ITM_TOTAL, A.ITM_DISP, A.JOBPARENT, A.JOBPARDESC,
+                                                A.ITM_DISC, A.NOTES, A.TAXCODE1, A.TAXCODE2, A.TAXPRICE1, A.TAXPRICE2,
+                                                A.ISPRCREATE, A.ADD_PRVOLM, A.SJ_NUM,
+                                                B.ITM_NAME, B.ACC_ID, B.ACC_ID_UM, B.ITM_GROUP, B.ITM_CATEG,
+                                                B.ISMTRL, B.ISRENT, B.ISPART, B.ISFUEL, B.ISLUBRIC, 
+                                                B.ISFASTM, B.ISWAGE,
+                                                C.PR_NUM, C.PO_NUM
+                                            FROM tbl_ir_detail A
+                                                INNER JOIN tbl_item B ON A.ITM_CODE = B.ITM_CODE
+                                                    AND B.PRJCODE = '$PRJCODE' -- AND B.ITM_CATEG NOT IN ('UA')
+                                                INNER JOIN tbl_ir_header C ON A.IR_NUM = C.IR_NUM
+                                                    AND C.PRJCODE = '$PRJCODE'
+                                            WHERE 
+                                                A.IR_NUM = '$IR_NUM' 
+                                                AND A.PRJCODE = '$PRJCODE' ORDER BY B.ITM_NAME";
+                            $result = $this->db->query($sqlDET)->result();
+
+                            $sqlDETC    = "tbl_ir_detail A
+                                                INNER JOIN tbl_item B ON A.ITM_CODE = B.ITM_CODE
+                                                    AND B.PRJCODE = '$PRJCODE'
+                                            WHERE 
+                                            A.IR_NUM = '$IR_NUM' 
+                                            AND A.PRJCODE = '$PRJCODE'";
+                            $resultC    = $this->db->count_all($sqlDETC);
+
+                            $i      = 0;
+                            if($resultC > 0)
+                            {
+                                $IR_AMOUNT          = 0;
+                                $IR_DISC            = 0;
+                                $IR_PPN             = 0;
+                                $IR_AMOUNT_NETT     = 0;
+                                $TAXCODE_PPN        = "";
+                                $TAXCODE_PPH        = "";
+                                foreach($result as $row) :
+                                    $currRow        = ++$i;
+                                    $IR_NUM         = $row->IR_NUM;
+                                    $PR_NUM         = $row->PR_NUM;
+                                    $PO_NUM         = $row->PO_NUM;
+                                    $PRJCODE        = $PRJCODE;
+                                    $IR_ID          = $row->IR_ID;
+                                    $SJ_NUM         = $row->SJ_NUM;
+                                    $JOBCODEDET     = $row->JOBCODEDET;
+                                    $JOBCODEID      = $row->JOBCODEID;
+                                    $JOBPARENT      = $row->JOBPARENT;
+                                    $JOBPARDESC     = $row->JOBPARDESC;
+                                    $ACC_ID         = $row->ACC_ID;
+                                    $ACC_ID_UM      = $row->ACC_ID_UM;
+                                    $POD_ID         = $row->POD_ID;
+                                    $ITM_CODE       = $row->ITM_CODE;
+                                    $ITM_UNIT       = $row->ITM_UNIT;
+                                    $ITM_PRICE      = $row->ITM_PRICE;
+                                    $ITM_GROUP      = $row->ITM_GROUP;
+                                    $ITM_CATEG      = $row->ITM_CATEG;
+                                    $ITM_NAME       = $row->ITM_NAME;
+                                    $ITM_QTY_REM    = $row->ITM_QTY_REM;
+                                    $ITM_QTY        = $row->ITM_QTY;
+                                    $ITM_TOTAL      = $row->ITM_TOTAL;
+                                    $NOTES          = $row->NOTES;
+
+                                    if($JOBPARENT == '')
+                                    {
+                                        $sqlJDP     = "SELECT A.JOBCODEID, A.JOBDESC FROM tbl_joblist_detail A
+                                                        WHERE A.JOBCODEID = (SELECT B.JOBPARENT FROM tbl_joblist_detail B
+                                                            WHERE B.JOBCODEID = '$JOBCODEID')";
+                                        $resJDP     = $this->db->query($sqlJDP)->result();
+                                        foreach($resJDP as $rowJDP) :
+                                            $JOBPARENT  = $rowJDP->JOBCODEID;
+                                            $JOBPARDESC = $rowJDP->JOBDESC;
+                                        endforeach;
+                                    }
+
+                                    $CATEGNM_ITM = $this->db->distinct("IC_Name")->where(["IG_Code" => $ITM_GROUP, "IC_Code" => $ITM_CATEG])->get("tbl_itemcategory")->row("IC_Name");
+
+                                    ?>
+                                        <tr>
+                                            <td>&nbsp;<?php echo $CATEGNM_ITM; ?></td>
+                                            <td>&nbsp;<?php echo $ITM_CODE; ?></td>
+                                            <td style="text-align: center;"><?php echo $JOBCODEID; ?></td>
+                                            <td>&nbsp;<?php echo $NOTES; ?></td>
+                                            <td style="text-align: center;"><?php echo number_format($ITM_QTY, 2); ?></td>
+                                            <td style="text-align: center;"><?php echo $ITM_UNIT; ?></td>
+                                            <td style="text-align: right;"><?php echo number_format($ITM_PRICE, 2); ?></td>
+                                            <td style="text-align: right;"><?php echo number_format($ITM_TOTAL, 2); ?></td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    <?php
+
+                                endforeach;
+                            }
+
+                            $no = $i;
+                            if($no <= 20)
+                            {
+                                $amRow = 20 - $no;
+                                for($i=0;$i<$amRow;$i++)
+                                {
+                                    ?>
+                                        <tr class="blank-line">
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    <?php
+                                }
+                            }
+                        ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="11">CATATAN HASIL PENERAPAN :</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="box-asign">
+                <table width="100%" border="1" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="20">&nbsp;</td>
+                        <td width="80" style="text-align: center;">DITERIMA</td>
+                        <td width="80" style="text-align: center;">MENGETAHUI</td>
+                        <td width="80" style="text-align: center;">MENGETAHUI</td>
+                        <td width="80" style="text-align: center;">DIPERIKSA</td>
+                        <td width="80" style="text-align: center;">MENGETAHUI</td>
+                        <td width="80" style="text-align: center;">DITERIMA & DIPERIKSA</td>
+                        <td width="90">
+                            <span>DISETUJUI (OWNER)<span style="color: red;">***</span></span>
+                            <span>PT :</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20" style="font-family: 'Arial'; font-size:7pt;">Tanggal</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td width="20" style="font-family: 'Arial'; font-size:7pt;">Nama</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td width="20" style="font-family: 'Arial'; font-size:7pt;">Jabatan</td>
+                        <td style="text-align: center; word-wrap: break-word;">GUDANG / Penerima</td>
+                        <td style="text-align: center; word-wrap: break-word;">GENERAL ADMINISTRATION</td>
+                        <td style="text-align: center; word-wrap: break-word;">ENGINEERING/QC</td>
+                        <td style="text-align: center; word-wrap: break-word;">COST CONTROL PROYEK</td>
+                        <td style="text-align: center; word-wrap: break-word;">MANAJER PROY. (PM)/Mjr<span style="color: red;">*</span>) ....................</td>
+                        <td style="text-align: center; word-wrap: break-word;">COMPTROLLER & SYSTEM ANALYSIS</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td width="20" style="font-family: 'Arial'; font-size:7pt; word-wrap: break-word;">
+                            Tanda Tangan
+                        </td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="detail-page-notes">
+            <div class="box-column-6" id="company">© PT  NUSA KONSTRUKSI ENJINIRING Tbk</div>
+            <div class="box-column-6" id="docfile">File : FRM.NKE.13.01,  Auth : LT, DSR</div>
+            <div class="clearfix"></div>
+        </div>
+        <div id="Layer1" style="padding-top: 10px;">
+            <a href="#" onClick="Layer1.style.visibility='hidden'; self.print(); self.close();" class="btn btn-default"><i class="fa fa-print"></i> Print</a>
+            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px; display: none;">
+            <i class="fa fa-download"></i> Generate PDF
+            </button>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,13 @@
+Untuk laporan yang sudah dibayar
+1. Mengumpulkan VOCCODE dari tabel VOCHD berdasarkan proyek yang TDPCODE = NULL, 
+   digunakan untuk pengecualian saat pemanggilan di TTKHD1.
+2. Mengumpulkan VOCCODE dari tabel TRXBANK1 yang sudah dibayarkan.
+3. Mengumpulkan TTKCODE dari TTKDT1 dengan ketentuan YEAR(KWTDATE) > 2009 AND TRXBYR = 1.
+4. Mengumpulkan TTKCODE dari TTKHD1 dengan ketentuan YEAR(TTKDATE) > 2009.
+
+5. Membanding VOUCHER di TTKHD dan voucher di TRXBNK
+DENGAN
+5.1 Mengumpulkan semua TTKCODE berdasarkan kode proyek dari TTKDT1 
+    untuk mendapatkan nomor VOCCODE di TTKHD1
+5.2 Mengumpulkan semua VOCCODE yang sudah ada di TRXBANK tiap project
+5.3 Memanggil semua VOCCODE yang ada di TTKHD1 dan yang ada di TRXBANK1
