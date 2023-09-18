@@ -1437,7 +1437,7 @@ class C_pr180d0c extends CI_Controller
 						$ITM_BUDG 		= $rowJOBDR->ITM_BUDG;		// BUDG VAL
 						$PR_VOL 		= $rowJOBDR->PR_VOL;		// SPP VOL
 						$PR_VOL_R 		= $rowJOBDR->PR_VOL_R;		// SPP VOL_R
-						$PR_CVOL 		= $rowJOBDR->PR_CVOL;		// SPP CANCEL VOL
+						// $PR_CVOL 		= $rowJOBDR->PR_CVOL;		// SPP CANCEL VOL => sudah ngambil dari pr_detail => ITM_CODE, JOBCODEID, PR_DESC_ID
 
 						$PO_VOL 		= $rowJOBDR->PO_VOL; 		// PO VOL
 						$PO_VOL_R 		= $rowJOBDR->PO_VOL_R; 		// PO VOL_R
