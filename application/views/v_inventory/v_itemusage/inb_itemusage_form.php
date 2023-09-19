@@ -117,6 +117,7 @@ $JOBCODEIDD	= "$JOBCODEID : $JOBD";
             endforeach;
         ?>
 
+		<link rel="stylesheet" href="<?php echo base_url() . 'assets/css/pbar/css/cssprogress.css'; ?>">
         <!-- Google Font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     </head>
@@ -478,6 +479,18 @@ $JOBCODEIDD	= "$JOBCODEID : $JOBD";
 		</section>
 
 		<section class="content">
+			<div class="row">
+				<div class="col-md-12" id="idprogbar" style="display: none;">
+					<div class="cssProgress">
+				      	<div class="cssProgress">
+						    <div class="progress3">
+								<div id="progressbarXX" style="text-align: center;">0%</div>
+							</div>
+							<span class="cssProgress-label" id="information" ></span>
+						</div>
+				    </div>
+				</div>
+			</div>
 		    <div class="row">
 		        <form method="post" name="sendDate" id="sendDate" class="form-user" action="<?php echo $secGenCode; ?>" style="display:none">
 		            <table>
@@ -958,8 +971,14 @@ $JOBCODEIDD	= "$JOBCODEID : $JOBD";
 											$ttl 		= '';
 											$divDesc 	= '';
 											$isDisabled = 0;
+											$ACC_IDVw 	= '';
 											if($UM_TYPE == 1 && $ACC_ID_UM == '')
 											{
+												$secCopyCOA	= base_url().'index.php/__l1y/CopyCOA/?id=';
+												$urlCopyCOA = "$secCopyCOA~$PRJCODE~$ITM_CODE";
+												$ACC_IDVw 	= "<input type='hidden' name='urlCopyCOA".$currentRow."' id='urlCopyCOA".$currentRow."' value='".$urlCopyCOA."'>
+																<a href='javascript:void(null);' title='Silahkan klik untuk copy akun dari proyek lain' onClick='copyCOA(".$currentRow.")'><i class='fa fa-repeat'></i></a>";
+
 												$disBtn 	= 1;
 												$ItmCol0	= '<span class="label label-danger" style="font-size:12px; font-style: italic;">';
 												$ItmCol1	= '<br><span class="label label-danger" style="font-size:12px; font-style: italic;">';
@@ -1018,6 +1037,7 @@ $JOBCODEIDD	= "$JOBCODEID : $JOBD";
 											  	<td width="33%" style="text-align:left">
 													<?php echo $ITM_NAME; ?> <!-- Item Name -->
 													<?php echo "$ItmCol1$divDesc$ItmCol2"; ?>
+													<span><?=$ACC_IDVw?></span>
 												</td>
 												<td width="11%" style="text-align:right"> <!-- Item Stock -->
 													<?php
@@ -1967,6 +1987,46 @@ $JOBCODEIDD	= "$JOBCODEID : $JOBD";
 		document.getElementById('data'+intIndex+'ITM_STOCK').value 	= parseFloat(Math.abs(PPMat_Budget));
 		document.getElementById('ITM_STOCK'+intIndex).value 		= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(PPMat_Budget)),decFormat));
 		document.getElementById('totalrow').value = intIndex;
+	}
+
+	function copyCOA(row)
+	{
+		let collID  	= document.getElementById('urlCopyCOA'+row).value;
+		let myarr 		= collID.split('~');
+    	let url			= myarr[0];
+
+		document.getElementById('idprogbar').style.display 		= '';
+		document.getElementById("progressbarXX").innerHTML			="<div class='cssProgress-bar cssProgress-primary cssProgress-active' style='width: 100%; text-align:center; font-weight:bold;'><span style='text-align:center; font-weight:bold'>Please wait, we are processing synchronization ...</span></div>";
+
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {collID: collID},
+            success: function(response)
+            {
+				txtArr 		= response.split("~");
+				statAlert	= txtArr[0];
+				txtAlert 	= txtArr[1];
+
+				if(statAlert == 0) iconAlert = "warning";
+				else iconAlert = "success";
+
+                swal(txtAlert, 
+                {
+                    icon: iconAlert,
+                })
+                .then(function()
+                {
+                	location.reload();
+					// document.getElementById('some_frame_id').contentWindow.location.reload();
+
+					document.getElementById('idprogbar').style.display 		= 'none';
+					document.getElementById("progressbarXX").innerHTML		="<div class='cssProgress-bar cssProgress-primary cssProgress-active' style='width: 100%; text-align:center; font-weight:bold;'><span style='text-align:center; font-weight:bold'>Please wait, we are processing synchronization ...</span></div>";
+					
+                })
+            }
+        });
 	}
 	
 	function isIntOnlyNew(evt)
