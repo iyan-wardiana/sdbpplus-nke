@@ -917,7 +917,7 @@ if($r_INVC > 0)
 		                            <label for="inputName" class="col-sm-3 control-label">Pot. DP</label>
 		                            <div class="col-sm-4">
 		                                <?php if($TTK_STAT == 1 || $TTK_STAT == 4) { ?>
-		                                	<input type="text" class="form-control" style="text-align:right" name="TTK_AMOUNT_DPBX" id="TTK_AMOUNT_DPBX" value="<?php echo number_format($TTK_AMOUNT_DPBH, 2); ?>" onBlur="getAmountPotDP(this)" onKeyPress="return isIntOnlyNew(event);" >
+		                                	<input type="text" class="form-control" style="text-align:right" name="TTK_AMOUNT_DPBX" id="TTK_AMOUNT_DPBX" value="<?php echo number_format($TTK_AMOUNT_DPBH, 2); ?>" onBlur="getAmountPotDP(this)" onKeyPress="return isIntOnlyNew(event);" readonly >
 		                                	<input type="hidden" class="form-control" style="max-width:120px; text-align:right" name="TTK_AMOUNT_DPB" id="TTK_AMOUNT_DPB" value="<?php echo $TTK_AMOUNT_DPBH; ?>" >
 		                                <?php } else { ?>
 		                                	<input type="text" class="form-control" style="text-align:right" name="TTK_AMOUNT_DPBX" id="TTK_AMOUNT_DPBX" value="<?php echo number_format($TTK_AMOUNT_DPBH, 2); ?>" readonly>
@@ -1413,8 +1413,14 @@ if($r_INVC > 0)
 	                                                            <input type="hidden" id="data<?php echo $currentRow; ?>TAXCODE_PPN" name="data[<?php echo $currentRow; ?>][TAXCODE_PPN]" value="<?=$TAXCODE_PPN?>" class="form-control" style="min-width:100px;">
 	                                                        </td>
 	                                                        <td style="text-align:right">			<!-- DPB DETIL -->
-	                                                        	<?php echo number_format($TTK_REF1_DPB, 2); ?>
-	                                                            <input type="hidden" id="data<?php echo $currentRow; ?>TTK_REF1_DPB" name="data[<?php echo $currentRow; ?>][TTK_REF1_DPB]" value="<?php echo $TTK_REF1_DPB; ?>" class="form-control" style="max-width:300px;">
+	                                                        	<?php if($TTK_STAT == 1 || $TTK_STAT == 4) { ?>
+																	<input type="text" id="TTK_REF1_DPB<?php echo $currentRow; ?>" value="<?php echo number_format($TTK_REF1_DPB, 2); ?>" class="form-control" style="min-width:100px; text-align: right" onBlur="chgPOTDP(this, <?php echo $currentRow; ?>)">
+	                                                        	<?php } else 
+																{ echo number_format($TTK_REF1_PPH, 2); ?>
+																	<input type="hidden" id="TTK_REF1_DPB<?php echo $currentRow; ?>" value="<?php echo number_format($TTK_REF1_DPB, 2); ?>" class="form-control" style="min-width:100px; text-align: right" onBlur="chgPOTDP(this, <?php echo $currentRow; ?>)">
+																	<?php
+																} ?>
+																<input type="hidden" id="data<?php echo $currentRow; ?>TTK_REF1_DPB" name="data[<?php echo $currentRow; ?>][TTK_REF1_DPB]" value="<?php echo $TTK_REF1_DPB; ?>" class="form-control" style="max-width:300px;">
 	                                                        </td>
 	                                                        <td style="text-align:right">			<!-- RET DETIL -->
 	                                                        	<?php echo number_format($TTK_REF1_RET, 2); ?>
@@ -2106,7 +2112,7 @@ if($r_INVC > 0)
 						                                            <div class="row">
 											                            <div class="col-sm-12">
 											                                <div class="alert alert-warning alert-dismissible">
-											                                    PERHATIAN ... !!! Memilih nomor LPM dengan nomor OP yang berbeda, akan me-reset dokumen LPM yang sebelumnya sudah dipilih dan ditambahkan ke TTK.
+											                                    PERHATIAN ... !!! Memilih nomor <?php if($TTK_CATEG1 == 'IR') echo "LPM"; elseif($TTK_CATEG1 == 'OPN') echo "Opname"; elseif($TTK_CATEG1 == 'OPN-RET') echo "Retensi"; else echo "Surat Jalan"; ?> dengan nomor <?php if($TTK_CATEG1 == 'IR') echo "PO"; elseif($TTK_CATEG1 == 'OPN') echo "SPK"; elseif($TTK_CATEG1 == 'OPN-RET') echo "SPK"; else echo "PO"; ?> yang berbeda, akan me-reset dokumen LPM yang sebelumnya sudah dipilih dan ditambahkan ke TTK.
 											                                </div>
 											                            </div>
 											                        </div>
@@ -2144,7 +2150,7 @@ if($r_INVC > 0)
 						                                             <div class="row">
 											                            <div class="col-sm-12">
 											                                <div class="alert alert-warning alert-dismissible">
-											                                    PERHATIAN ... !!! Memilih nomor FPA dengan nomor OP yang berbeda, akan me-reset dokumen LPM yang sebelumnya sudah dipilih dan ditambahkan ke TTK.
+											                                    PERHATIAN ... !!! Memilih nomor LPM / SJ dengan nomor OP yang berbeda, akan me-reset dokumen LPM yang sebelumnya sudah dipilih dan ditambahkan ke TTK.
 											                                </div>
 											                            </div>
 											                        </div>
@@ -2191,7 +2197,7 @@ if($r_INVC > 0)
 						                                             <div class="row">
 											                            <div class="col-sm-12">
 											                                <div class="alert alert-warning alert-dismissible">
-											                                    PERHATIAN ... !!! Memilih nomor SJ dengan nomor OP yang berbeda, akan me-reset dokumen LPM yang sebelumnya sudah dipilih dan ditambahkan ke TTK.
+											                                    PERHATIAN ... !!! Memilih nomor LPM / SJ dengan nomor OP yang berbeda, akan me-reset dokumen LPM yang sebelumnya sudah dipilih dan ditambahkan ke TTK.
 											                                </div>
 											                            </div>
 											                        </div>
@@ -2296,7 +2302,7 @@ if($r_INVC > 0)
 									$('div.toolbar').html('<form id="form-filter" class="form-horizontal">'+
 														  '<input type="hidden" name="PO_NUMX" class="form-control" id="PO_NUMX" value="">'+
 														  '</div>&nbsp;'+
-														  '<select class="form-control select2" name="PO_NUM" id="PO_NUM" data-placeholder="Daftar PO" style="width: 250px;">'+
+														  '<select class="form-control select2" name="PO_NUM" id="PO_NUM" data-placeholder="---" style="width: 250px;">'+
 														  '<option value=""></option></select>&nbsp;'+
 														  '<button type="button" id="btn-filter" class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;OK</button>&nbsp;'+
 														  '</form>');
@@ -2304,14 +2310,14 @@ if($r_INVC > 0)
 									var PRJCODE 	= "<?=$PRJCODE?>";
 									var SPLCODE 	= "<?=$SPLCODE1?>";
 									$.ajax({
-										url: "<?php echo site_url('__l1y/get_AllPOSPL'); ?>",
+										url: "<?php echo site_url('__l1y/get_AllPOSPL/?TTKCATEG='.$TTK_CATEG1); ?>",
 										type: "POST",
 										dataType: "JSON",
 										data: {PRJCODE:PRJCODE, SPLCODE:SPLCODE},
 										success: function(result) {
 											// console.log(result.length);
 											var selected 	= "";
-											var POCODEVW 	= "<option value='0'> --- Pilih No. PO --- </option>";
+											var POCODEVW 	= "<option value='0'> --- </option>";
 											for(let i in result) {
 												PONUM 		= result[i]['PO_NUM'];
 												POCODE 		= result[i]['PO_CODE'];
@@ -3139,10 +3145,11 @@ if($r_INVC > 0)
 			objTD.innerHTML = ''+doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(OPNH_AMOUNTPPN)),2))+'<input type="hidden" id="TTK_REF1_PPN'+intIndex+'" value="'+OPNH_AMOUNTPPNV+'" class="form-control" style="min-width:100px; text-align: right" onBlur="chgTAX(this, '+intIndex+')"><input type="hidden" id="data'+intIndex+'TTK_REF1_PPN" name="data['+intIndex+'][TTK_REF1_PPN]" value="'+OPNH_AMOUNTPPN+'" class="form-control" style="min-width:100px;"><input type="hidden" id="data'+intIndex+'TAXCODE_PPN" name="data['+intIndex+'][TAXCODE_PPN]" value="'+TAXCODE_PPN+'" class="form-control" style="min-width:100px;">';
 		
 		// TTK_REF1_DPB
+			TTK_REF1_DPBV 	= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(OPNH_DPVAL)),2));
 			objTD = objTR.insertCell(objTR.cells.length);
 			objTD.style.textAlign = 'right';
 			objTD.noWrap = true;
-			objTD.innerHTML = ''+doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(OPNH_DPVAL)),2))+'<input type="hidden" id="data'+intIndex+'TTK_REF1_DPB" name="data['+intIndex+'][TTK_REF1_DPB]" value="'+OPNH_DPVAL+'" class="form-control" style="min-width:100px;">';
+			objTD.innerHTML = '<input type="text" id="TTK_REF1_DPB'+intIndex+'" value="'+TTK_REF1_DPBV+'" class="form-control" style="min-width:100px; text-align: right" onBlur="chgPOTDP(this, '+intIndex+')"><input type="hidden" id="data'+intIndex+'TTK_REF1_DPB" name="data['+intIndex+'][TTK_REF1_DPB]" value="'+OPNH_DPVAL+'" class="form-control" style="min-width:100px;">';
 		
 		//console.log('g')
 		// TTK_REF1_RET
@@ -3590,6 +3597,16 @@ if($r_INVC > 0)
 		
 		document.getElementById('TTKT_TAXAMOUNT'+row).value 			= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(TTKT_TAXAMOUNT)),decFormat));
 		document.getElementById('dataTAX'+row+'TTKT_TAXAMOUNT').value 	= parseFloat(Math.abs(TTKT_TAXAMOUNT));
+	}
+	
+	function chgPOTDP(thisVal, row)
+	{
+		var decFormat		= document.getElementById('decFormat').value;
+		var TTK_REF1_DPB	= parseFloat(eval(thisVal).value.split(",").join(""));
+		
+		document.getElementById('TTK_REF1_DPB'+row).value 			= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(TTK_REF1_DPB)),decFormat));
+		document.getElementById('data'+row+'TTK_REF1_DPB').value 	= parseFloat(Math.abs(TTK_REF1_DPB));
+		checkTotalTTK(TTK_REF1_DPB, row)
 	}
 	
 	function chgPPN(thisVal, row)

@@ -6979,6 +6979,8 @@ class C_pi180c23 extends CI_Controller
 		$PRJCODE	= $splitCode[0];
 		$SPLCODE	= $splitCode[1];
 		$TTK_CATEG	= $splitCode[2];
+
+		$WO_NUM 	= $this->input->post('PO_NUM');
 		
 		// START : FOR SERVER-SIDE
 			$order 	= $this->input->get("order");
@@ -7013,13 +7015,13 @@ class C_pi180c23 extends CI_Controller
 			$length			= $_REQUEST['length'];
 			$start			= $_REQUEST['start'];
 			$search			= $_REQUEST['search']["value"]; 
-			$num_rows 		= $this->m_purchase_inv->get_AllDataOPNC($PRJCODE, $SPLCODE, $search);
+			$num_rows 		= $this->m_purchase_inv->get_AllDataOPNC($PRJCODE, $SPLCODE, $WO_NUM, $search);
 			$total			= $num_rows;
 			$output			= array();
 			$output['draw']	= $draw;
 			$output['recordsTotal'] = $output['recordsFiltered']= $total;
 			$output['data']	= array();
-			$query 			= $this->m_purchase_inv->get_AllDataOPNL($PRJCODE, $SPLCODE, $search, $length, $start, $order, $dir);
+			$query 			= $this->m_purchase_inv->get_AllDataOPNL($PRJCODE, $SPLCODE, $WO_NUM, $search, $length, $start, $order, $dir);
 								
 			$noU			= $start + 1;
 			foreach ($query->result_array() as $dataI) 

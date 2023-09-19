@@ -18505,16 +18505,30 @@ Demikian informasi ini kami sampaikan, agar menjadi perhatian. Atas kerjasamanya
 
 	function get_AllPOSPL()
 	{
+		$TTK_CATEG 	= $_GET['TTKCATEG'];
 		$PRJCODE 	= $this->input->post("PRJCODE");
 		$SPLCODE 	= $this->input->post("SPLCODE");
 		$PRJCODEVW 	= strtolower(preg_replace("/[^a-zA-Z0-9\s]/", "", $PRJCODE));
 
-		$s_PO		= "SELECT DISTINCT A.PO_NUM, A.PO_CODE FROM tbl_ir_header A
-						WHERE A.IR_STAT = 3
-							AND A.SPLCODE = '$SPLCODE'
-							AND A.INVSTAT NOT IN ('FI')
-							AND A.PRJCODE  = '$PRJCODE'
-							AND A.TTK_CREATED = 0 ORDER BY A.SPLCODE";
+		if($TTK_CATEG == 'IR')
+		{
+			$s_PO		= "SELECT DISTINCT A.PO_NUM, A.PO_CODE FROM tbl_ir_header A
+							WHERE A.IR_STAT = 3
+								AND A.SPLCODE = '$SPLCODE'
+								AND A.INVSTAT NOT IN ('FI')
+								AND A.PRJCODE  = '$PRJCODE'
+								AND A.TTK_CREATED = 0 ORDER BY A.SPLCODE";
+		}
+		elseif($TTK_CATEG == 'OPN' || $TTK_CATEG == 'OPN-RET')
+		{
+			$s_PO		= "SELECT DISTINCT A.WO_NUM AS PO_NUM, A.WO_CODE AS PO_CODE FROM tbl_opn_header A
+							WHERE A.OPNH_STAT = 3
+								AND A.SPLCODE = '$SPLCODE'
+								-- AND A.INVSTAT NOT IN ('FI')
+								AND A.PRJCODE  = '$PRJCODE'
+								AND A.TTK_CREATED = 0 ORDER BY A.SPLCODE";
+		}
+
 		$data 		= $this->db->query($s_PO)->result();
 		echo json_encode($data);
 	}

@@ -1825,18 +1825,18 @@ class M_purchase_inv extends CI_Model
 		}
 	}
 	
-	function get_AllDataOPNC($PRJCODE, $SPLCODE, $search) // GOOD
+	function get_AllDataOPNC($PRJCODE, $SPLCODE, $WO_NUM, $search) // GOOD
 	{
 		$sql = "tbl_opn_header A
 					LEFT JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
-				WHERE A.OPNH_STAT = 3
+				WHERE A.OPNH_STAT = 3 AND A.WO_NUM = '$WO_NUM'
 					AND A.SPLCODE = '$SPLCODE' AND A.OPNH_ISCLOSE = '0' AND A.PRJCODE  = '$PRJCODE' AND A.TTK_CREATED = '0' AND A.OPNH_TYPE = '0'
 					AND (A.OPNH_CODE LIKE '%$search%' ESCAPE '!' OR A.OPNH_NOTE LIKE '%$search%' ESCAPE '!' 
 					OR B.SPLDESC LIKE '%$search%' ESCAPE '!')";
 		return $this->db->count_all($sql);
 	}
 	
-	function get_AllDataOPNL($PRJCODE, $SPLCODE, $search, $length, $start, $order, $dir) // GOOD
+	function get_AllDataOPNL($PRJCODE, $SPLCODE, $WO_NUM, $search, $length, $start, $order, $dir) // GOOD
 	{
 		if($length == -1)
 		{
@@ -1847,7 +1847,7 @@ class M_purchase_inv extends CI_Model
 							B.SPLDESC, A.OPNH_AMOUNTPPN, A.OPNH_AMOUNTPPH, A.TAXCODE_PPN, A.TAXCODE_PPH
 						FROM tbl_opn_header A
 							LEFT JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
-						WHERE A.OPNH_STAT = 3
+						WHERE A.OPNH_STAT = 3 AND A.WO_NUM = '$WO_NUM'
 							AND A.SPLCODE = '$SPLCODE' AND A.OPNH_ISCLOSE = '0' AND A.PRJCODE  = '$PRJCODE' AND A.TTK_CREATED = '0' AND A.OPNH_TYPE = '0'
 							AND (A.OPNH_CODE LIKE '%$search%' ESCAPE '!' OR A.OPNH_NOTE LIKE '%$search%' ESCAPE '!' 
 							OR B.SPLDESC LIKE '%$search%' ESCAPE '!') ORDER BY $order $dir";
@@ -1859,7 +1859,7 @@ class M_purchase_inv extends CI_Model
 							B.SPLDESC, A.OPNH_AMOUNTPPN, A.OPNH_AMOUNTPPH, A.TAXCODE_PPN, A.TAXCODE_PPH
 						FROM tbl_opn_header A
 							LEFT JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
-						WHERE A.OPNH_STAT = 3
+						WHERE A.OPNH_STAT = 3 AND A.WO_NUM = '$WO_NUM'
 							AND A.SPLCODE = '$SPLCODE' AND A.OPNH_ISCLOSE = '0' AND A.PRJCODE  = '$PRJCODE' AND A.TTK_CREATED = '0' AND A.OPNH_TYPE = '0'
 							AND (A.OPNH_CODE LIKE '%$search%' ESCAPE '!' OR A.OPNH_NOTE LIKE '%$search%' ESCAPE '!' 
 							OR B.SPLDESC LIKE '%$search%' ESCAPE '!')";
@@ -1875,7 +1875,7 @@ class M_purchase_inv extends CI_Model
 							B.SPLDESC, A.OPNH_AMOUNTPPN, A.OPNH_AMOUNTPPH, A.TAXCODE_PPN, A.TAXCODE_PPH
 						FROM tbl_opn_header A
 							LEFT JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
-						WHERE A.OPNH_STAT = 3
+						WHERE A.OPNH_STAT = 3 AND A.WO_NUM = '$WO_NUM'
 							AND A.SPLCODE = '$SPLCODE' AND A.OPNH_ISCLOSE = '0' AND A.PRJCODE  = '$PRJCODE' AND A.TTK_CREATED = '0' AND A.OPNH_TYPE = '0'
 							AND (A.OPNH_CODE LIKE '%$search%' ESCAPE '!' OR A.OPNH_NOTE LIKE '%$search%' ESCAPE '!' 
 							OR B.SPLDESC LIKE '%$search%' ESCAPE '!')
@@ -1888,7 +1888,7 @@ class M_purchase_inv extends CI_Model
 							B.SPLDESC, A.OPNH_AMOUNTPPN, A.OPNH_AMOUNTPPH, A.TAXCODE_PPN, A.TAXCODE_PPH
 						FROM tbl_opn_header A
 							LEFT JOIN tbl_supplier B ON A.SPLCODE = B.SPLCODE
-						WHERE A.OPNH_STAT = 3
+						WHERE A.OPNH_STAT = 3 AND A.WO_NUM = '$WO_NUM'
 							AND A.SPLCODE = '$SPLCODE' AND A.OPNH_ISCLOSE = '0' AND A.PRJCODE  = '$PRJCODE' AND A.TTK_CREATED = '0' AND A.OPNH_TYPE = '0'
 							AND (A.OPNH_CODE LIKE '%$search%' ESCAPE '!' OR A.OPNH_NOTE LIKE '%$search%' ESCAPE '!' 
 							OR B.SPLDESC LIKE '%$search%' ESCAPE '!') LIMIT $start, $length";
