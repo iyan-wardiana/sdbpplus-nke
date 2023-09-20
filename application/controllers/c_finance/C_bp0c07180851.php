@@ -4923,7 +4923,7 @@ class C_bp0c07180851 extends CI_Controller
 				if($disabledB == 0)
 				{
 					//$chkBox			= "<input type='checkbox' name='chk0' value='".$INV_NUM."|".$INV_CODE."|".$PRJCODE."|".$INV_AMOUNT."|".$INV_AMOUNT_PPN."|".$INV_AMOUNT_PPH."|".$INV_AMOUNT_DPB."|".$INV_AMOUNT_RET."|".$INV_AMOUNT_POT."|".$INV_AMOUNT_OTH."|".$INV_AMOUNT_TOT."|".$INT_PAIDTOT."|".$INV_ACC_OTH."|".$INV_PPN."|".$PPN_PERC."|".$INV_PPH."|".$PPH_PERC."|".$INV_NOTES."|".$SPLCODE."|".$REM_PD_Amount."' onClick='pickThis0(this);'/>";
-					$chkBox			= "<input type='radio' name='chk0' value='".$INV_NUM."|".$INV_CODE."|".$PRJCODE."|".$INV_AMOUNT."|".$INV_AMOUNT_PPN."|".$INV_AMOUNT_PPH."|".$INV_AMOUNT_DPB."|".$INV_AMOUNT_RET."|".$INV_AMOUNT_POT."|".$INV_AMOUNT_OTH."|".$INV_REMAMN."|".$INT_PAIDTOT."|".$INV_ACC_OTH."|".$INV_PPN."|".$PPN_PERC."|".$INV_PPH."|".$PPH_PERC."|".$INV_NOTES."|".$SPLCODE."|".$REM_PD_Amount."' onClick='pickThis0(this);'/>";
+					$chkBox			= "<input type='radio' name='chk0' value='".$INV_NUM."|".$INV_CODE."|".$PRJCODE."|".$INV_AMOUNT."|".$INV_AMOUNT_PPN."|".$INV_AMOUNT_PPH."|".$INV_AMOUNT_DPB."|".$INV_AMOUNT_RET."|".$INV_AMOUNT_POT."|".$INV_AMOUNT_OTH."|".$INV_AMOUNT_TOT."|".$INT_PAIDTOT."|".$INV_ACC_OTH."|".$INV_PPN."|".$PPN_PERC."|".$INV_PPH."|".$PPH_PERC."|".$INV_NOTES."|".$SPLCODE."|".$REM_PD_Amount."' onClick='pickThis0(this);'/>";
 				}
 				else
 				{
