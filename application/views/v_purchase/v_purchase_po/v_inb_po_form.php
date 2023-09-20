@@ -1237,6 +1237,7 @@ $secGenCode	= base_url().'index.php/c_purchase/c_p180c21o/genCode/'; // Generate
                                       	(%)</th>
                                       	<th width="5%" style="text-align:center; vertical-align: middle;" nowrap><?php echo $Discount; ?> </th>
                                       	<th width="9%" style="text-align:center; vertical-align: middle;" nowrap><?php echo $Tax; ?></th>
+                                      	<th width="9%" style="text-align:center; vertical-align: middle;" nowrap><?php echo $Tax; ?></th>
                                       	<th width="5%" style="text-align:center; vertical-align: middle;" nowrap><?php echo $TotalPrice; ?></th>
                                       	<th width="10%" style="text-align:center; vertical-align: middle;" nowrap><?php echo $Specification; ?></th>
                                  	</tr>
@@ -1774,6 +1775,11 @@ $secGenCode	= base_url().'index.php/c_purchase/c_p180c21o/genCode/'; // Generate
                                                         $totTaxPPnAmount	= $totTaxPPnAmount + $TAXPRICEPPn1;
                                                     }*/
                                               	?>
+                                              	<!-- TAXPRICE1 -->
+                                                <td style="text-align:right; vertical-align: middle;">
+                                                    <?php print number_format($TAXPRICE1, $decFormat); ?>
+                                                    <input style="text-align:right" type="hidden" name="data[<?php echo $noU; ?>][TAXPRICE1]" id="data<?php echo $noU; ?>TAXPRICE1" value="<?php echo $TAXPRICE1; ?>"></td>
+
                                               	<!-- ITEM TOTAL COST -->
                                                 <td style="text-align:right; vertical-align: middle;">
                                                     <?php print number_format($PO_COSTnPPn, $decFormat); ?>
