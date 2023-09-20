@@ -717,6 +717,27 @@ $moneyFormat = new moneyFormat();
                                         $ISRET          = $rJ->ISRET;
                                         $Ref_Number     = $rJ->Ref_Number;
 
+                                        $TTK_CATEG= '';
+                                        $sTTK     = "SELECT DISTINCT A.TTK_NUM, B.TTK_CATEG FROM tbl_ttk_detail A INNER JOIN tbl_ttk_header B ON A.TTK_NUM = B.TTK_NUM WHERE A.TTK_REF1_NUM = '$JournalH_Code'";
+                                        $rTTK     = $this->db->query($sTTK)->result();
+                                        foreach($rTTK as $rowTTK) :
+                                            $TTK_NUM    = $rowTTK->TTK_NUM;
+                                            $TTK_CATEG  = $rowTTK->TTK_CATEG;
+                                            if($TTK_CATEG == 'SJ')
+                                            {
+                                                $sLPM     = "SELECT SUM(TTK_REF1_AM) AS TOT_REF FROM tbl_ttk_detail WHERE TTK_REF1_NUM = '$JournalH_Code'";
+                                                $rLPM     = $this->db->query($sLPM)->result();
+                                                foreach($rLPM as $rowLPM) :
+                                                    $TOT_REF  = $rowLPM->TOT_REF;
+                                                    
+                                                    if($Journal_DK == 'D')
+                                                        $Base_Debet     = $TOT_REF;
+                                                    else
+                                                        $Base_Kredit    = $TOT_REF;
+                                                endforeach;
+                                            }
+                                        endforeach;
+
                                         $Ref_NumberD    = "";
                                         if($Ref_Number != '') $Ref_NumberD = "<div style='font-weight: bold; font-style: italic;'>No. $Ref_Number</div>";
 

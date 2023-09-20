@@ -4122,12 +4122,12 @@ class M_journal extends CI_Model
 						endforeach;
 
 						// CEK APAKAH SUDAH ADA JOURNAL SEBELUMNYA DENGAN KODE = JournalH_Code
-							$sqlCGEJ	= "tbl_journaldetail WHERE JournalH_Code = '$JournalH_Code' AND Journal_DK = 'K'
+							/* $sqlCGEJ	= "tbl_journaldetail WHERE JournalH_Code = '$JournalH_Code' AND Journal_DK = 'K'
 												AND Journal_Type = 'NTAX' AND Acc_Id = '$ACC_NUM'";
 							$resCGEJ	= $this->db->count_all($sqlCGEJ);
 							
 							if($resCGEJ == 0)
-							{
+							{ */
 									$sqlGEJDD = "INSERT INTO tbl_journaldetail (JournalH_Code, Acc_Id, proj_Code, 
 													Currency_id, JournalD_Kredit, Base_Kredit, COA_Kredit, CostCenter, 
 													curr_rate, isDirect, Journal_DK, Other_Desc, Ref_Number, Acc_Name, proj_CodeHO)
@@ -4135,7 +4135,7 @@ class M_journal extends CI_Model
 													$transacValueK, $transacValueK, 'Default',
 													1, 0, 'K', '$SPLDESC. $Other_Desc', '$Ref_Number', '$Acc_Name', '$proj_CodeHO')";
 									$this->db->query($sqlGEJDD);
-							}
+							/* }
 							else
 							{
 									$sqlUpdCOAD	= "UPDATE tbl_journaldetail SET 
@@ -4145,7 +4145,7 @@ class M_journal extends CI_Model
 													WHERE JournalH_Code = '$JournalH_Code' AND Journal_DK = 'K'
 														AND Journal_Type = 'NTAX' AND Acc_Id = '$ACC_NUM'";
 									$this->db->query($sqlUpdCOAD);
-							}
+							} */
 						// START : Update to COA - Debit
 							/*$sqlUpdCOAD	= "UPDATE tbl_chartaccount SET Base_Kredit = Base_Kredit+$transacValueGT,
 													Base_Kredit2 = Base_Kredit2+$transacValueGT
@@ -4196,6 +4196,7 @@ class M_journal extends CI_Model
 			$SPLCATEG 			= $parameters['SPL_CATEG'];
 			$ITM_PRICE 			= $parameters['ITM_PRICE'];
 			$HUT_POSIT 			= $parameters['HUT_POSIT'];
+			$TTK_CATEG 			= $parameters['TTK_CATEG'];
 			$accYr				= date('Y', strtotime($JournalH_Date));
 
 			$proj_CodeHO		= "";
@@ -4240,6 +4241,16 @@ class M_journal extends CI_Model
 							$resL_K = $this->db->query($sqlL_K)->result();					
 							foreach($resL_K as $rowL_K):
 								$ACC_NUM	= $rowL_K->LA_ACCID;
+
+								// JIKA VOUCHER RETENSI, MAKA HARUS MEMBENTUK JURNAL HUTANG RETENSI BUKAN HUTANG USAHA
+								if($TTK_CATEG == 'OPN-RET')
+								{
+									$sqlL_K	= "SELECT ACC_ID_RET FROM tglobalsetting";
+									$resL_K = $this->db->query($sqlL_K)->result();					
+									foreach($resL_K as $rowL_K):
+										$ACC_NUM	= $rowL_K->ACC_ID_RET;
+									endforeach;
+								}
 
 								$transacValueK	= $ITM_PRICE;
 								$Acc_Name 		= "-";
@@ -4298,6 +4309,16 @@ class M_journal extends CI_Model
 							$resL_K = $this->db->query($sqlL_K)->result();					
 							foreach($resL_K as $rowL_K):
 								$ACC_NUM	= $rowL_K->LA_ACCID;
+
+								// JIKA VOUCHER RETENSI, MAKA HARUS MEMBENTUK JURNAL HUTANG RETENSI BUKAN HUTANG USAHA
+								if($TTK_CATEG == 'OPN-RET')
+								{
+									$sqlL_K	= "SELECT ACC_ID_RET FROM tglobalsetting";
+									$resL_K = $this->db->query($sqlL_K)->result();					
+									foreach($resL_K as $rowL_K):
+										$ACC_NUM	= $rowL_K->ACC_ID_RET;
+									endforeach;
+								}
 
 								$transacValueK	= $ITM_PRICE;
 								$Acc_Name 		= "-";

@@ -1152,9 +1152,14 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 				                    </div>
 									<!-- OPNH_RETNO -->
 									<?php
-										$OPNH_RETNOV 		= strtoupper(substr(md5($OPNH_RETNO),-6));
-										if(trim($OPNH_RETNO) == '')
+										if($OPNH_STAT == 1 || $OPNH_STAT == 2 || $OPNH_STAT == 4 || $OPNH_STAT == 7)
+											$OPNH_RETNOV 		= strtoupper($OPNH_RETNO);
+										else
+										{
+											$OPNH_RETNOV 		= strtoupper(substr(md5($OPNH_RETNO),-6));
+											if(trim($OPNH_RETNO) == '')
 											$OPNH_RETNOV 	= "";
+										}
 									?>
 									<label for="inputName" class="col-sm-2 control-label"><?php echo "No. Retensi"; ?></label>
 				                    <div class="col-sm-4">
@@ -1162,12 +1167,18 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 						                  	<div class="input-group-addon">
 						                    	<i class="fa fa-eye-slash" style="cursor: pointer" onclick="showNum()"></i>
 						                  	</div>
-						                  	<input type="text" class="form-control" style="text-align:left" id="OPNH_RETNO" name="OPNH_RETNO" size="5" placeholder="No. Retensi" value="<?php echo $OPNH_RETNOV; ?>" <?php if($OPNH_RETPERC == 0) echo "disabled"; ?> />
+						                  	<input type="hidden" class="form-control" style="text-align:left" id="OPNH_RETNO" name="OPNH_RETNO" size="5" placeholder="No. Retensi" value="<?php echo $OPNH_RETNO; ?>" />
+						                  	<input type="text" class="form-control" style="text-align:left" id="OPNH_RETNOV" name="OPNH_RETNOV" size="5" placeholder="No. Retensi" value="<?php echo $OPNH_RETNOV; ?>" onchange="chgRETNO(this.value)" <?php if($OPNH_RETPERC == 0) echo "disabled"; ?> />
 						                </div>
 				                    </div>
 				                </div>
 
 				                <script>
+									function chgRETNO(retno)
+									{
+										document.getElementById('OPNH_RETNO').value = retno;
+									}
+									
 				                	function showNum()
 				                	{
 							            swal(
@@ -2044,6 +2055,7 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 													$MAX_OPN_VOL 	= $TOTWO_VOL;
 													$MAX_OPN_VAL 	= $TOTWO_AMN;
 													$PERC_GLOB 		= 100;
+													$PROG_PERCNEW 	= $OPND_PERC;
 													if($ITM_GROUP == 'S')
 													{
 														$JOBHCODELEV1 	= explode(".", $JOBHCODE);
@@ -2067,8 +2079,10 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 																$TOTWOVAL 	= $TOT_WOVOL;
 
 														// 2. DAPATKAN TOTAL PROGRESS MINGGUAN S.D. SAAT INI
-															$PROG_BUDG 	= 1;
-															$TOT_PROGVAL= 0;
+															$PROG_BUDG 		= 1;
+															$TOT_PROGVAL	= 0;
+															$BUDG_AMDVALP 	= 0;
+															$BUDG_AMDVALP 	= 0;
 															$s_PROG		= "SELECT PROG_BUDG,
 																				IF(SUM(PROG_VAL_EKS)='' OR SUM(PROG_VAL_EKS) IS NULL,0,SUM(PROG_VAL_EKS))
 																				AS TOT_PROG_VAL
@@ -2109,6 +2123,7 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 															// 2.1 DAPATKAN PERC PROGRESS THD VOL HEADER
 																// $PERC_GLOB 		= $TOT_PROGVAL / $PROG_BUDG * 100;
 																$PERC_GLOB 			= $TOT_PROGVAL / ($PROG_BUDG + $BUDG_AMDVALP) * 100;
+																$PERC_GLOBV			= "$TOT_PROGVAL / ($PROG_BUDG + $BUDG_AMDVALP) * 100";
 
 															// 2.2 DAPATKAN PROGRESS THD VOL SPK
 																$PROG_JOB 		= $PERC_GLOB * $JOBVAL / 100;
@@ -2331,17 +2346,17 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 
 												 	<td style="text-align:right"> <!-- Opname Percentation Now -->
 														<?php if($disRow == 0) { ?>
-														  	<input type="text" name="OPND_PERC<?php echo $currentRow; ?>" id="OPND_PERC<?php echo $currentRow; ?>" value="<?php echo number_format($OPND_PERC, 2); ?>" class="form-control" style="min-width:70px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="chgOPNPERC(this,<?php echo $currentRow; ?>);">
+														  	<input type="text" name="OPND_PERC<?php echo $currentRow; ?>" id="OPND_PERC<?php echo $currentRow; ?>" value="<?php echo number_format($PROG_PERCNEW, 2); ?>" class="form-control" style="min-width:70px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="chgOPNPERC(this,<?php echo $currentRow; ?>);">
 														<?php } else { ?>
 															<!-- <span class='label label-success' style='font-size:12px'>
-																<?php echo number_format($OPND_PERC, $decFormat); ?>
+																<?php echo number_format($PROG_PERCNEW, $decFormat); ?>
 															</span> -->
-															<?php echo number_format($OPND_PERC, $decFormat); ?>
+															<?php echo number_format($PROG_PERCNEW, $decFormat); ?>
 														  	
-														  	<input type="hidden" name="OPND_PERC<?php echo $currentRow; ?>" id="OPND_PERC<?php echo $currentRow; ?>" value="<?php echo number_format($OPND_PERC, 2); ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="chgOPNPERC(this,<?php echo $currentRow; ?>);">
+														  	<input type="hidden" name="OPND_PERC<?php echo $currentRow; ?>" id="OPND_PERC<?php echo $currentRow; ?>" value="<?php echo number_format($PROG_PERCNEW, 2); ?>" class="form-control" style="min-width:110px; max-width:300px; text-align:right" onKeyPress="return isIntOnlyNew(event);" onBlur="chgOPNPERC(this,<?php echo $currentRow; ?>);">
 														<?php } ?>
 
-														<input type="hidden" name="data[<?php echo $currentRow; ?>][OPND_PERC]" id="data<?php echo $currentRow; ?>OPND_PERC" value="<?php echo $OPND_PERC; ?>" class="form-control" style="max-width:300px;" >
+														<input type="hidden" name="data[<?php echo $currentRow; ?>][OPND_PERC]" id="data<?php echo $currentRow; ?>OPND_PERC" value="<?php echo $PROG_PERCNEW; ?>" class="form-control" style="max-width:300px;" >
 													</td>
 
 												 	<td style="text-align:right"> <!-- Opname Now -->
@@ -3991,11 +4006,11 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 		document.getElementById('btnSave').style.display 		= 'none';
 		document.getElementById('btnBack').style.display 		= 'none';
 
-		let frm = document.getElementById('frm');
-		frm.addEventListener('submit', (e) => {
-			document.getElementById('btnSave').style.display 	= 'none';
-			document.getElementById('btnBack').style.display 	= 'none';
-		});
+		// let frm = document.getElementById('frm');
+		// frm.addEventListener('submit', (e) => {
+		// 	document.getElementById('btnSave').style.display 	= 'none';
+		// 	document.getElementById('btnBack').style.display 	= 'none';
+		// });
 	}
 
 	function doDecimalFormat(angka) {

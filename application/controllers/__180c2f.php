@@ -1078,7 +1078,7 @@ class __180c2f extends CI_Controller
 						$EMP_NAME 	= $rw_1a->EMP_NAME;
 						$EMP_PHONE 	= $rw_1a->EMP_PHONE;
 
-						$BC_CONT1 	= "Dear Bpk/Ibu *$EMP_NAME*,\n\nFYI, berikut daftar Berkas Jaminan Bank yang akan berakhir 7 hari mendatang:";
+						$BC_CONT1 	= "Dear Bpk/Ibu *$EMP_NAME*,\n\nFYI, berikut daftar Berkas Jaminan Bank / Asuransi yang akan berakhir 7 hari mendatang:";
 						$BC_CONT2 	= $BC_CONTX;
 						$BC_CONT3 	= "Demikian informasi ini kami sampaikan, agar menjadi perhatian.\n\nTerimakasih\n*NKE Smart System*";
 						$BC_CONT 	= "$BC_CONT1\n\n$BC_CONT2$BC_CONT3";
@@ -1149,7 +1149,7 @@ class __180c2f extends CI_Controller
 						$EMP_NAME 	= $rw_1a->EMP_NAME;
 						$EMP_PHONE 	= $rw_1a->EMP_PHONE;
 
-						$BC_CONT1 	= "Dear Bpk/Ibu *$EMP_NAME*,\n\nFYI, berikut daftar Berkas Jaminan Bank yang akan berakhir 3 hari mendatang:";
+						$BC_CONT1 	= "Dear Bpk/Ibu *$EMP_NAME*,\n\nFYI, berikut daftar Berkas Jaminan Bank / Asuransi yang akan berakhir 3 hari mendatang:";
 						$BC_CONT2 	= $BC_CONTX;
 						$BC_CONT3 	= "Demikian informasi ini kami sampaikan, agar menjadi perhatian.\n\nTerimakasih\n*NKE Smart System*";
 						$BC_CONT 	= "$BC_CONT1\n\n$BC_CONT2$BC_CONT3";

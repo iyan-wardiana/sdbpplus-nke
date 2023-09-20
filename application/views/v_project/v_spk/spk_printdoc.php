@@ -675,6 +675,7 @@ endforeach;
                             $WO_GTOTAL      = 0;
                             $TOT_TAXPPN     = 0;
                             $TOT_TAXPPH     = 0;
+                            $WO_GTOTALv     = 0;
                             foreach($result as $row) :
                                 $no             = $no + 1;
                                 $WO_ID          = $row->WO_ID;

@@ -407,12 +407,16 @@ class C_pi180c23 extends CI_Controller
 					$invPayStatD 	= "BL";
 					$invPayStatDt 	= "Half Payment";
 					$invPayStatCol	= 'warning';
+
+					$isdisabledVw 	= "disabled='disabled'";
 				}
 				elseif($INV_PAYSTAT == 'FP')
 				{
 					$invPayStatD 	= "L";
 					$invPayStatDt 	= "Full Payment";
 					$invPayStatCol	= 'success';
+
+					$isdisabledVw 	= "disabled='disabled'";
 				}
 				
 				//$CollID		= "$INV_NUM~$INV_CATEG~$INV_TYPE";
@@ -687,12 +691,16 @@ class C_pi180c23 extends CI_Controller
 					$invPayStatD 	= "BL";
 					$invPayStatDt 	= "Half Payment";
 					$invPayStatCol	= 'warning';
+
+					$isdisabledVw 	= "disabled='disabled'";
 				}
 				elseif($INV_PAYSTAT == 'FP')
 				{
 					$invPayStatD 	= "L";
 					$invPayStatDt 	= "Full Payment";
 					$invPayStatCol	= 'success';
+
+					$isdisabledVw 	= "disabled='disabled'";
 				}
 				
 				//$CollID		= "$INV_NUM~$INV_CATEG~$INV_TYPE";
