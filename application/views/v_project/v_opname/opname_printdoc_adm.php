@@ -288,8 +288,8 @@
 
         .footer-detail {
             grid-area: footer-detail;
-            padding-left: 650px;
-            padding-right: 240px;
+            padding-left: 450px;
+            padding-right: 415px;
             padding-top: 10px;
             padding-bottom: 10px;
         }
@@ -301,7 +301,7 @@
         .asign-detail table td {
             border-top: double;
             border-right: double;
-            width: 20%;
+            width: 14.28%;
             /* padding: 5px; */
             text-align: center;
         }
@@ -657,32 +657,32 @@
                 <div class="footer-detail">
                     <table width="100%" cellpadding="0" cellspacing="0" border="0">
                         <tr style="display: none;">
-                            <td width="100" style="font-weight: bold;">Pot. Uang Muka</td>
+                            <td width="80" style="font-weight: bold;">Pot. Uang Muka</td>
                             <td width="10">:</td>
                             <td style="text-align: right;"><?php echo number_format($OPNH_DPVAL, 2); ?></td>
                         </tr>
                         <tr>
-                            <td width="100" style="font-weight: bold;">RETENSI</td>
+                            <td width="80" style="font-weight: bold;">RETENSI</td>
                             <td width="10">:</td>
                             <td style="text-align: right; font-weight: bold;"><?php echo number_format($OPNH_RETAMN, 2); ?></td>
                         </tr>
                         <tr>
-                            <td width="100" style="font-weight: bold;">SUB. TOTAL</td>
+                            <td width="80" style="font-weight: bold;">SUB. TOTAL</td>
                             <td width="10">:</td>
                             <td style="text-align: right; font-weight: bold;"><?php echo number_format($INV_AMOUNT, 2); ?></td>
                         </tr>
                         <tr style="display: none;">
-                            <td width="100" style="font-weight: bold;">PPN</td>
+                            <td width="80" style="font-weight: bold;">PPN</td>
                             <td width="10">:</td>
                             <td style="text-align: right;"><?php echo number_format($OPNH_AMOUNTPPN, 2); ?></td>
                         </tr>
                         <tr style="display: none;">
-                            <td width="100" style="font-weight: bold;">PPh</td>
+                            <td width="80" style="font-weight: bold;">PPh</td>
                             <td width="10">:</td>
                             <td style="text-align: right;"><?php echo number_format($OPNH_AMOUNTPPH, 2); ?></td>
                         </tr>
                         <tr style="display: none;">
-                            <td width="100" style="font-weight: bold;">Netto</td>
+                            <td width="80" style="font-weight: bold;">Netto</td>
                             <td width="10">:</td>
                             <td style="text-align: right; font-weight: bold;"><?php echo number_format($TOT_NETT, 2); ?></td>
                         </tr>
@@ -694,21 +694,31 @@
                     $TTD3   = "";
                     if($WO_CATEG == 'A')
                     {
-                        $TTD1   = "KA. MEKANIK";
-                        $TTD2   = "KA. DIV.";
-                        $TTD3   = "KA. DEP";
+                        $TTD1   = "/<br>KA. MEKANIK";
+                        $TTD2   = "/<br>KA. DIV.";
+                        $TTD3   = "/<br>KA. DEP";
                     }
                 ?>
                 <div class="asign-detail">
                     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-right: hidden;">
                         <tr>
-                            <td style="font-weight: bold;">ENGINEERING (QS) /<br><?=$TTD1?></td>
-                            <td style="font-weight: bold; text-align: left; padding-left: 2px;">SITE MANAGER (SM) / KOORD. MEP PROYEK / <?=$TTD2?> / ...........</td>
-                            <td style="font-weight: bold; text-align: left; padding-left: 2px;">PROJECT MANAGER / <?=$TTD3?> / <br>...........</td>
+                            <td style="font-weight: bold;">PELAKSANA</td>
+                            <td style="font-weight: bold;">QC</td>
+                            <td style="font-weight: bold;">ENGINEERING (QS) <?=$TTD1?></td>
+                            <td style="font-weight: bold; text-align: left; padding-left: 2px;">SITE MANAGER (SM) / KOORD. MEP PROYEK <?=$TTD2?> / ...........</td>
+                            <td style="font-weight: bold; text-align: left; padding-left: 2px;">PROJECT MANAGER <?=$TTD3?> / <br>...........</td>
                             <td style="font-weight: bold;">Mgr. Subkon/ Mgr. ME/ Mgr. Opr/ Ka. Cabang (untuk nilai ≥ 100jt)</td>
                             <td style="font-weight: bold;">MANDOR / SUB / PEMASOK *) <br>JAB.:</td>
                         </tr>
                         <tr height="100">
+                            <td style="vertical-align: bottom; text-align: left; font-style: italic;">
+                                <div style="border-bottom: dashed 1px;">NAMA :</div>
+                                <div>TGL. :</div>
+                            </td>
+                            <td style="vertical-align: bottom; text-align: left; font-style: italic;">
+                                <div style="border-bottom: dashed 1px;">NAMA :</div>
+                                <div>TGL. :</div>
+                            </td>
                             <td style="vertical-align: bottom; text-align: left; font-style: italic;">
                                 <div style="border-bottom: dashed 1px;">NAMA :</div>
                                 <div>TGL. :</div>
