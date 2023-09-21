@@ -357,8 +357,6 @@
             $subTitleH  = "Opname";
             $subTitleD  = "persetujuan";
             $alert5     = 'Silahkan pilih status persetujuan.';
-			$alert6	    = "Detail item tidak boleh kosong.";
-			$alertSubmit= "data sudah berhasil disimpan";
             $SPeriode   = "Periode Mulai";
             $alertAcc   = "Belum diset kode akun penggunaan.";
 
@@ -383,8 +381,6 @@
             $subTitleH  = "Add Opname";
             $subTitleD  = "approval";
             $alert5     = 'Please select approval status.';
-			$alert6	    = "item detail can not empty.";
-			$alertSubmit= "data has been successfully saved";
             $SPeriode   = "Start Periode";
             $alertAcc   = "Not set account material usage.";
 
@@ -761,7 +757,7 @@
                 </form>
                 <!-- End -->
 
-                <form class="form-horizontal" name="frm" id="frm" method="post" action="<?php echo $form_action; ?>" enctype="multipart/form-data">
+                <form class="form-horizontal" name="frm" id="frm" method="post" action="<?php echo $form_action; ?>" enctype="multipart/form-data" onSubmit="return validateInData()">
                     <input type="hidden" name="IS_LAST" id="IS_LAST" value="<?php echo $IS_LAST; ?>">
                     <input type="hidden" name="APP_LEVEL" id="APP_LEVEL" value="<?php echo $APP_LEVEL; ?>">
                     <input type="hidden" name="decFormat" id="decFormat" value="<?php echo $decFormat; ?>" />
@@ -1979,7 +1975,7 @@
                             <script type="text/javascript">
                                 function hideBtn()
                                 {
-                                    // document.getElementById('btnSave').style.display = 'none'; // sudah di handler pada saat addEventListener => submit
+                                    document.getElementById('btnSave').style.display = 'none';
                                 }
                             </script>
                         </div>
@@ -2716,69 +2712,7 @@
         countGTotal();
     }
 
-    const form = document.getElementById('frm');
-	form.addEventListener('submit', function(event) {
-		event.preventDefault();
-
-        var totrow  = document.getElementById('totalrow').value;
-
-        OPNH_STAT   = document.getElementById("OPNH_STAT").value;
-        OPNH_NOTE2  = document.getElementById("OPNH_NOTE2").value;
-
-        if(OPNH_STAT == 9 || OPNH_STAT == 4 || OPNH_STAT == 5)
-        {
-            OPNH_MEMO       = document.getElementById('OPNH_MEMO').value;
-            // if(OPNH_MEMO == '')
-            // {
-            //     swal('<?php // echo $alert1; ?>',
-            //     {
-            //         icon:"warning",
-            //     })
-            //     .then(function()
-            //     {
-            //         swal.close();
-            //         document.getElementById('OPNH_NOTE2').focus();
-            //     });
-            //     return false;
-            // }
-        }
-        else if(OPNH_STAT == 0)
-        {
-            swal('<?php echo $alert5; ?>',
-            {
-            icon:"warning",
-            });
-            document.getElementById('OPNH_STAT').focus();
-            document.getElementById('btnSave').style.display = '';
-            return false;
-        }
-
-		if(totrow == 0)
-		{
-			swal('<?php echo $alert6; ?>',
-			{
-				icon:"warning",
-			});
-			return false;
-		}
-
-		form.submit();
-
-		if($(form).data('submitted')==true){
-			document.getElementById('btnSave').style.display 		= 'none';
-			document.getElementById('btnBack').style.display 		= 'none';
-			swal('<?php echo $alertSubmit;?>');
-			return false;
-		} else {
-			//swal('submitting');
-			document.getElementById('btnSave').style.display 		= 'none';
-			document.getElementById('btnBack').style.display 		= 'none';
-			$(form).data('submitted', true);
-			return true;
-		}
-	});
-
-    function validateInData_230920() // dipindahkan ke addEventListener => submit
+    function validateInData()
     {
         var totrow  = document.getElementById('totalrow').value;
 

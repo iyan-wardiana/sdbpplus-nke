@@ -4304,8 +4304,6 @@ $urlGetData	= base_url().'index.php/c_purchase/c_v3N/gLastCd/';
 		SPLCODE				= arrItem[18];
 		REM_PD_Amount		= arrItem[19];
 
-		console.log('INV_AMOUNT_TOT = '+INV_AMOUNT_TOT);
-
 		if ((typeof arrItem[19] !== 'undefined')) {
 		    INV_AMOUNT = arrItem[19]; 
 		}
@@ -4315,15 +4313,11 @@ $urlGetData	= base_url().'index.php/c_purchase/c_v3N/gLastCd/';
 		
 		//INV_AMOUNT_REM 		= parseFloat(INV_AMOUNT_TOT) - parseFloat(AMOUNT_PAID) - parseFloat(INV_AMOUNT_PPH);
 		// INV_AMOUNT_REM 		= parseFloat(INV_AMOUNT_TOT) - parseFloat(AMOUNT_PAID);
-		// INV_AMOUNT_REM 		= parseFloat(INV_AMOUNT_TOT);  // INV_AMOUNT_TOT sudah dipotong nilai yg sudah dibayar di controller
-		INV_AMOUNT_REM 		= parseFloat(INV_AMOUNT_TOT)  - parseFloat(AMOUNT_PAID);
-		console.log('INV_AMOUNT_REM 1 = '+INV_AMOUNT_REM);
+		INV_AMOUNT_REM 		= parseFloat(INV_AMOUNT_TOT);  // INV_AMOUNT_TOT sudah dipotong nilai yg sudah dibayar di controller
 		if(CB_PAYTYPE == 'PD')
 		{
 			INV_AMOUNT_REM 	= parseFloat(REM_PD_Amount) - parseFloat(AMOUNT_PAID);
 		}
-
-		console.log('INV_AMOUNT_REM 2 = '+INV_AMOUNT_REM);
 
 		IR_NUM 				= "";
 		CB_CATEG 			= "";

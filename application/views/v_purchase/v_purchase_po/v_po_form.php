@@ -3457,7 +3457,7 @@ $updDESC 	= base_url().'index.php/c_purchase/c_pr180d0c/updDESC/?id=';
 			}
 
 			document.getElementById('data'+row+'PO_VOLM').value 	= parseFloat(Math.abs(PO_VOL));
-			document.getElementById('PO_VOLMX'+row).value 			= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(PO_VOL)), 3));
+			document.getElementById('PO_VOLMX'+row).value 			= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(PO_VOL)), 2));
 
 			// START : RECHECK
 				// 0. HITUNG TOTAL VAL ITEM FROM OTHER DOC
@@ -3635,7 +3635,6 @@ $updDESC 	= base_url().'index.php/c_purchase/c_pr180d0c/updDESC/?id=';
 				if(TAXCODE1 == 0 || TAXCODE1 == '')
 				{
 					document.getElementById('data'+row+'TAXPRICE1').value 	= 0;
-					document.getElementById('TAXPRICE1'+row).value 			= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(0)), 2));
 					PO_COSTnPPn	= parseFloat(ITMPRICE_TEMP);
 
 					document.getElementById('data'+row+'PO_COST').value 	= parseFloat(Math.abs(ITMPRICE_TEMP));
@@ -3659,7 +3658,6 @@ $updDESC 	= base_url().'index.php/c_purchase/c_pr180d0c/updDESC/?id=';
 			            	taxPerc 		= parseFloat(taxPerc1 / 100);
 			            	TAX1VAL			= parseFloat(ITMPRICE_TEMP * taxPerc);
 							document.getElementById('data'+row+'TAXPRICE1').value 	= parseFloat(Math.abs(TAX1VAL));
-							document.getElementById('TAXPRICE1'+row).value 			= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(TAX1VAL)), 2));
 
 							if(taxType == 1)		// 1 = PPn, 2 = PPh
 								PO_COSTnPPn		= parseFloat(ITMPRICE_TEMP + TAX1VAL);
@@ -3781,7 +3779,7 @@ $updDESC 	= base_url().'index.php/c_purchase/c_pr180d0c/updDESC/?id=';
 			}
 
 			document.getElementById('data'+row+'PO_VOLM').value 	= parseFloat(Math.abs(PO_VOL));
-			document.getElementById('PO_VOLMX'+row).value 			= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(PO_VOL)), 3));
+			document.getElementById('PO_VOLMX'+row).value 			= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(PO_VOL)), 2));
 
 			// START : RECHECK
 				// 0. HITUNG TOTAL VAL ITEM FROM OTHER DOC
@@ -3959,7 +3957,6 @@ $updDESC 	= base_url().'index.php/c_purchase/c_pr180d0c/updDESC/?id=';
 				if(TAXCODE1 == 0 || TAXCODE1 == '')
 				{
 					document.getElementById('data'+row+'TAXPRICE1').value 	= 0;
-					document.getElementById('TAXPRICE1'+row).value 			= doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(0)), 2));
 					PO_COSTnPPn	= parseFloat(ITMPRICE_TEMP);
 
 					document.getElementById('data'+row+'PO_COST').value 	= parseFloat(Math.abs(ITMPRICE_TEMP));
@@ -5002,13 +4999,6 @@ $updDESC 	= base_url().'index.php/c_purchase/c_pr180d0c/updDESC/?id=';
 		});
 		
 		$('.select2').select2();
-
-		// <!-- TAXPRICE -->
-		TAXPRICE1vW = doDecimalFormat(RoundNDecimal(parseFloat(Math.abs(TAXPRICE1)), 2));
-		objTD = objTR.insertCell(objTR.cells.length);
-		objTD.style.textAlign = 'right';
-		objTD.innerHTML = '<input type="text" class="form-control" style="text-align:right; min-width:90px" name="TAXPRICE1'+intIndex+'" id="TAXPRICE1'+intIndex+'" size="10" value="'+TAXPRICE1vW+'" onKeyPress="return isIntOnlyNew(event);" onBlur="getValuePO_TAX('+intIndex+');">'+
-						  '<input style="text-align:right" type="hidden" name="data['+intIndex+'][TAXPRICE1]" id="data'+intIndex+'TAXPRICE1" value="'+TAXPRICE1+'">';
 
 		console.log(intIndex+' => 13');
 

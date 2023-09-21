@@ -633,8 +633,6 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 			$alert7 	= "Hanya File PDF yang bisa diunggah";
 			$alert8 	= "Anda yakin akan menghapus file ini?";
 			$alert9 	= "No. Retensi tidak boleh kosong.";
-			$alert10	= "Detail item tidak boleh kosong.";
-			$alertSubmit= "data sudah berhasil disimpan";
 			$alertAcc 	= "Belum diset kode akun penggunaan.";
 			$SPeriode	= "Periode Mulai";
 			$docalert1	= 'Peringatan';
@@ -659,9 +657,7 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 			$alert7 	= "Only file PDF can be uploaded";
 			$alert8 	= "Are you sure want to delete this file?";
 			$alert9 	= "Retention number can not empty.";
-			$alertSubmit= "data has been successfully saved";
 			$alertAcc 	= "Not set account material usage.";
-			$alert10	= "item detail can not empty.";
 			$SPeriode	= "Start Periode";
 			$docalert1	= 'Warning';
 			$docalert2	= 'You have not set the numbering for this document. So, numbering will be given by default from the system. Please set document numbering in the Setting menu.';
@@ -1084,7 +1080,7 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 		        </form>
 		        <!-- End -->
 		        
-		        <form class="form-horizontal" name="frm" id="frm" method="post" action="<?php echo $form_action; ?>" enctype="multipart/form-data">
+		        <form class="form-horizontal" name="frm" id="frm" method="post" action="<?php echo $form_action; ?>" enctype="multipart/form-data" onSubmit="return validateInData()">
 					<?php
                         // START : LOCK PROCEDURE
                             $app_stat   = $this->session->userdata['app_stat'];
@@ -3909,133 +3905,7 @@ $OPNH_TOTAMOUNTX	= $OPNH_AMOUNT + $OPNH_AMOUNTPPN - $OPNH_AMOUNTPPH - $OPNH_RETA
 		getRETAMN();
 	}
 
-	const form = document.getElementById('frm');
-	form.addEventListener('submit', function(event) {
-		event.preventDefault();
-
-		var totrow 	= document.getElementById('totalrow').value;
-		let WO_CATEG= document.getElementById('WO_CATEG').value;
-		
-	  	let tglWOA 		= $('#WO_STARTD').val().split('/');
-	  	var tglWOA_dy 	= tglWOA[0];
-	  	var tglWOA_mn 	= tglWOA[1];
-	  	var tglWOA_yr 	= tglWOA[2];
-	  	var tglWOA_dt 	= new Date(tglWOA_yr, tglWOA_mn, tglWOA_dy);
-
-	  	let tglWOB 		= $('#WO_ENDD').val().split('/');
-	  	var tglWOB_dy 	= tglWOB[0];
-	  	var tglWOB_mn 	= tglWOB[1];
-	  	var tglWOB_yr 	= tglWOB[2];
-	  	var tglWOB_dt 	= new Date(tglWOB_yr, tglWOB_mn, tglWOB_dy);
-		
-	  	let tglOPN 		= $('#datepicker').val().split('/');
-	  	var tglOPN_dy 	= tglOPN[0];
-	  	var tglOPN_mn 	= tglOPN[1];
-	  	var tglOPN_yr 	= tglOPN[2];
-	  	var tglOPN_dt 	= new Date(tglOPN_yr, tglOPN_mn, tglOPN_dy);
-		
-	  	let tglOPNA 	= $('#datepicker1').val().split('/');
-	  	var tglOPNA_dy 	= tglOPNA[0];
-	  	var tglOPNA_mn 	= tglOPNA[1];
-	  	var tglOPNA_yr 	= tglOPNA[2];
-	  	var tglOPNA_dt 	= new Date(tglOPNA_yr, tglOPNA_mn, tglOPNA_dy);
-
-	  	let tglOPNB 	= $('#datepicker2').val().split('/');
-	  	var tglOPNB_dy 	= tglOPNB[0];
-	  	var tglOPNB_mn 	= tglOPNB[1];
-	  	var tglOPNB_yr 	= tglOPNB[2];
-	  	var tglOPNB_dt 	= new Date(tglOPNB_yr, tglOPNB_mn, tglOPNB_dy);
-				
-		if(tglOPN_dt < tglOPNA_dt || tglOPN_dt < tglOPNB_dt)
-		{
-			console.log(WO_CATEG);
-			if(WO_CATEG != 'A' && WO_CATEG != 'O')
-			{
-				console.log("WO_CATEG : "+WO_CATEG);
-				swal('Tanggal opname tidak boleh lebih kecil dari tanggal periode opname',
-				{
-					icon:"warning",
-				})
-				.then(function()
-				{
-					document.getElementById('datepicker1').focus();
-				});
-				return false;
-			}
-		}
-				
-		// if(tglOPNA_dt > tglWOB_dt || tglOPNA_dt < tglWOA_dt || tglOPNB_dt > tglWOB_dt)
-		if(tglOPNA_dt > tglWOB_dt || tglOPNA_dt < tglWOA_dt)
-		{
-			if(WO_CATEG != 'A' && WO_CATEG != 'O' && tglOPNB_dt > tglWOB_dt)
-			{
-				swal('Periode opname tidak boleh di luar periode SPK',
-				{
-					icon:"warning",
-				})
-				.then(function()
-				{
-					if(tglOPNA_dt < tglWOA_dt)
-						document.getElementById('datepicker1').focus();
-					else
-						document.getElementById('datepicker2').focus();
-				});
-				return false;
-			}
-		}
-
-		OPNH_STAT	= document.getElementById("OPNH_STAT").value;
-		OPNH_RETPERC= document.getElementById("OPNH_RETPERC").value;
-		OPNH_RETNO	= document.getElementById("OPNH_RETNO").value;
-
-		if(OPNH_RETPERC > 0 && OPNH_RETNO == '')
-		{
-			swal('<?php echo $alert9; ?>', 
-			{
-				icon: "warning"
-			}).then(function(){
-				document.getElementById('OPNH_RETNO').focus();
-			});
-			return false;
-		}
-
-		if(OPNH_STAT == 9)
-		{
-			OPNH_MEMO		= document.getElementById('OPNH_MEMO').value;
-			if(OPNH_MEMO == '')
-			{
-				swal('<?php echo $alert1; ?>');
-				document.getElementById('OPNH_MEMO').focus();
-				return false;
-			}
-		}
-
-		if(totrow == 0)
-		{
-			swal('<?php echo $alert10; ?>',
-			{
-				icon:"warning",
-			});
-			return false;
-		}
-
-		form.submit();
-
-		if($(form).data('submitted')==true){
-			document.getElementById('btnSave').style.display 		= 'none';
-			document.getElementById('btnBack').style.display 		= 'none';
-			swal('<?php echo $alertSubmit;?>');
-			return false;
-		} else {
-			//swal('submitting');
-			document.getElementById('btnSave').style.display 		= 'none';
-			document.getElementById('btnBack').style.display 		= 'none';
-			$(form).data('submitted', true);
-			return true;
-		}
-	});
-
-	function validateInData_230920() // dipindahkan ke addEventListener => submit
+	function validateInData()
 	{
 		var totrow 	= document.getElementById('totalrow').value;
 		let WO_CATEG= document.getElementById('WO_CATEG').value;
