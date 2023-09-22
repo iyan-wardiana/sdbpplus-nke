@@ -1103,15 +1103,33 @@ class M_journal extends CI_Model
 									$Acc_Name	= $rowNm->Account_NameId;
 								endforeach;
 
-								$sqlGEJDD 		= "INSERT INTO tbl_journaldetail (JournalH_Code, Acc_Id, proj_Code, Currency_id, 
-														JournalD_Debet, Base_Debet, COA_Debet, CostCenter, curr_rate, isDirect, 
-														Journal_DK, ITM_CODE, ITM_CATEG, ITM_GROUP, ITM_VOLM, ITM_PRICE, ITM_UNIT,
-														JOBCODEID, PattNum, Other_Desc, Ref_Number, Acc_Name, proj_CodeHO)
-													VALUES ('$JournalH_Code', '$ACC_NUM', '$proj_Code', 'IDR', 
-														$transacValue, $transacValue, $transacValue, 'Default', 1, 0, 
-														'D', '$Item_Code','$ITM_CATEG','$ITM_GROUP', $ITM_VOLM, $ITM_PRICE,'$ITM_UNIT',
-														'$JOBCODEID', $JRNPatt, '$ITM_NOTES', '$IR_NOTE', '$Acc_Name', '$proj_CodeHO')";
-								$this->db->query($sqlGEJDD);
+								// CEK APAKAH SUDAH ADA JOURNAL SEBELUMNYA DENGAN KODE = JournalH_Code
+								$sqlCGEJ	= "tbl_journaldetail WHERE JournalH_Code = '$JournalH_Code' 
+													AND Journal_DK = 'D' AND Journal_Type = 'NTAX' AND Acc_Id = '$ACC_NUM'
+													AND ITM_CODE = '$Item_Code'";
+								$resCGEJ	= $this->db->count_all($sqlCGEJ);
+
+								if($resCGEJ == 0)
+								{
+									$sqlGEJDD 		= "INSERT INTO tbl_journaldetail (JournalH_Code, Acc_Id, proj_Code, Currency_id, 
+															JournalD_Debet, Base_Debet, COA_Debet, CostCenter, curr_rate, isDirect, 
+															Journal_DK, ITM_CODE, ITM_CATEG, ITM_GROUP, ITM_VOLM, ITM_PRICE, ITM_UNIT,
+															JOBCODEID, PattNum, Other_Desc, Ref_Number, Acc_Name, proj_CodeHO)
+														VALUES ('$JournalH_Code', '$ACC_NUM', '$proj_Code', 'IDR', 
+															$transacValue, $transacValue, $transacValue, 'Default', 1, 0, 
+															'D', '$Item_Code','$ITM_CATEG','$ITM_GROUP', $ITM_VOLM, $ITM_PRICE,'$ITM_UNIT',
+															'$JOBCODEID', $JRNPatt, '$ITM_NOTES', '$IR_NOTE', '$Acc_Name', '$proj_CodeHO')";
+									$this->db->query($sqlGEJDD);
+								}
+								else
+								{
+									$sqlUpdCOAD	= "UPDATE tbl_journaldetail SET JournalD_Debet = JournalD_Debet+$transacValue,
+														Base_Debet = Base_Debet+$transacValue,
+														COA_Debet = COA_Debet+$transacValue
+													WHERE JournalH_Code = '$JournalH_Code' AND Journal_DK = 'D'
+														AND Journal_Type = 'NTAX' AND Acc_Id = '$ACC_NUM' AND ITM_CODE = '$Item_Code'";
+									$this->db->query($sqlUpdCOAD);
+								}
 
 								// START : Update to COA - Debit
 									/*$sqlUpdCOAD	= "UPDATE tbl_chartaccount SET Base_Debet = Base_Debet+$transacValue,
@@ -1289,15 +1307,31 @@ class M_journal extends CI_Model
 							endforeach;
 
 							// CEK APAKAH SUDAH ADA JOURNAL SEBELUMNYA DENGAN KODE = JournalH_Code
-								$sqlGEJDD = "INSERT INTO tbl_journaldetail (JournalH_Code, Acc_Id, proj_Code, Currency_id, 
-												JournalD_Kredit, Base_Kredit, COA_Kredit, CostCenter, curr_rate, isDirect, Journal_DK,
-												ITM_CODE, ITM_CATEG, ITM_GROUP, ITM_VOLM, ITM_PRICE, ITM_UNIT, PattNum,
-												oth_reason, Other_Desc, Ref_Number, Acc_Name, proj_CodeHO)
-											VALUES ('$JournalH_Code', '$ACC_NUM', '$proj_Code', 'IDR',
-											$transacValue, $transacValue, $transacValue, 'Default', 1, 0, 'K',
-											'$ITM_CODE','$ITM_CATEG','$ITM_GROUP',$ITM_VOLM, $ITM_PRICE,'$ITM_UNIT', $JRNPatt2,
-											'$ITM_NOTES', '$Other_Desc', '$IR_CODE', '$Acc_Name', '$proj_CodeHO')";
-								$this->db->query($sqlGEJDD);
+								$sqlCGEJ	= "tbl_journaldetail WHERE JournalH_Code = '$JournalH_Code' 
+													AND Journal_DK = 'K' AND Journal_Type = 'NTAX' AND Acc_Id = '$ACC_NUM'";
+								$resCGEJ	= $this->db->count_all($sqlCGEJ);
+								if($resCGEJ == 0)
+								{
+									$sqlGEJDD = "INSERT INTO tbl_journaldetail (JournalH_Code, Acc_Id, proj_Code, Currency_id, 
+													JournalD_Kredit, Base_Kredit, COA_Kredit, CostCenter, curr_rate, isDirect, Journal_DK,
+													ITM_CODE, ITM_CATEG, ITM_GROUP, ITM_VOLM, ITM_PRICE, ITM_UNIT, PattNum,
+													oth_reason, Other_Desc, Ref_Number, Acc_Name, proj_CodeHO)
+												VALUES ('$JournalH_Code', '$ACC_NUM', '$proj_Code', 'IDR',
+												$transacValue, $transacValue, $transacValue, 'Default', 1, 0, 'K',
+												'$ITM_CODE','$ITM_CATEG','$ITM_GROUP',$ITM_VOLM, $ITM_PRICE,'$ITM_UNIT', $JRNPatt2,
+												'$ITM_NOTES', '$Other_Desc', '$IR_CODE', '$Acc_Name', '$proj_CodeHO')";
+									$this->db->query($sqlGEJDD);
+								}
+								else
+								{
+									$sqlUpdCOAD	= "UPDATE tbl_journaldetail SET 
+														JournalD_Kredit = JournalD_Kredit+$transacValue,
+														Base_Kredit = Base_Kredit+$transacValue, 
+														COA_Kredit = COA_Kredit+$transacValue
+													WHERE JournalH_Code = '$JournalH_Code' AND Journal_DK = 'K'
+														AND Journal_Type = 'NTAX' AND Acc_Id = '$ACC_NUM'";
+									$this->db->query($sqlUpdCOAD);
+								}
 								
 							// START : Update to COA - Debit
 								$isHO			= 0;
